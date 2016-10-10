@@ -85,10 +85,7 @@ public class WorkshopApp extends Application {
     // Exercise 4: Instantiate an EventHandler for buffering and querying
     private final EventHandler<MouseEvent> eventHandler_bufferAndQuery = event -> {
         if (MouseButton.PRIMARY.equals(event.getButton()) && event.isStillSincePress()) {
-            Point2D screenPoint = new Point2D(event.getX(), event.getY());
-            Point geoPoint = threeD ?
-                    sceneView.screenToBaseSurface(screenPoint) :
-                    mapView.screenToLocation(screenPoint);
+            Point geoPoint = getGeoPoint(event);
             // Project to meters to do the buffer
             geoPoint = (Point) GeometryEngine.project(geoPoint, SpatialReference.create(3857));
             // Buffer by 1000 meters
@@ -121,6 +118,20 @@ public class WorkshopApp extends Application {
         }
     };
     
+    /**
+     * Exercise 4: Convert a MouseEvent to a geographic point in the MapView or
+     * SceneView's spatial reference.
+     * @param event The MouseEvent.
+     * @return A geographic point in the MapView or SceneView's spatial reference.
+     */
+    private Point getGeoPoint(MouseEvent event) {
+        Point2D screenPoint = new Point2D(event.getX(), event.getY());
+        Point geoPoint = threeD ?
+                sceneView.screenToBaseSurface(screenPoint) :
+                mapView.screenToLocation(screenPoint);
+        return geoPoint;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         // Exercise 1: Set the 2D/3D toggle button's action
