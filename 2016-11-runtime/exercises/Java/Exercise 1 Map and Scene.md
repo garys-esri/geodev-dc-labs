@@ -4,7 +4,7 @@ This exercise walks you through the following:
 - Create a new JavaFX app
 - Add ArcGIS Runtime to the app
 - Add a 2D map to the app
-- Add a 3D scene to the app, and use the toggle button to switch between 2D and 3D
+- Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 Prerequisites:
 - Install the Java Development Kit (JDK) version 8 or higher.
@@ -151,7 +151,7 @@ You have two options for adding ArcGIS Runtime Quartz to your Java application p
 
     ![Map and button](02-map-and-button.png)
     
-## Add a 3D scene to the app, and use the toggle button to switch between 2D and 3D
+## Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
 
