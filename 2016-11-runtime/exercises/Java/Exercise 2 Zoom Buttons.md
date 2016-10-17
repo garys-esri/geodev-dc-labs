@@ -95,8 +95,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
     if (target instanceof Point) {
         Camera camera = sceneView.getCurrentViewpointCamera()
-                // Zoom factor for 3D scene is inverse of 2D map (>1 zooms in)
-                .zoomToward((Point) target, 1.0 / factor);
+                .zoomToward((Point) target, factor);
         sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
     } else {
         // This shouldn't happen, but in case it does...
