@@ -1,5 +1,6 @@
 package com.esri.wdc.geodev201611;
 
+import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
@@ -14,6 +15,8 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.SceneView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,6 +25,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * This Application class demonstrates key features of ArcGIS Runtime Quartz.
+ */
 public class WorkshopApp extends Application {
     
     // Exercise 1: Specify elevation service URL
@@ -31,33 +37,44 @@ public class WorkshopApp extends Application {
     // Exercise 3: Specify mobile map package path
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
     
-    // Exercise 1: Declare fields, including UI components
+    // Exercise 1: Declare and instantiate fields, including UI components
+    private final MapView mapView = new MapView();
+    private final SceneView sceneView = new SceneView();
+    private final ImageView imageView_2d =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/two-d.png")));
+    private final ImageView imageView_3d =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/three-d.png")));
+    private final Button button_toggle2d3d = new Button(null, imageView_3d);
+    private final AnchorPane anchorPane = new AnchorPane();
     private ArcGISMap map;
     private ArcGISScene scene;
     private boolean threeD = false;
-    private MapView mapView;
-    private SceneView sceneView;
-    private final ImageView imageView_2d = new ImageView(new Image(getClass().getResourceAsStream("/resources/two-d.png")));
-    private final ImageView imageView_3d = new ImageView(new Image(getClass().getResourceAsStream("/resources/three-d.png")));
-    private final Button button_toggle2d3d = new Button(null, imageView_3d);
-    private final AnchorPane anchorPane = new AnchorPane();
     
     // Exercise 2: Declare UI components for zoom buttons
-    private final ImageView imageView_zoomIn = new ImageView(new Image(getClass().getResourceAsStream("/resources/zoom-in.png")));
-    private final ImageView imageView_zoomOut = new ImageView(new Image(getClass().getResourceAsStream("/resources/zoom-out.png")));
+    private final ImageView imageView_zoomIn =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-in.png")));
+    private final ImageView imageView_zoomOut =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-out.png")));
     private final Button button_zoomIn = new Button(null, imageView_zoomIn);
     private final Button button_zoomOut = new Button(null, imageView_zoomOut);
     
-    @Override
-    public void start(Stage primaryStage) {
-        // Exercise 1: Set the 2D/3D toggle button's action
-        button_toggle2d3d.setOnAction(event -> button_toggle2d3d_onAction());
-        
+    /**
+     * Default constructor for class.
+     */
+    public WorkshopApp() {
+        super();
+
         // Exercise 1: Set up the 2D map, since we will display that first
         map = new ArcGISMap();
         map.setBasemap(Basemap.createNationalGeographic());
-        mapView = new MapView();
         mapView.setMap(map);
+
+        // Exercise 1: Set the 2D/3D toggle button's action
+        button_toggle2d3d.setOnAction(event -> button_toggle2d3d_onAction());
+        
+        // Exercise 2: Set the zoom buttons' actions
+        button_zoomIn.setOnAction(event -> button_zoomIn_onAction());
+        button_zoomOut.setOnAction(event -> button_zoomOut_onAction());
         
         /**
          * Exercise 3: Open a mobile map package (.mmpk) and
@@ -73,7 +90,10 @@ public class WorkshopApp extends Application {
             map.setBasemap(Basemap.createNationalGeographic());
         });
         mmpk.loadAsync();
-        
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
         // Exercise 1: Place the MapView and 2D/3D toggle button in the UI
         AnchorPane.setLeftAnchor(mapView, 0.0);
         AnchorPane.setRightAnchor(mapView, 0.0);
@@ -90,10 +110,6 @@ public class WorkshopApp extends Application {
         AnchorPane.setBottomAnchor(button_zoomIn, 145.0);
         anchorPane.getChildren().addAll(button_zoomOut, button_zoomIn);
         
-        // Exercise 2: Set the zoom buttons' actions
-        button_zoomIn.setOnAction(event -> button_zoomIn_onAction());
-        button_zoomOut.setOnAction(event -> button_zoomOut_onAction());
-        
         // Exercise 1: Finish displaying the UI
         // JavaFX Scene (unrelated to ArcGIS 3D scene)
         Scene javaFxScene = new Scene(anchorPane);
@@ -101,23 +117,33 @@ public class WorkshopApp extends Application {
         primaryStage.setWidth(800);
         primaryStage.setHeight(600);
         primaryStage.setScene(javaFxScene);
-        primaryStage.show();        
+        primaryStage.show();
     }
     
+    @Override
+    public void stop() throws Exception {
+        // Exercise 1: Dispose of the MapView and SceneView before exiting
+        mapView.dispose();
+        if (null != sceneView) {
+            sceneView.dispose();
+        }
+        
+        super.stop();
+    }
+
     /**
      * Exercise 1: Toggle between 2D map and 3D scene
      */
     private void button_toggle2d3d_onAction() {
         threeD = !threeD;
         button_toggle2d3d.setGraphic(threeD ? imageView_2d : imageView_3d);
-
+        
+        // Exercise 1: Switch between 2D map and 3D scene
         if (threeD) {
-            if (null == sceneView) {
+            if (null == scene) {
                 // Set up the 3D scene. This only happens the first time the user switches to 3D.
                 scene = new ArcGISScene();
                 scene.setBasemap(Basemap.createImagery());
-                
-                // Add elevation surface
                 Surface surface = new Surface();
                 surface.getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
                 scene.setBaseSurface(surface);
@@ -150,7 +176,6 @@ public class WorkshopApp extends Application {
                     mmpk.loadAsync();
                 });
                 
-                sceneView = new SceneView();
                 sceneView.setArcGISScene(scene);
                 AnchorPane.setLeftAnchor(sceneView, 0.0);
                 AnchorPane.setRightAnchor(sceneView, 0.0);
@@ -191,7 +216,7 @@ public class WorkshopApp extends Application {
     }
     
     /**
-     * Exercise 2: utility method for zooming the 2D map
+     * Exercise 2: Utility method for zooming the 2D map
      * @param factor the zoom factor (greater than 1 to zoom out, less than 1 to zoom in)
      */
     private void zoomMap(double factor) {
@@ -199,28 +224,27 @@ public class WorkshopApp extends Application {
     }
     
     /**
-     * Exercise 2: utility method for zooming the 3D scene
+     * Exercise 2: Utility method for zooming the 3D scene
      * @param factor the zoom factor (greater than 1 to zoom out, less than 1 to zoom in)
      */
     private void zoomScene(double factor) {
-        Point target = (Point) sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
-        Camera camera = sceneView.getCurrentViewpointCamera()
-                // Zoom factor for 3D scene is inverse of 2D map (>1 zooms in)
-                .zoomToward(target, 1.0 / factor);
-        sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
-    }
-
-    @Override
-    public void stop() throws Exception {
-        // Exercise 1: dispose the MapView and SceneView before exiting
-        mapView.dispose();
-        if (null != sceneView) {
-            sceneView.dispose();
+        Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+        if (target instanceof Point) {
+            Camera camera = sceneView.getCurrentViewpointCamera()
+                    // Zoom factor for 3D scene is inverse of 2D map (>1 zooms in)
+                    .zoomToward((Point) target, 1.0 / factor);
+            sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
+        } else {
+            Logger.getLogger(WorkshopApp.class.getName()).log(Level.WARNING,
+                    "SceneView.getCurrentViewpoint returned {0} instead of {1}",
+                    new String[] { target.getClass().getName(), Point.class.getName() });
         }
-        
-        super.stop();
     }
 
+    /**
+     * Exercise 1: Main method that runs the app.
+     * @param args Command line arguments (none are expected for this app).
+     */
     public static void main(String[] args) {
         launch(args);
     }
