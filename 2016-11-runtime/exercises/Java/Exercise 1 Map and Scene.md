@@ -31,7 +31,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     private final AnchorPane anchorPane = new AnchorPane();
     ```
 
-1. Create a Java package called `resources` in your application. Go to [the images directory](../../images) of this repository and copy all of the images to your `resources` package. Then instantiate a `Button` and two `ImageView` fields that reference the images you copied. Use the 3D `ImageView` for the Button. Be sure to import `javafx.scene.image.Image`, rather than some other `Image` class. (Note: you can use text buttons without the images if you prefer.)
+1. Create a Java package called `resources` in your application. Go to [the images directory](../../images) of this repository and copy all of the images to your `resources` package. (Copying the images is easier if you clone this repo, or if you fork this repo and clone your fork.) Then instantiate a `Button` and two `ImageView` fields that reference the images you copied. Use the 3D `ImageView` for the Button. Be sure to import `javafx.scene.image.Image`, rather than some other `Image` class. (Note: you can use text buttons without the images if you prefer.)
 
     ```
     private final ImageView imageView_2d =
