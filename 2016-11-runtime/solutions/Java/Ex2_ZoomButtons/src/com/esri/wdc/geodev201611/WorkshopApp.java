@@ -158,14 +158,14 @@ public class WorkshopApp extends Application {
      * Exercise 2: zoom in
      */
     private void button_zoomIn_onAction() {
-        zoom(0.5);
+        zoom(2.0);
     }
     
     /**
      * Exercise 2: zoom out
      */
     private void button_zoomOut_onAction() {
-        zoom(2.0);
+        zoom(0.5);
     }
     
     /**
@@ -181,22 +181,21 @@ public class WorkshopApp extends Application {
     
     /**
      * Exercise 2: Utility method for zooming the 2D map
-     * @param factor the zoom factor (greater than 1 to zoom out, less than 1 to zoom in)
+     * @param factor the zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
      */
     private void zoomMap(double factor) {
-        mapView.setViewpointScaleAsync(mapView.getMapScale() * factor);
+        mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
     }
     
     /**
      * Exercise 2: Utility method for zooming the 3D scene
-     * @param factor the zoom factor (greater than 1 to zoom out, less than 1 to zoom in)
+     * @param factor the zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
      */
     private void zoomScene(double factor) {
         Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
         if (target instanceof Point) {
             Camera camera = sceneView.getCurrentViewpointCamera()
-                    // Zoom factor for 3D scene is inverse of 2D map (>1 zooms in)
-                    .zoomToward((Point) target, 1.0 / factor);
+                    .zoomToward((Point) target, factor);
             sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
         } else {
             Logger.getLogger(WorkshopApp.class.getName()).log(Level.WARNING,
