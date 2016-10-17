@@ -57,7 +57,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
 ## Zoom in and out on the map and the scene
 
-1. In ArcGIS Runtime, zooming on a map and zooming on a scene use simple but quite different mechanisms. We'll talk more about those mechanisms later, but for now, get ready to zoom by creating an empty `private void zoomMap(double)` method and a `private void zoomScene(double)` method in your class.
+1. In ArcGIS Runtime, zooming on a map and zooming on a scene use simple but quite different mechanisms. We'll talk more about those mechanisms later, but for now, get ready to zoom by creating an empty `private void zoomMap(double)` method and a `private void zoomScene(double)` method in your class. For each of these methods, it's a good idea to name the parameter `factor`.
 
 1. Rather than having your event handlers call `zoomMap` and `zoomScene` directly, you can simplify your code by creating a generic `zoom(double)` method that calls `zoomMap` or `zoomScene` depending on whether you're currently in 2D mode or 3D mode:
 
