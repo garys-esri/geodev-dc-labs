@@ -1,9 +1,8 @@
 package com.esri.wdc.geodev201611;
 
 import com.esri.arcgisruntime.datasource.QueryParameters;
+import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
-import com.esri.arcgisruntime.geometry.LinearUnit;
-import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReference;
@@ -18,9 +17,9 @@ import com.esri.arcgisruntime.mapping.Surface;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.mobilemappackage.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.view.Camera;
-import com.esri.arcgisruntime.mapping.view.GeoView;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
+import com.esri.arcgisruntime.mapping.view.LayerSceneProperties.SurfacePlacement;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.SceneView;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
@@ -29,8 +28,9 @@ import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.util.ListenableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,6 +42,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * This Application class demonstrates key features of ArcGIS Runtime Quartz.
+ */
 public class WorkshopApp extends Application {
     
     // Exercise 1: Specify elevation service URL
@@ -51,100 +54,60 @@ public class WorkshopApp extends Application {
     // Exercise 3: Specify mobile map package path
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
     
-    // Exercise 4: Set up LinearUnit object for unit conversion
-    private static final LinearUnit UNIT_METERS = new LinearUnit(LinearUnitId.METERS);
-    
     // Exercise 4: Create symbols for click and buffer
     private static final SimpleMarkerSymbol CLICK_SYMBOL =
             new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, 0xFFffa500, 10);
     private static final SimpleFillSymbol BUFFER_SYMBOL =
-            new SimpleFillSymbol(SimpleFillSymbol.Style.NULL, 0xFFFFFFFF, new SimpleLineSymbol(
-                    SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
+            new SimpleFillSymbol(SimpleFillSymbol.Style.NULL, 0xFFFFFFFF,
+                    new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
     
-    // Exercise 1: Declare fields, including UI components
+    // Exercise 1: Declare and instantiate fields, including UI components
+    private final MapView mapView = new MapView();
+    private final SceneView sceneView = new SceneView();
+    private final ImageView imageView_2d =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/two-d.png")));
+    private final ImageView imageView_3d =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/three-d.png")));
+    private final Button button_toggle2d3d = new Button(null, imageView_3d);
+    private final AnchorPane anchorPane = new AnchorPane();
     private ArcGISMap map;
     private ArcGISScene scene;
     private boolean threeD = false;
-    private MapView mapView;
-    private SceneView sceneView;
-    private final ImageView imageView_2d = new ImageView(new Image(getClass().getResourceAsStream("/resources/two-d.png")));
-    private final ImageView imageView_3d = new ImageView(new Image(getClass().getResourceAsStream("/resources/three-d.png")));
-    private final Button button_toggle2d3d = new Button(null, imageView_3d);
-    private final AnchorPane anchorPane = new AnchorPane();
     
     // Exercise 2: Declare UI components for zoom buttons
-    private final ImageView imageView_zoomIn = new ImageView(new Image(getClass().getResourceAsStream("/resources/zoom-in.png")));
-    private final ImageView imageView_zoomOut = new ImageView(new Image(getClass().getResourceAsStream("/resources/zoom-out.png")));
+    private final ImageView imageView_zoomIn =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-in.png")));
+    private final ImageView imageView_zoomOut =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-out.png")));
     private final Button button_zoomIn = new Button(null, imageView_zoomIn);
     private final Button button_zoomOut = new Button(null, imageView_zoomOut);
     
     // Exercise 4: Declare UI component for location button
-    private final ImageView imageView_location = new ImageView(new Image(getClass().getResourceAsStream("/resources/location.png")));
+    private final ImageView imageView_location =
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/location.png")));
     private final ToggleButton toggleButton_bufferAndQuery = new ToggleButton(null, imageView_location);
     
-    // Exercise 4: Instantiate an EventHandler for buffering and querying
-    private final EventHandler<MouseEvent> eventHandler_bufferAndQuery = event -> {
-        if (MouseButton.PRIMARY.equals(event.getButton()) && event.isStillSincePress()) {
-            Point geoPoint = getGeoPoint(event);
-            // Project to meters to do the buffer
-            geoPoint = (Point) GeometryEngine.project(geoPoint, SpatialReference.create(3857));
-            // Buffer by 1000 meters
-            Polygon buffer = GeometryEngine.buffer(geoPoint, 1000.0);
-            
-            // Show click and buffer as graphics
-            GeoView geoView = threeD ? sceneView : mapView;
-            ListenableList<Graphic> graphics = geoView.getGraphicsOverlays().get(0).getGraphics();
-            graphics.clear();
-            graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
-            graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
-            
-            // Run the query
-            QueryParameters query = new QueryParameters();
-            query.setGeometry(buffer);
-            LayerList operationalLayers = threeD ?
-                    sceneView.getArcGISScene().getOperationalLayers() :
-                    mapView.getMap().getOperationalLayers();
-            operationalLayers.parallelStream().filter(
-                    layer -> layer instanceof FeatureLayer
-            ).forEach(layer -> {
-                /**
-                 * Note: As of ArcGIS Runtime Quartz Beta 2, this select successfully
-                 * selects features, but those features are only highlighted on the
-                 * 2D MapView, not on the 3D SceneView. This behavior has been reported
-                 * to the ArcGIS Runtime development team.
-                 */
-                ((FeatureLayer) layer).selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
-            });
-        }
-    };
+    // Exercise 4: Declare buffer and query fields
+    private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
+    private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
     
     /**
-     * Exercise 4: Convert a MouseEvent to a geographic point in the MapView or
-     * SceneView's spatial reference.
-     * @param event The MouseEvent.
-     * @return A geographic point in the MapView or SceneView's spatial reference.
+     * Default constructor for class.
      */
-    private Point getGeoPoint(MouseEvent event) {
-        Point2D screenPoint = new Point2D(event.getX(), event.getY());
-        Point geoPoint = threeD ?
-                sceneView.screenToBaseSurface(screenPoint) :
-                mapView.screenToLocation(screenPoint);
-        return geoPoint;
-    }
+    public WorkshopApp() {
+        super();
 
-    @Override
-    public void start(Stage primaryStage) {
-        // Exercise 1: Set the 2D/3D toggle button's action
-        button_toggle2d3d.setOnAction(event -> button_toggle2d3d_onAction());
-        
         // Exercise 1: Set up the 2D map, since we will display that first
         map = new ArcGISMap();
         map.setBasemap(Basemap.createNationalGeographic());
-        mapView = new MapView();
         mapView.setMap(map);
+
+        // Exercise 1: Set the 2D/3D toggle button's action
+        button_toggle2d3d.setOnAction(event -> button_toggle2d3d_onAction());
         
-        // Exercise 4: Add a GraphicsOverlay for the click and buffer
-        mapView.getGraphicsOverlays().add(new GraphicsOverlay());
+        // Exercise 2: Set the zoom buttons' actions
+        button_zoomIn.setOnAction(event -> button_zoomIn_onAction());
+        button_zoomOut.setOnAction(event -> button_zoomOut_onAction());
         
         /**
          * Exercise 3: Open a mobile map package (.mmpk) and
@@ -160,7 +123,20 @@ public class WorkshopApp extends Application {
             map.setBasemap(Basemap.createNationalGeographic());
         });
         mmpk.loadAsync();
+
+        // Exercise 4: Add a GraphicsOverlay for the click and buffer
+        mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
         
+        // Exercise 4: Set the buffer and query toggle button's action
+        toggleButton_bufferAndQuery.setOnAction(event -> toggleButton_bufferAndQuery_onAction());
+        
+        // Exercise 4: Add a GraphicsOverlay for the click and buffer
+        bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
+        sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
         // Exercise 1: Place the MapView and 2D/3D toggle button in the UI
         AnchorPane.setLeftAnchor(mapView, 0.0);
         AnchorPane.setRightAnchor(mapView, 0.0);
@@ -182,25 +158,6 @@ public class WorkshopApp extends Application {
         AnchorPane.setBottomAnchor(toggleButton_bufferAndQuery, 15.0);
         anchorPane.getChildren().add(toggleButton_bufferAndQuery);
         
-        // Exercise 2: Set the zoom buttons' actions
-        button_zoomIn.setOnAction(event -> button_zoomIn_onAction());
-        button_zoomOut.setOnAction(event -> button_zoomOut_onAction());
-        
-        // Exercise 4: Set the buffer and query toggle button's action
-        toggleButton_bufferAndQuery.setOnAction(event -> {
-            if (toggleButton_bufferAndQuery.isSelected()) {
-                mapView.setOnMouseClicked(eventHandler_bufferAndQuery);
-                if (null != sceneView) {
-                    sceneView.setOnMouseClicked(eventHandler_bufferAndQuery);
-                }
-            } else {
-                mapView.setOnMouseClicked(null);
-                if (null != sceneView) {
-                    sceneView.setOnMouseClicked(null);
-                }
-            }
-        });
-        
         // Exercise 1: Finish displaying the UI
         // JavaFX Scene (unrelated to ArcGIS 3D scene)
         Scene javaFxScene = new Scene(anchorPane);
@@ -208,23 +165,33 @@ public class WorkshopApp extends Application {
         primaryStage.setWidth(800);
         primaryStage.setHeight(600);
         primaryStage.setScene(javaFxScene);
-        primaryStage.show();        
+        primaryStage.show();
     }
     
+    @Override
+    public void stop() throws Exception {
+        // Exercise 1: Dispose of the MapView and SceneView before exiting
+        mapView.dispose();
+        if (null != sceneView) {
+            sceneView.dispose();
+        }
+        
+        super.stop();
+    }
+
     /**
      * Exercise 1: Toggle between 2D map and 3D scene
      */
     private void button_toggle2d3d_onAction() {
         threeD = !threeD;
         button_toggle2d3d.setGraphic(threeD ? imageView_2d : imageView_3d);
-
+        
+        // Exercise 1: Switch between 2D map and 3D scene
         if (threeD) {
-            if (null == sceneView) {
+            if (null == scene) {
                 // Set up the 3D scene. This only happens the first time the user switches to 3D.
                 scene = new ArcGISScene();
                 scene.setBasemap(Basemap.createImagery());
-                
-                // Add elevation surface
                 Surface surface = new Surface();
                 surface.getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
                 scene.setBaseSurface(surface);
@@ -257,22 +224,18 @@ public class WorkshopApp extends Application {
                     mmpk.loadAsync();
                 });
                 
-                sceneView = new SceneView();
                 sceneView.setArcGISScene(scene);
                 AnchorPane.setLeftAnchor(sceneView, 0.0);
                 AnchorPane.setRightAnchor(sceneView, 0.0);
                 AnchorPane.setTopAnchor(sceneView, 0.0);
                 AnchorPane.setBottomAnchor(sceneView, 0.0);
                 
-                // Exercise 4: Add a GraphicsOverlay for the click and buffer
-                sceneView.getGraphicsOverlays().add(new GraphicsOverlay());
-                
                 /**
                  * Exercise 4: The buffer and query toggle button might already
                  * be selected. If so, we need to set the SceneView's event handler.
                  */
                 if (toggleButton_bufferAndQuery.isSelected()) {
-                    sceneView.setOnMouseClicked(eventHandler_bufferAndQuery);
+                    sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
                 }
             }
             anchorPane.getChildren().remove(mapView);
@@ -309,7 +272,7 @@ public class WorkshopApp extends Application {
     }
     
     /**
-     * Exercise 2: utility method for zooming the 2D map
+     * Exercise 2: Utility method for zooming the 2D map
      * @param factor the zoom factor (greater than 1 to zoom out, less than 1 to zoom in)
      */
     private void zoomMap(double factor) {
@@ -317,28 +280,95 @@ public class WorkshopApp extends Application {
     }
     
     /**
-     * Exercise 2: utility method for zooming the 3D scene
+     * Exercise 2: Utility method for zooming the 3D scene
      * @param factor the zoom factor (greater than 1 to zoom out, less than 1 to zoom in)
      */
     private void zoomScene(double factor) {
-        Point target = (Point) sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
-        Camera camera = sceneView.getCurrentViewpointCamera()
-                // Zoom factor for 3D scene is inverse of 2D map (>1 zooms in)
-                .zoomToward(target, 1.0 / factor);
-        sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
-    }
-
-    @Override
-    public void stop() throws Exception {
-        // Exercise 1: dispose the MapView and SceneView before exiting
-        mapView.dispose();
-        if (null != sceneView) {
-            sceneView.dispose();
+        Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+        if (target instanceof Point) {
+            Camera camera = sceneView.getCurrentViewpointCamera()
+                    // Zoom factor for 3D scene is inverse of 2D map (>1 zooms in)
+                    .zoomToward((Point) target, 1.0 / factor);
+            sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
+        } else {
+            Logger.getLogger(WorkshopApp.class.getName()).log(Level.WARNING,
+                    "SceneView.getCurrentViewpoint returned {0} instead of {1}",
+                    new String[] { target.getClass().getName(), Point.class.getName() });
         }
-        
-        super.stop();
+    }
+    
+    /**
+     * Exercise 4: Activate buffer and query
+     */
+    private void toggleButton_bufferAndQuery_onAction() {
+        if (toggleButton_bufferAndQuery.isSelected()) {
+            mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
+            if (null != sceneView) {
+                sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
+            }
+        } else {
+            mapView.setOnMouseClicked(null);
+            if (null != sceneView) {
+                sceneView.setOnMouseClicked(null);
+            }
+        }
+    }
+    
+    /**
+     * Exercise 4: Convert a MouseEvent to a geographic point in the MapView or
+     * SceneView's spatial reference.
+     * @param event The MouseEvent.
+     * @return A geographic point in the MapView or SceneView's spatial reference.
+     */
+    private Point getGeoPoint(MouseEvent event) {
+        Point2D screenPoint = new Point2D(event.getX(), event.getY());
+        Point geoPoint = threeD ?
+                sceneView.screenToBaseSurface(screenPoint) :
+                mapView.screenToLocation(screenPoint);
+        return geoPoint;
     }
 
+    /**
+     * Exercise 4: Buffer and query
+     */
+    private void bufferAndQuery(MouseEvent event) {
+        if (MouseButton.PRIMARY.equals(event.getButton()) && event.isStillSincePress()) {
+            Point geoPoint = getGeoPoint(event);
+            // Project to meters to do the buffer
+            geoPoint = (Point) GeometryEngine.project(geoPoint, SpatialReference.create(3857));
+            // Buffer by 1000 meters
+            Polygon buffer = GeometryEngine.buffer(geoPoint, 1000.0);
+
+            // Show click and buffer as graphics
+            ListenableList<Graphic> graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).getGraphics();
+            graphics.clear();
+            graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
+            graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
+
+            // Run the query
+            QueryParameters query = new QueryParameters();
+            query.setGeometry(buffer);
+            LayerList operationalLayers = threeD ?
+                    sceneView.getArcGISScene().getOperationalLayers() :
+                    mapView.getMap().getOperationalLayers();
+            operationalLayers.parallelStream().filter(
+                    layer -> layer instanceof FeatureLayer
+            ).forEach(layer -> {
+                /**
+                 * Note: As of ArcGIS Runtime Quartz Beta 2, this select successfully
+                 * selects features, but those features are only highlighted on the
+                 * 2D MapView, not on the 3D SceneView. This behavior has been reported
+                 * to the ArcGIS Runtime development team.
+                 */
+                ((FeatureLayer) layer).selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
+            });
+        }
+    };
+
+    /**
+     * Exercise 1: Main method that runs the app.
+     * @param args Command line arguments (none are expected for this app).
+     */
     public static void main(String[] args) {
         launch(args);
     }
