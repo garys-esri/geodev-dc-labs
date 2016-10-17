@@ -89,7 +89,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
     ```
     
-1. 3D is awesome, but it is almost always more complicated than 2D, and zooming is no exception. ArcGIS Runtime's 3D `SceneView` uses a _viewpoint_ with a _camera_ to change the user's view of the scene. Objects of type `Camera` are immutable and have a fluent API, so you can get a copy of the `SceneView`'s current viewpoint camera, use a factor to move it toward or away from the camera's current target, and use it as the `SceneView`'s new viewpoint camera. You can even animate the camera's movement and specify the duration of the animated camera movement. In this case, we will use the `Camera`'s `zoomToward` method to create a new `Camera`. Add the following code to your `zoomScene(double)` method:
+1. 3D is awesome, but it is almost always more complicated than 2D, and zooming is no exception. ArcGIS Runtime's 3D `SceneView` uses a _viewpoint_ with a _camera_ to change the user's view of the scene. Objects of type `Camera` are immutable and have a fluent API, so you can get a copy of the `SceneView`'s current viewpoint camera, use a factor to move it toward or away from the camera's current target, and use it as the `SceneView`'s new viewpoint camera. You can even animate the camera's movement and specify the duration of the animated camera movement. In this case, we will use the `Camera`'s `zoomToward` method to create a new `Camera`. Add the following code to your `zoomScene(double)` method. As you do, make sure you import `com.esri.arcgisruntime.geometry.Point` and `com.esri.arcgisruntime.mapping.view.Camera` instead of some other `Point` and `Camera` classes:
 
     ```
     Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
@@ -99,6 +99,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
                 .zoomToward((Point) target, 1.0 / factor);
         sceneView.setViewpointCameraWithDurationAsync(camera, 0.5f);
     } else {
+        // This shouldn't happen, but in case it does...
         Logger.getLogger(WorkshopApp.class.getName()).log(Level.WARNING,
                 "SceneView.getCurrentViewpoint returned {0} instead of {1}",
                 new String[] { target.getClass().getName(), Point.class.getName() });
