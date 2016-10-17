@@ -76,3 +76,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     ```
     
 1. Compile and run your app. Verify that a button appears in the lower-right corner of the app:
+
+    ![Blank app with button](01-blank-app-with-button.png)
+    
+## Add ArcGIS Runtime to the app
