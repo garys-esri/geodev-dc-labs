@@ -68,7 +68,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
     mmpk.loadAsync();
     ```
     
-1. Get the first `Map` in the `MobileMapPackage`, as you did before for the 2D map. However, you cannot add a `Map` to a `SceneView`, so you will instead add the `Map`'s layers to the `Scene`'s operational layers. However, a layer can only belong to one `Map` or `Scene` at a time, so you must make a list of the layers, clear the `Map`'s layer list (bonus: see what happens if you don't!), and only then add the list of layers to the scene. Here is the code for adding the MMPK's layers to your `Scene`. Put this code in the done loading listener you created in the previous step:
+1. Get the first `Map` in the `MobileMapPackage`, as you did before for the 2D map. However, you cannot add a `Map` to a `SceneView`, so you will instead add the `Map`'s layers to the `Scene`'s operational layers. But a layer can only belong to one `Map` or `Scene` at a time, so you must make a list of the layers, clear the `Map`'s layer list (bonus: see what happens if you don't!), and only then add the list of layers to the scene. Here is the code for adding the MMPK's layers to your `Scene`. Put this code in the done loading listener you created in the previous step:
 
     ```
     List<ArcGISMap> maps = mmpk.getMaps();
@@ -81,7 +81,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
     }
     ```
     
-1. After adding the layers to the scene (still inside the `if` block from the previous step), zoom to the layer you added by giving your `SceneView` the MMPK map's `Viewpoint`:
+1. After adding the layers to the scene (inside the `if` block from the previous step), zoom to the layer you added by giving your `SceneView` the MMPK map's `Viewpoint`:
 
     ```
     sceneView.setViewpoint(thisMap.getInitialViewpoint());
@@ -91,7 +91,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
 
     ![Mobile map package layer on a 3D scene](06-mmpk-layer-scene.jpg)
     
-1. Remember in [Exercise 2](Exercise 2 Zoom Buttons.md) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`. Here is the code to insert immediately after the previous step (still inside the `if` block):
+1. Remember in [Exercise 2](Exercise 2 Zoom Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`. Here is the code to insert immediately after the previous step (still inside the `if` block):
 
     ```
     Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
