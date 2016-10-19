@@ -48,7 +48,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
 ## Add a layer from a mobile map package to the 3D scene
 
-A layer can only reside in one map or scene at a time. Therefore, to add layers to the 3D scene, you will have to open the mobile map package again. That will give you a `Map` as before, which you can't use with a `SceneView`--and there is no "`MobileScenePackage`"--so you will have to loop through the layers and add them to your existing `Scene`.
+A layer can only reside in one map or scene at a time. Therefore, to add layers to the 3D scene, you will have to open the mobile map package again. That will give you a `Map` as before, which you can't use with a `SceneView`--and there is no "`MobileScenePackage`"--so you will have to get the layers from this `Map` and add them to your existing `Scene`.
 
 1. In your 2D/3D toggle button event handler method, after you instantiate your `ArcGISScene` and set its basemap and surface, add an event handler for when the scene is done loading:
 
