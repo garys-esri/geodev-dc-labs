@@ -15,7 +15,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
 1. If desired, make a copy of your Exercise 2 class. Just make sure you're running your Exercise 3 code as you complete this exercise.
 1. Download the [D.C. Crime Data mobile map package (`DC_Crime_Data.mmpk`)](../../data/DC_Crime_Data.mmpk) that we have prepared for you. For this exercise, you can put it in your application working directory, leave it in your downloads directory, or put it anywhere that your app will be able to access it.
-1. In your class, before your constructor, instantiate a constant called `MMPK_PATH` with the absolute or relative path of the mobile map package you downloaded:
+1. In your class, before your constructor, instantiate a constant called `MMPK_PATH` with the absolute or relative path of the mobile map package you downloaded. The following line assumes that the MMPK is in a directory called `data` that is three directories up from your application's working directory. Adjust this value as needed:
 
     ```
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
