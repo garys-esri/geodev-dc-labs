@@ -140,7 +140,7 @@ You need to buffer the clicked point and display both the point and the buffer a
 
 There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `FeatureLayer.selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`, which both highlights selected features on the map or scene and provides a list of the selected features.
 
-1. In `bufferAndQuery(MouseEvent), after creating the buffer and adding graphics, instantiate a `QueryParameters` object with the buffer geometry:
+1. In `bufferAndQuery(MouseEvent)`, after creating the buffer and adding graphics, instantiate a `QueryParameters` object with the buffer geometry:
 
     ```
     QueryParameters query = new QueryParameters();
