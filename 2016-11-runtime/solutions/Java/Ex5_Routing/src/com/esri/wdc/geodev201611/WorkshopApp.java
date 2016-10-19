@@ -317,14 +317,6 @@ public class WorkshopApp extends Application {
                 AnchorPane.setBottomAnchor(sceneView, 0.0);
                 
                 /**
-                 * Exercise 4: The buffer and query toggle button might already
-                 * be selected. If so, we need to set the SceneView's event handler.
-                 */
-                if (toggleButton_bufferAndQuery.isSelected()) {
-                    sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
-                }
-
-                /**
                  * Exercise 5: The routing toggle button might already
                  * be selected. If so, we need to set the SceneView's event handler.
                  */
@@ -396,18 +388,14 @@ public class WorkshopApp extends Application {
     private void toggleButton_bufferAndQuery_onAction() {
         if (toggleButton_bufferAndQuery.isSelected()) {
             mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            if (null != sceneView) {
-                sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            }
+            sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
 
             // Exercise 5: Unselect the routing button
             toggleButton_routing.setSelected(false);
 
         } else {
             mapView.setOnMouseClicked(null);
-            if (null != sceneView) {
-                sceneView.setOnMouseClicked(null);
-            }
+            sceneView.setOnMouseClicked(null);
         }
     }
     
