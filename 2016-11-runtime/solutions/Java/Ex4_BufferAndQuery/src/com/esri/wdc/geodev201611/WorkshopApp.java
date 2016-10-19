@@ -341,7 +341,9 @@ public class WorkshopApp extends Application {
             Polygon buffer = GeometryEngine.buffer(geoPoint, 1000.0);
 
             // Show click and buffer as graphics
-            ListenableList<Graphic> graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).getGraphics();
+            ListenableList<Graphic> graphics =
+                    (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics)
+                            .getGraphics();
             graphics.clear();
             graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
             graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
