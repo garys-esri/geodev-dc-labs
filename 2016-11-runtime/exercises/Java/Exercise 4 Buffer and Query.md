@@ -44,7 +44,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     toggleButton_bufferAndQuery.setOnAction(event -> toggleButton_bufferAndQuery_onAction());
     ```
     
-1. Create a `private void bufferAndQuery(MouseEvent)` method for calculating a buffer and performing a query based on the user's click on the map or scene. You will write most of the code for this method later, but for now, just detect whether or not the user clicked with the primary mouse button and do a `println` if he or she did:
+1. Create a `private void bufferAndQuery(MouseEvent)` method for calculating a buffer and performing a query based on the user's click on the map or scene. You will write most of the code for this method later, but for now, just detect whether or not the user clicked with the primary mouse button and do a `println` if he or she did. (Be sure to import `javafx.scene.input.MouseEvent` instead of some other `MouseEvent` class.)
 
     ```
     private void bufferAndQuery(MouseEvent event) {
