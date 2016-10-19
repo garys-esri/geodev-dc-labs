@@ -176,9 +176,7 @@ public class WorkshopApp extends Application {
                             ArrayList<Layer> layers = new ArrayList<>();
                             layers.addAll(thisMap.getOperationalLayers());
                             thisMap.getOperationalLayers().clear();
-                            layers.stream().forEach((layer) -> {
-                                scene.getOperationalLayers().add(layer);
-                            });
+                            scene.getOperationalLayers().addAll(layers);
                             sceneView.setViewpoint(thisMap.getInitialViewpoint());
                             // Rotate the camera
                             Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
