@@ -101,7 +101,7 @@ You need to buffer the clicked point and display both the point and the buffer a
     sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
     ```
 
-1. Create a `private Point getGeoPoint(MouseEvent)` method to convert a `MouseEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MouseEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5:
+1. Create a `private Point getGeoPoint(MouseEvent)` method to convert a `MouseEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MouseEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. (Be sure to import `javafx.geometry.Point2D` instead of some other `Point2D` class.)
 
     ```
     private Point getGeoPoint(MouseEvent event) {
