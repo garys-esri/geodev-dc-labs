@@ -101,7 +101,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
     sceneView.setViewpointCameraAsync(camera);
     ```
 
-1. Compile and run your app. Verify that when you switch to 3D, the crime incidents display and the view is rotated and pitched:
+1. Compile and run your app. Verify that when you switch to 3D, the crime incidents display and the view is rotated and pitched. Also try the built-in 3D navigation by holding the right mouse button and moving the mouse:
 
     ![3D scene pitched and rotated](07-mmpk-layer-scene-rotated.jpg)
     
@@ -109,9 +109,9 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
 
 If you have trouble, **refer to the solution code**, which is linked near the beginning of this exercise. You can also **submit an issue** in this repo to ask a question or report a problem. If you are participating live with Esri presenters, feel free to **ask a question** of the presenters.
 
-If you completed the exercise, congratulations! You learned how to add buttons that programmatically zoom in and out on a 2D map and a 3D scene.
+If you completed the exercise, congratulations! You learned how to add a local feature layer from a mobile map package to a 2D map and a 3D scene.
 
 Ready for more? Choose from the following:
 
-- [**Exercise 4: Buffer and Query**](Exercise 4 Buffer and Query.md).
-- **Bonus**: we used a mobile map package, but you can also add **feature services** to your map and scene. Go to [ArcGIS Online](http://www.arcgis.com/home/index.html), find a feature service URL (hint: a feature service URL has the term `FeatureServer` at or near the end of the URL), and use the [`FeatureLayer`](https://developers.arcgis.com/java/beta/api-reference/reference/com/esri/arcgisruntime/layers/FeatureLayer.html) and [`ServiceFeatureTable`](https://developers.arcgis.com/java/beta/api-reference//reference/com/esri/arcgisruntime/datasource/arcgis/ServiceFeatureTable.html) classes to add the feature service to your map and/or globe. You can refer to a [code sample](https://developers.arcgis.com/java/beta/sample-code/feature-layer-feature-service.htm) if you need it.
+- [**Exercise 4: Buffer and Query**](Exercise 4 Buffer and Query.md)
+- **Bonus**: we used a mobile map package, but you can also add **feature services** to your map and scene. Go to [ArcGIS Online](http://www.arcgis.com/home/index.html), find a feature service URL (hint: a feature service URL has the term `FeatureServer` at or near the end of the URL), and use the [`FeatureLayer`](https://developers.arcgis.com/java/beta/api-reference/reference/com/esri/arcgisruntime/layers/FeatureLayer.html) and [`ServiceFeatureTable`](https://developers.arcgis.com/java/beta/api-reference//reference/com/esri/arcgisruntime/datasource/arcgis/ServiceFeatureTable.html) classes to add the feature service to your map and/or globe. You can refer to a [code sample](https://developers.arcgis.com/java/beta/sample-code/feature-layer-feature-service.htm) if you need it. Also, the [`ServiceFeatureTable`](https://developers.arcgis.com/java/beta/api-reference//reference/com/esri/arcgisruntime/datasource/arcgis/ServiceFeatureTable.html) documentation has a feature service URL in the Class Overview section that you can use instead of finding one in ArcGIS Online if desired. We could give that URL to you here, but that wouldn't force you to go look at the documentation, would it? :-)
