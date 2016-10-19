@@ -166,15 +166,16 @@ public class WorkshopApp extends Application {
         });
         mmpk.loadAsync();
 
-        // Exercise 4: Add a GraphicsOverlay for the click and buffer
+        /**
+         * Exercise 4: Add a GraphicsOverlay to the map and the scene for the click
+         * and buffer
+         */
         mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
+        bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
+        sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
         
         // Exercise 4: Set the buffer and query toggle button's action
         toggleButton_bufferAndQuery.setOnAction(event -> toggleButton_bufferAndQuery_onAction());
-        
-        // Exercise 4: Add a GraphicsOverlay for the click and buffer
-        bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
-        sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
                 
         // Exercise 5: Set the routing toggle button's action
         toggleButton_routing.setOnAction(event -> toggleButton_routing_onAction());
@@ -453,8 +454,8 @@ public class WorkshopApp extends Application {
                 /**
                  * Note: As of ArcGIS Runtime Quartz Beta 2, this select successfully
                  * selects features, but those features are only highlighted on the
-                 * 2D MapView, not on the 3D SceneView. This behavior has been reported
-                 * to the ArcGIS Runtime development team.
+                 * 2D MapView, not on the 3D SceneView. This behavior is scheduled
+                 * to be fixed in ArcGIS Runtime Quartz.
                  */
                 ((FeatureLayer) layer).selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
             });
