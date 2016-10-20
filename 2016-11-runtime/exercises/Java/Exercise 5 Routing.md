@@ -8,7 +8,7 @@ This exercise walks you through the following:
 - Display the route on the map or scene
 
 Prerequisites:
-- Complete [Exercise 4](Exercise 4 Buffer and Query.md.md), or get the Exercise 4 code solution compiling and running properly, preferably in an IDE.
+- Complete [Exercise 4](Exercise 4 Buffer and Query.md), or get the Exercise 4 code solution compiling and running properly, preferably in an IDE.
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Java/Ex5_Routing), available in this repository.
 
