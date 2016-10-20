@@ -138,13 +138,8 @@ public class WorkshopApp extends Application {
         });
         mmpk.loadAsync();
 
-        /**
-         * Exercise 4: Add a GraphicsOverlay to the map and the scene for the click
-         * and buffer
-         */
+        //Exercise 4: Add a GraphicsOverlay to the map for the click and buffer
         mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
-        bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
-        sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
         
         // Exercise 4: Set the buffer and query toggle button's action
         toggleButton_bufferAndQuery.setOnAction(event -> toggleButton_bufferAndQuery_onAction());
@@ -238,6 +233,21 @@ public class WorkshopApp extends Application {
                     mmpk.loadAsync();
                 });
                 
+                /**
+                 * Exercise 4: Add a GraphicsOverlay to the scene for the click
+                 * and buffer.
+                 */
+                bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
+                sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
+                
+                /**
+                 * Exercise 4: Set the SceneView's onMouseClicked event handler
+                 * if the buffer and query button is already selected.
+                 */
+                if (toggleButton_bufferAndQuery.isSelected()) {
+                    sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
+                }
+
                 sceneView.setArcGISScene(scene);
                 AnchorPane.setLeftAnchor(sceneView, 0.0);
                 AnchorPane.setRightAnchor(sceneView, 0.0);
@@ -308,10 +318,14 @@ public class WorkshopApp extends Application {
     private void toggleButton_bufferAndQuery_onAction() {
         if (toggleButton_bufferAndQuery.isSelected()) {
             mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
+            if (null != sceneView) {
+                sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
+            }
         } else {
             mapView.setOnMouseClicked(null);
-            sceneView.setOnMouseClicked(null);
+            if (null != sceneView) {
+                sceneView.setOnMouseClicked(null);
+            }
         }
     }
     
