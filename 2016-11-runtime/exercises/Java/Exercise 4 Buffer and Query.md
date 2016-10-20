@@ -56,15 +56,19 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
     
-1. Go back to your event handler method for the buffer and query toggle button (we called it `toggleButton_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the `MapView` and `SceneView` to call `bufferAndQuery(MouseEvent)` when the user clicks the map or scene. If the button is toggled off, we need to tell the `MapView` and `SceneView` to do nothing in particular when the user clicks the map or scene. Add this code to your event handler method:
+1. Go back to your event handler method for the buffer and query toggle button (we called it `toggleButton_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the `MapView` and `SceneView` to call `bufferAndQuery(MouseEvent)` when the user clicks the map or scene. If the button is toggled off, we need to tell the `MapView` and `SceneView` to do nothing in particular when the user clicks the map or scene. Check whether the `SceneView` is `null` when setting the event handler. Add this code to your event handler method:
 
     ```
     if (toggleButton_bufferAndQuery.isSelected()) {
         mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-        sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
+        if (null != sceneView) {
+            sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
+        }
     } else {
         mapView.setOnMouseClicked(null);
-        sceneView.setOnMouseClicked(null);
+        if (null != sceneView) {
+            sceneView.setOnMouseClicked(null);
+        }
     }
     ```
     
@@ -93,12 +97,20 @@ You need to buffer the clicked point and display both the point and the buffer a
     private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
     ```
     
-1. In your constructor, add the map `GraphicsOverlay` to the `MapView`, and add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only requires one line of code, while the one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface:
+1. In your constructor, add the map `GraphicsOverlay` to the `MapView`:
 
     ```
     mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
+    ```
+    
+1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only required one line of code, while this one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface. Also, if the buffer and query toggle button is already selected, set the buffer and query listener on the `SceneView`:
+
+    ```
     bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
     sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
+    if (toggleButton_bufferAndQuery.isSelected()) {
+        sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
+    }
     ```
 
 1. Create a `private Point getGeoPoint(MouseEvent)` method to convert a `MouseEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MouseEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. (Be sure to import `javafx.geometry.Point2D` instead of some other `Point2D` class.)
