@@ -54,6 +54,9 @@ After doing Exercise 4, this should seem familiar to you.
         ```
         sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
         sceneView.getGraphicsOverlays().add(sceneRouteGraphics);
+        if (toggleButton_routing.isSelected()) {
+            sceneView.setOnMouseClicked(event -> addStopToRoute(event));
+        }
         ```
 
 1. In your `start(Stage)` method, place the routing toggle button in the UI:
