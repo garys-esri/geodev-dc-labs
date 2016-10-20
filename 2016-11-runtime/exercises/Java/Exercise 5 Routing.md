@@ -197,7 +197,7 @@ After doing Exercise 4, this should seem familiar to you.
     routeParameters = theRouteParameters;
     ```
     
-1. If getting the `RouteParameters` succeeded (i.e. if `routeParameters` is not `null`), set some of the parameters. We don't need route directions or stops (we already have the stops), but we do need routes. If the `RouteParameters` object is null, disable the routing toggle button because routing is not available:
+1. In your constructor, after setting `routeTask` and `routeParameters`, if getting the `RouteParameters` succeeded (i.e. if `routeParameters` is not `null`), set some of the parameters. We don't need route directions or stops (we already have the stops), but we do need routes. If the `RouteParameters` object is null, disable the routing toggle button because routing is not available:
 
     ```
     if (null != routeParameters) {
