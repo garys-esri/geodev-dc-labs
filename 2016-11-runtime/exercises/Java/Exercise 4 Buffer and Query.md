@@ -72,6 +72,14 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
     
+1. In `button_toggle2d3d_onAction()`, after instantiating the `SceneView`, if `toggleButton_bufferAndQuery` is already selected, set the `SceneView`'s `onMouseClicked` event to call `bufferAndQuery(MouseEvent)`:
+
+    ```
+    if (toggleButton_bufferAndQuery.isSelected()) {
+        sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
+    }
+    ```
+    
 1. Compile and run your app. Verify that a new toggle button appears and that your `println` prints text when and only when the toggle button is toggled on and you click the map or the scene:
 
     ![Buffer and query toggle button](08-buffer-query-toggle-button.png)
@@ -103,14 +111,11 @@ You need to buffer the clicked point and display both the point and the buffer a
     mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
     ```
     
-1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only required one line of code, while this one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface. Also, if the buffer and query toggle button is already selected, set the buffer and query listener on the `SceneView`:
+1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only required one line of code, while this one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface:
 
     ```
     bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
     sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
-    if (toggleButton_bufferAndQuery.isSelected()) {
-        sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
-    }
     ```
 
 1. Create a `private Point getGeoPoint(MouseEvent)` method to convert a `MouseEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MouseEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. (Be sure to import `javafx.geometry.Point2D` instead of some other `Point2D` class.)
