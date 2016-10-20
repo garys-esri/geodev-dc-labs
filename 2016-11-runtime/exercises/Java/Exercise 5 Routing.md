@@ -106,7 +106,6 @@ After doing Exercise 4, this should seem familiar to you.
     ListenableList<Graphic> graphics = (threeD ? sceneRouteGraphics : mapRouteGraphics).getGraphics();
     ```
     
-1. After getting the graphics list, call `getGeoPoint(MouseEvent)` to convert it to a `Point`. Remove the point's z-value if present, since a z-value will cause the routing not to work:
 
     ```
     Point point = getGeoPoint(event);
