@@ -170,6 +170,8 @@ After doing Exercise 4, this should seem familiar to you.
     ![Origin and destination (map)](12-origin-and-destination-map.png)
 
     ![Origin and destination (scene)](13-origin-and-destination-scene.jpg)
+    
+## Display the route on the map or scene
 
 1. Before your constructor, declare a `RouteTask` field and a `RouteParameters` field:
 
