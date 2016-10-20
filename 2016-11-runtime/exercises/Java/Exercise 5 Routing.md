@@ -218,7 +218,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. After adding the stops, call `RouteTask.solveAsync(RouteParameters)` to solve the route asynchronously. That call returns a `Future`, on which you can add a done listener. In that listener, call `get()` on the `Future`, and then call `getRoutes()`, get the first route, and add it as a graphic. The call to `get()` can throw two different types of exceptions, which you must catch (or catch all `Throwable` objects if you prefer):
+1. After adding the stops, call `RouteTask.solveAsync(RouteParameters)` to solve the route asynchronously. That call returns a `ListenableFuture`, on which you can add a done listener. In that listener, call `get()` on the `ListenableFuture`, and then call `getRoutes()`, get the first route, and add it as a graphic. The call to `get()` can throw two different types of exceptions, which you must catch (or catch all `Throwable` objects if you prefer):
 
     ```
     ListenableFuture<RouteResult> solveFuture = routeTask.solveAsync(routeParameters);
