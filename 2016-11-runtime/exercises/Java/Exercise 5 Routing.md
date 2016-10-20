@@ -49,14 +49,11 @@ After doing Exercise 4, this should seem familiar to you.
     mapView.getGraphicsOverlays().add(mapRouteGraphics);
     ```    
     
-1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`. Also, if the route toggle button is already selected, set the buffer and query listener on the `SceneView`:
+1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`:
 
         ```
         sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
         sceneView.getGraphicsOverlays().add(sceneRouteGraphics);
-        if (toggleButton_routing.isSelected()) {
-            sceneView.setOnMouseClicked(event -> addStopToRoute(event));
-        }
         ```
 
 1. In your `start(Stage)` method, place the routing toggle button in the UI:
@@ -143,6 +140,14 @@ After doing Exercise 4, this should seem familiar to you.
     originPoint = null;
     ```
     
+1. In `button_toggle2d3d_onAction()`, after instantiating the `SceneView`, if the route toggle button is already selected, set the buffer and query listener on the `SceneView`:
+
+    ```
+    if (toggleButton_routing.isSelected()) {
+        sceneView.setOnMouseClicked(event -> addStopToRoute(event));
+    }
+    ```
+    
 1. Fill in the body of `toggleButton_routing_onAction()`. If the routing toggle button is has been un-selected, set the `MapView` and `SceneView` `onMouseClicked` listeners to `null`. If the routing toggle button has been selected, set the `onMouseClicked` listeners to call `addStopToRoute` with the mouse event. Be sure to check for a null `sceneView`. Finally, whether routing has been activated or deactivated, set `originPoint` to null in order to reset the routing:
 
     ```
@@ -188,6 +193,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     routeTask = theRouteTask;
     routeParameters = theRouteParameters;
+    ```
     
 1. If getting the `RouteParameters` succeeded (i.e. if `routeParameters` is not `null`), set some of the parameters. We don't need route directions or stops (we already have the stops), but we do need routes. If the `RouteParameters` object is null, disable the routing toggle button because routing is not available:
 
