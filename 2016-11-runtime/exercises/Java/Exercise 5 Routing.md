@@ -232,6 +232,7 @@ After doing Exercise 4, this should seem familiar to you.
             Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, e);
         }
     });
+    ```
     
 1. Compile and run your app. Verify that you can calculate and display a route in both 2D and 3D:
 
