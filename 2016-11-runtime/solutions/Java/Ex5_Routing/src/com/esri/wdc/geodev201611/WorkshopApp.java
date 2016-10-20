@@ -507,19 +507,17 @@ public class WorkshopApp extends Application {
                 for (Point p : new Point[]{ originPoint, point }) {
                     routeParameters.getStops().add(new Stop(p));
                 }
-                if (null != routeTask) {
-                    ListenableFuture<RouteResult> solveFuture = routeTask.solveAsync(routeParameters);
-                    solveFuture.addDoneListener(() -> {
-                        try {
-                            RouteResult routeResult = solveFuture.get();
-                            if (0 < routeResult.getRoutes().size()) {
-                                graphics.add(new Graphic(routeResult.getRoutes().get(0).getRouteGeometry(), ROUTE_LINE_SYMBOL));
-                            }
-                        } catch (ExecutionException | InterruptedException e) {
-                            Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, e);
+                ListenableFuture<RouteResult> solveFuture = routeTask.solveAsync(routeParameters);
+                solveFuture.addDoneListener(() -> {
+                    try {
+                        RouteResult routeResult = solveFuture.get();
+                        if (0 < routeResult.getRoutes().size()) {
+                            graphics.add(new Graphic(routeResult.getRoutes().get(0).getRouteGeometry(), ROUTE_LINE_SYMBOL));
                         }
-                    });
-                }
+                    } catch (ExecutionException | InterruptedException e) {
+                        Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                });
                 // After running route...
                 originPoint = null;
             }
