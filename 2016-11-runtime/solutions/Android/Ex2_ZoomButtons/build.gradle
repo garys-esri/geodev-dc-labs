@@ -15,6 +15,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        // Exercise 1: Add reference to ArcGIS Runtime library
         maven {
             url 'https://esri.bintray.com/arcgis'
         }
