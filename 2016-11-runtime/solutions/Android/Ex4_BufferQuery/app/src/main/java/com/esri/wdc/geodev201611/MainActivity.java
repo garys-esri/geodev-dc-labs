@@ -6,13 +6,22 @@ import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.Polygon;
+import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.mobilemappackage.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
+import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.util.ListenableList;
 
 import java.util.List;
 
@@ -21,12 +30,20 @@ public class MainActivity extends Activity {
     // Exercise 3: Instantiate mobile map package (MMPK) path
     private static final String MMPK_PATH = Environment.getExternalStorageDirectory().getPath() + "/data/DC_Crime_Data.mmpk";
 
+    // Exercise 4: Instantiate symbols
+    private static final SimpleMarkerSymbol CLICK_SYMBOL =
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, 0xFFffa500, 10);
+    private static final SimpleFillSymbol BUFFER_SYMBOL =
+            new SimpleFillSymbol(SimpleFillSymbol.Style.NULL, 0xFFFFFFFF,
+                    new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
+
     // Exercise 1: Declare and instantiate fields
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
 
     // Exercise 4: Declare fields
     private ImageButton imageButton_bufferAndQuery = null;
+    private final GraphicsOverlay bufferAndQueryGraphics = new GraphicsOverlay();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +72,9 @@ public class MainActivity extends Activity {
 
         // Exercise 4: Set field values
         imageButton_bufferAndQuery = (ImageButton) findViewById(R.id.imageButton_bufferAndQuery);
+
+        // Exercise 4: Add graphics overlay to map
+        mapView.getGraphicsOverlays().add(bufferAndQueryGraphics);
     }
 
     /**
@@ -118,7 +138,7 @@ public class MainActivity extends Activity {
             mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
                 @Override
                 public boolean onSingleTapConfirmed(MotionEvent event) {
-                    bufferAndQuery(mapView, event);
+                    bufferAndQuery(event);
                     return true;
                 }
             });
@@ -129,12 +149,28 @@ public class MainActivity extends Activity {
 
     /**
      * Exercise 4: Buffer the tapped point and select features within that buffer.
-     * @param mapView The View (MapView) that was tapped.
-     * @param touchEvent The touch event.
+     * @param singleTapEvent The single tap event.
      * @return true if the event was consumed and false if it was not.
      */
-    private void bufferAndQuery(MapView mapView, MotionEvent touchEvent) {
-        Toast.makeText(this, "View is of type " + mapView.getClass().getName(), Toast.LENGTH_LONG).show();
+    private void bufferAndQuery(MotionEvent singleTapEvent) {
+        Point geoPoint = getGeoPoint(singleTapEvent);
+        geoPoint = (Point) GeometryEngine.project(geoPoint, SpatialReference.create(3857));
+        Polygon buffer = GeometryEngine.buffer(geoPoint, 1000.0);
+        ListenableList<Graphic> graphics = bufferAndQueryGraphics.getGraphics();
+        graphics.clear();
+        graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
+        graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
+    }
+
+    /**
+     * Exercise 4: Convert a single tap event to a geographic Point object.
+     */
+    private Point getGeoPoint(MotionEvent singleTapEvent) {
+        android.graphics.Point screenPoint = new android.graphics.Point(
+                Math.round(singleTapEvent.getX()),
+                Math.round(singleTapEvent.getY()));
+        Point geoPoint = mapView.screenToLocation(screenPoint);
+        return geoPoint;
     }
 
 }
