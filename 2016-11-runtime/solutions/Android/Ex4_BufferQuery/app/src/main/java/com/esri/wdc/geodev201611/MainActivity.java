@@ -182,8 +182,7 @@ public class MainActivity extends Activity {
         android.graphics.Point screenPoint = new android.graphics.Point(
                 Math.round(singleTapEvent.getX()),
                 Math.round(singleTapEvent.getY()));
-        Point geoPoint = mapView.screenToLocation(screenPoint);
-        return geoPoint;
+        return mapView.screenToLocation(screenPoint);
     }
 
 }
