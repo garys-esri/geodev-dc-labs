@@ -7,12 +7,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.esri.arcgisruntime.datasource.QueryParameters;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReference;
+import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.mobilemappackage.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
@@ -160,6 +164,15 @@ public class MainActivity extends Activity {
         graphics.clear();
         graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
         graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
+
+        QueryParameters query = new QueryParameters();
+        query.setGeometry(buffer);
+        LayerList operationalLayers = mapView.getMap().getOperationalLayers();
+        for (Layer layer : operationalLayers) {
+            if (layer instanceof FeatureLayer) {
+                ((FeatureLayer) layer).selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
+            }
+        };
     }
 
     /**
