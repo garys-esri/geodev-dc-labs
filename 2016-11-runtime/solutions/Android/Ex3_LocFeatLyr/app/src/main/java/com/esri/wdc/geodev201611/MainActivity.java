@@ -33,13 +33,16 @@ public class MainActivity extends Activity {
 
         // Exercise 3: Instantiate and load mobile map package
         final MobileMapPackage mmpk = new MobileMapPackage(MMPK_PATH);
-        mmpk.addDoneLoadingListener(() -> {
-            List<ArcGISMap> maps = mmpk.getMaps();
-            if (0 < maps.size()) {
-                map = maps.get(0);
-                mapView.setMap(map);
+        mmpk.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                List<ArcGISMap> maps = mmpk.getMaps();
+                if (0 < maps.size()) {
+                    map = maps.get(0);
+                    mapView.setMap(map);
+                }
+                map.setBasemap(Basemap.createNationalGeographic());
             }
-            map.setBasemap(Basemap.createNationalGeographic());
         });
         mmpk.loadAsync();
     }
