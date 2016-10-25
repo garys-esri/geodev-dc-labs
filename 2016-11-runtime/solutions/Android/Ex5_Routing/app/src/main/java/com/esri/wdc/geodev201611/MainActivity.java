@@ -3,10 +3,12 @@ package com.esri.wdc.geodev201611;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.datasource.QueryParameters;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
@@ -22,12 +24,18 @@ import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.security.UserCredential;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.tasks.route.RouteParameters;
+import com.esri.arcgisruntime.tasks.route.RouteResult;
+import com.esri.arcgisruntime.tasks.route.RouteTask;
+import com.esri.arcgisruntime.tasks.route.Stop;
 import com.esri.arcgisruntime.util.ListenableList;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends Activity {
 
@@ -49,6 +57,9 @@ public class MainActivity extends Activity {
     private static final SimpleLineSymbol ROUTE_LINE_SYMBOL =
             new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xC0550055, 5);
 
+    // Exercise 5: Instantiate logging tag
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     // Exercise 1: Declare and instantiate fields
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
@@ -61,6 +72,8 @@ public class MainActivity extends Activity {
     private ImageButton imageButton_routing = null;
     private final GraphicsOverlay routeGraphics = new GraphicsOverlay();
     private Point originPoint = null;
+    private RouteTask routeTask = null;
+    private RouteParameters routeParameters = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +111,24 @@ public class MainActivity extends Activity {
 
         // Exercise 5: Add route graphics overlay to map
         mapView.getGraphicsOverlays().add(routeGraphics);
+
+        // Exercise 5: Create routing objects
+        routeTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
+        // Don't share this code without removing plain text username and password!!!
+        routeTask.setCredential(new UserCredential("theUsername", "thePassword"));
+        try {
+            routeParameters = routeTask.generateDefaultParametersAsync().get();
+        } catch (InterruptedException | ExecutionException e) {
+            routeTask = null;
+            Log.e(TAG, "Could not get route parameters", e);
+        }
+        if (null != routeParameters) {
+            routeParameters.setReturnDirections(false);
+            routeParameters.setReturnRoutes(true);
+            routeParameters.setReturnStops(false);
+        } else {
+            imageButton_routing.setEnabled(false);
+        }
     }
 
     /**
@@ -230,7 +261,7 @@ public class MainActivity extends Activity {
      * @param singleTapEvent The single tap event with the stop's geometry.
      */
     private void addStopToRoute(MotionEvent singleTapEvent) {
-        ListenableList<Graphic> graphics = routeGraphics.getGraphics();
+        final ListenableList<Graphic> graphics = routeGraphics.getGraphics();
         Point point = getGeoPoint(singleTapEvent);
         if (point.hasZ()) {
             point = new Point(point.getX(), point.getY(), point.getSpatialReference());
@@ -241,6 +272,25 @@ public class MainActivity extends Activity {
             graphics.add(new Graphic(originPoint, ROUTE_ORIGIN_SYMBOL));
         } else {
             graphics.add(new Graphic(point, ROUTE_DESTINATION_SYMBOL));
+            routeParameters.getStops().clear();
+            for (Point p : new Point[]{ originPoint, point }) {
+                routeParameters.getStops().add(new Stop(p));
+            }
+            final ListenableFuture<RouteResult> solveFuture = routeTask.solveAsync(routeParameters);
+            solveFuture.addDoneListener(new Runnable() {
+                @Override
+                public void run() {
+                    RouteResult routeResult = null;
+                    try {
+                        routeResult = solveFuture.get();
+                        if (0 < routeResult.getRoutes().size()) {
+                            graphics.add(new Graphic(routeResult.getRoutes().get(0).getRouteGeometry(), ROUTE_LINE_SYMBOL));
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        Log.e(TAG, "Could not get solved route", e);
+                    }
+                }
+            });
             originPoint = null;
         }
     }
