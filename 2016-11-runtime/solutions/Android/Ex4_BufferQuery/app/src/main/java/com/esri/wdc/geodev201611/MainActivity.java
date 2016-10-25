@@ -1,8 +1,6 @@
 package com.esri.wdc.geodev201611;
 
 import android.app.Activity;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.MotionEvent;
@@ -29,8 +27,6 @@ public class MainActivity extends Activity {
 
     // Exercise 4: Declare fields
     private ImageButton imageButton_bufferAndQuery = null;
-    private ColorFilter colorFilter_imageButton_bufferAndQuery = null;
-    private boolean bufferSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +55,6 @@ public class MainActivity extends Activity {
 
         // Exercise 4: Set field values
         imageButton_bufferAndQuery = (ImageButton) findViewById(R.id.imageButton_bufferAndQuery);
-        colorFilter_imageButton_bufferAndQuery = imageButton_bufferAndQuery.getColorFilter();
     }
 
     /**
@@ -118,19 +113,8 @@ public class MainActivity extends Activity {
      * @param view The button.
      */
     public void imageButton_bufferAndQuery_onClick(View view) {
-        bufferSelected = !bufferSelected;
-        imageButton_bufferAndQuery.setSelected(bufferSelected);
-        if (bufferSelected) {
-            imageButton_bufferAndQuery.setColorFilter(0xFF888888, PorterDuff.Mode.DARKEN);
-        } else {
-            imageButton_bufferAndQuery.setColorFilter(colorFilter_imageButton_bufferAndQuery);
-        }
-//        imageButton_bufferAndQuery.setBackgroundColor(bufferSelected ? 0xFF888888 : 0x00000000);
-//        imageButton_bufferAndQuery.setImageDrawable(getResources().getDrawable(
-//                bufferSelected ? R.drawable.location_selected : R.drawable.location));
-
-//        mapView.setOnClickListener(bufferSelected ? this::bufferAndQuery : null);
-        if (bufferSelected) {
+        imageButton_bufferAndQuery.setSelected(!imageButton_bufferAndQuery.isSelected());
+        if (imageButton_bufferAndQuery.isSelected()) {
             mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
                 @Override
                 public boolean onSingleTapConfirmed(MotionEvent event) {
