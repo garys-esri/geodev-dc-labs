@@ -7,7 +7,7 @@ Prerequisites:
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex3_LocFeatLyr), available in this repository.
 
-ArcGIS Runtime provides a variety of ways to add **operational layers** to the map and scene--feature services, dynamic map services, offline geodatabases, and mobile map packages, for example. In this exercise, you will use the newest of these: a mobile map package.
+ArcGIS Runtime provides a variety of ways to add **operational layers** to the map--feature services, dynamic map services, offline geodatabases, and mobile map packages, for example. In this exercise, you will use the newest of these: a mobile map package.
 
 1. Download the [D.C. Crime Data mobile map package (`DC_Crime_Data.mmpk`)](../../data/DC_Crime_Data.mmpk) that we have prepared for you. Transfer it to your Android device. Remember where it is; you might even want to use a file browser on your device to get the absolute path of the MMPK.
 

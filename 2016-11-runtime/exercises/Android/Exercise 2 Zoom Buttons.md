@@ -2,7 +2,7 @@
 
 This exercise walks you through the following:
 - Add zoom in and zoom out buttons to the UI
-- Zoom in and out on the map and the scene
+- Zoom in and out on the map
 
 Prerequisites:
 - Complete [Exercise 1](Exercise 1 Map.md), or get the Exercise 1 code solution compiling and running properly, preferably in an IDE.
@@ -50,7 +50,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     ![Zoom buttons](04-zoom-buttons.png)
 
-## Zoom in and out on the map and the scene
+## Zoom in and out on the map
 
 1. Rather than writing zoom logic in two places for zoom in and zoom out, put it in one new `private void` method called `zoom(double)` method. It's a good idea to name the parameter `factor`.
     
