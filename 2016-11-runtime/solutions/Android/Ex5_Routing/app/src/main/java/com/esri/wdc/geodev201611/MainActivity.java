@@ -114,7 +114,15 @@ public class MainActivity extends Activity {
 
         // Exercise 5: Create routing objects
         routeTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
-        // Don't share this code without removing plain text username and password!!!
+        /**
+         * Note: for ArcGIS Online routing, this tutorial uses a username and password
+         * in the source code for simplicity. For security reasons, you would not
+         * do it this way in a real app. Instead, you would do one of the following:
+         * - Use an OAuth 2.0 user login
+         * - Use an OAuth 2.0 app login (not directly supported in ArcGIS Runtime Quartz as of Beta 2)
+         * - Challenge the user for credentials
+         */
+         // Don't share this code without removing plain text username and password!!!
         routeTask.setCredential(new UserCredential("theUsername", "thePassword"));
         try {
             routeParameters = routeTask.generateDefaultParametersAsync().get();
