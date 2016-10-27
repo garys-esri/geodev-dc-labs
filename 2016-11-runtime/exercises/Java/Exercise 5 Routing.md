@@ -148,7 +148,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. Fill in the body of `toggleButton_routing_onAction()`. If the routing toggle button is has been un-selected, set the `MapView` and `SceneView` `onMouseClicked` listeners to `null`. If the routing toggle button has been selected, set the `onMouseClicked` listeners to call `addStopToRoute` with the mouse event. Be sure to check for a null `sceneView`. Finally, whether routing has been activated or deactivated, set `originPoint` to null in order to reset the routing:
+1. Fill in the body of `toggleButton_routing_onAction()`. If the routing toggle button has been un-selected, set the `MapView` and `SceneView` `onMouseClicked` listeners to `null`. If the routing toggle button has been selected, set the `onMouseClicked` listeners to call `addStopToRoute` with the mouse event. Be sure to check for a null `sceneView`. Finally, whether routing has been activated or deactivated, set `originPoint` to null in order to reset the routing:
 
     ```
     if (toggleButton_routing.isSelected()) {
