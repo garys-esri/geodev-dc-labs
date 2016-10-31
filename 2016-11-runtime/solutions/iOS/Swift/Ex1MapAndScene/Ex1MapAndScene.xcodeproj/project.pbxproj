@@ -12,11 +12,9 @@
 		4EC869A71DBA796C0035BE86 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EC869A61DBA796C0035BE86 /* ViewController.swift */; };
 		4EC869AA1DBA796C0035BE86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EC869A81DBA796C0035BE86 /* Main.storyboard */; };
 		4EC869AC1DBA796C0035BE86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EC869AB1DBA796C0035BE86 /* Assets.xcassets */; };
-		F33DCAB172D3487258F66CFE /* Pods_Ex1MapAndScene.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 340C30405FC04BD6C5FB00D7 /* Pods_Ex1MapAndScene.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		340C30405FC04BD6C5FB00D7 /* Pods_Ex1MapAndScene.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ex1MapAndScene.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E3C9EFF1DBA7B18006B64D2 /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-iOS/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = SOURCE_ROOT; };
 		4EC869A11DBA796C0035BE86 /* Ex1MapAndScene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ex1MapAndScene.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EC869A41DBA796C0035BE86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -33,7 +31,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F33DCAB172D3487258F66CFE /* Pods_Ex1MapAndScene.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +80,6 @@
 		C54DA3E4C11F1FA053D13FF0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				340C30405FC04BD6C5FB00D7 /* Pods_Ex1MapAndScene.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

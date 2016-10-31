@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,12 +18,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sQo-RN-e3B" customClass="AGSMapView">
-                                <rect key="frame" x="180" y="236" width="240" height="128"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sQo-RN-e3B" customClass="AGSMapView">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-uO-grw">
+                                <rect key="frame" x="540" y="540" width="50" height="50"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" button="YES" image="YES"/>
+                                </accessibility>
+                                <state key="normal" image="three-d" backgroundImage="gray_background"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="sQo-RN-e3B" secondAttribute="bottom" id="48S-oP-gdQ"/>
+                            <constraint firstItem="sQo-RN-e3B" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="9QB-jB-z0d"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sQo-RN-e3B" secondAttribute="trailing" constant="-20" id="SIT-tX-UVF"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="0fO-uO-grw" secondAttribute="bottom" constant="10" id="VT7-UV-8CU"/>
+                            <constraint firstItem="sQo-RN-e3B" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="zMh-I3-MzX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0fO-uO-grw" secondAttribute="trailing" constant="-10" id="zft-nE-dy6"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="sQo-RN-e3B" id="UEa-8i-JfQ"/>
@@ -32,4 +48,8 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="gray_background" width="50" height="50"/>
+        <image name="three-d" width="50" height="50"/>
+    </resources>
 </document>

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1CD4145FCBEC0556E29DB057 /* Pods_Ex1_MapAndScene.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBB46131E82B33DDF018CADF /* Pods_Ex1_MapAndScene.framework */; };
 		4E11054F1DC7C4C200B301A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E11054E1DC7C4C200B301A5 /* AppDelegate.swift */; };
 		4E1105511DC7C4C200B301A5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1105501DC7C4C200B301A5 /* ViewController.swift */; };
 		4E1105541DC7C4C200B301A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E1105521DC7C4C200B301A5 /* Main.storyboard */; };
@@ -25,7 +24,6 @@
 		4E11055A1DC7C4C200B301A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4E1105621DC7C7AD00B301A5 /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-iOS/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = "<group>"; };
 		5C1361324748E9757EDE29BD /* Pods-Ex1_MapAndScene.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ex1_MapAndScene.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene.release.xcconfig"; sourceTree = "<group>"; };
-		EBB46131E82B33DDF018CADF /* Pods_Ex1_MapAndScene.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ex1_MapAndScene.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,7 +31,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CD4145FCBEC0556E29DB057 /* Pods_Ex1_MapAndScene.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,7 +40,6 @@
 		1B9F8DF8E1DAB3CABC95FEB4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EBB46131E82B33DDF018CADF /* Pods_Ex1_MapAndScene.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
