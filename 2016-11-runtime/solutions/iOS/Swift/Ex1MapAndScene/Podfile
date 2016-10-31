@@ -1,6 +1,0 @@
-platform :ios, '8.0'
-use_frameworks!
-
-target 'Ex1MapAndScene' do
-    pod 'ArcGIS-Runtime-SDK-iOS', '100.0-beta3'
-end
