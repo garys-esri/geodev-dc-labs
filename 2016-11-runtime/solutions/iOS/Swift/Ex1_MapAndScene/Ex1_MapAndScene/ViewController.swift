@@ -15,12 +15,22 @@
  ******************************************************************************/
 
 import UIKit
+import ArcGIS
 
 class ViewController: UIViewController {
 
+    // Exercise 1: Connect map and scene views to controller
+    @IBOutlet weak var mapView: AGSMapView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    
+        // Exercise 1: Set up the 2D map, since we will display that first
+        self.mapView.map = AGSMap(
+            basemapType: .NationalGeographic,
+            latitude: 0,
+            longitude: 0,
+            levelOfDetail: 0)
     }
 
     override func didReceiveMemoryWarning() {
