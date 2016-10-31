@@ -28,6 +28,9 @@
                                     <accessibilityTraits key="traits" button="YES" image="YES"/>
                                 </accessibility>
                                 <state key="normal" image="three-d" backgroundImage="gray_background"/>
+                                <connections>
+                                    <action selector="button_toggle2d3d_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uqS-pv-hdz"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -41,6 +44,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="button_toggle2d3d" destination="0fO-uO-grw" id="IOX-P9-H6a"/>
                         <outlet property="mapView" destination="sQo-RN-e3B" id="UEa-8i-JfQ"/>
                     </connections>
                 </viewController>

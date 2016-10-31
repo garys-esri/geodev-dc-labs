@@ -18,9 +18,14 @@ import UIKit
 import ArcGIS
 
 class ViewController: UIViewController {
-
+    
     // Exercise 1: Connect map and scene views to controller
     @IBOutlet weak var mapView: AGSMapView!
+    
+    // Exercise 1: Connect 2D/3D toggle button to controller
+    @IBOutlet weak var button_toggle2d3d: UIButton!
+    
+    var threeD = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +42,14 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    /**
+     * Exercise 1: Toggle between 2D map and 3D scene
+     */
+    @IBAction func button_toggle2d3d_onAction(sender: UIButton) {
+        threeD = !threeD
+        button_toggle2d3d.setImage(UIImage(named: threeD ? "two-d" : "three-d"), forState: UIControlState.Normal)
+    }
 
 }
 
