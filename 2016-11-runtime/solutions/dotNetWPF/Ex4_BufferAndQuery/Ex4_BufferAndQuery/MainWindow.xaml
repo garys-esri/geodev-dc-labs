@@ -1,0 +1,38 @@
+﻿<Window x:Class="Ex1_MapAndScene.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:esri="http://schemas.esri.com/arcgis/runtime/2013"
+        Title="MainWindow" 
+        Height="600" 
+        Width="800">
+    <Window.Resources>
+        <Image x:Key="3D" Source="images/three_d.png" Height="50" Width="50" />
+        <Image x:Key="2D" Source="images/two_d.png" Height="50" Width="50"/>
+        <Image x:Key="ZoomIn" Source="images/zoom_in.png" Stretch="Fill"/>
+        <Image x:Key="ZoomOut" Source="images/zoom_out.png" Stretch="Fill"/>
+        <Image x:Key="Location" Source="images/location.png" Stretch="Fill"/>
+        <Image x:Key="LocationSelected" Source="images/location_selected.png" Stretch="Fill"/>
+        <Image x:Key="Routing" Source="images/routing.png" Stretch="Fill"/>
+        <Image x:Key="RoutingSelected" Source="images/routing_selected.png" Stretch="Fill"/>
+    </Window.Resources>
+    <Grid>
+        <esri:MapView x:Name="mapView" Margin="0,0,0.4,-0.2"/>
+        <esri:SceneView x:Name="sceneView" Visibility="Hidden" Margin="0,0,0.4,-0.2"/>
+        <Border
+            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            Margin="0" Width="67" Height="175">
+            <StackPanel Margin="0" Width="72" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <Button x:Name="ZoomInButton" Click="ZoomInButton_Click" Width="50" Height="50" Padding="1" HorizontalAlignment="Right" Margin="0,5,5,5" Content="{DynamicResource ZoomIn}"/>
+                <Button x:Name="ZoomOutButton" Click="ZoomOutButton_Click" Width="50" Height="50" Padding="1" HorizontalAlignment="Right" RenderTransformOrigin="-0.919,0.469" Margin="0,5,5,5" Content="{DynamicResource ZoomOut}"/>
+                <Button x:Name="ViewButton" Click="ViewButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5" HorizontalAlignment="Right" RenderTransformOrigin="4.054,-0.693" Content="{DynamicResource 3D}"/>
+            </StackPanel>
+        </Border>
+        <Border VerticalAlignment="Bottom"
+            Margin="0,0,45,0" Width="67" Height="125" HorizontalAlignment="Right">
+            <StackPanel Margin="0" Width="72" VerticalAlignment="Bottom">
+                <Button x:Name="QueryandBufferButton" Click="QueryandBufferButton_Click" Width="50" Height="50" Padding="1" Margin="0,5" HorizontalAlignment="Left" Content="{DynamicResource Location}" />
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>

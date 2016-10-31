@@ -56,9 +56,9 @@ public class WorkshopApp extends Application {
     private final MapView mapView = new MapView();
     private ArcGISMap map = new ArcGISMap();
     private final ImageView imageView_2d =
-            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/two-d.png")));
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/two_d.png")));
     private final ImageView imageView_3d =
-            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/three-d.png")));
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/three_d.png")));
     private final Button button_toggle2d3d = new Button(null, imageView_3d);
     private final AnchorPane anchorPane = new AnchorPane();
     private SceneView sceneView = null;
@@ -67,9 +67,9 @@ public class WorkshopApp extends Application {
     
     // Exercise 2: Declare UI components for zoom buttons
     private final ImageView imageView_zoomIn =
-            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-in.png")));
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom_in.png")));
     private final ImageView imageView_zoomOut =
-            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-out.png")));
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom_out.png")));
     private final Button button_zoomIn = new Button(null, imageView_zoomIn);
     private final Button button_zoomOut = new Button(null, imageView_zoomOut);
     

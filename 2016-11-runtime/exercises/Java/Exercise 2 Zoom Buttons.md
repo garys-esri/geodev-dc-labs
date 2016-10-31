@@ -15,9 +15,9 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     ```
     private final ImageView imageView_zoomIn =
-            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-in.png")));
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom_in.png")));
     private final ImageView imageView_zoomOut =
-            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom-out.png")));
+            new ImageView(new Image(WorkshopApp.class.getResourceAsStream("/resources/zoom_out.png")));
     private final Button button_zoomIn = new Button(null, imageView_zoomIn);
     private final Button button_zoomOut = new Button(null, imageView_zoomOut);
     ```
