@@ -57,6 +57,31 @@ class ViewController: NSViewController {
             }
             self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
         }
+        
+        /**
+         * Exercise 3: Open a mobile map package (.mmpk) and
+         * add its operational layers to the scene
+         */
+        let sceneMmpk = AGSMobileMapPackage(path: MMPK_PATH!)
+        sceneMmpk.loadWithCompletion { [weak self] (error: NSError?) in
+            if 0 < sceneMmpk.maps.count {
+                let thisMap = sceneMmpk.maps[0]
+                var layers = [AGSLayer]()
+                for layer in thisMap.operationalLayers {
+                    layers.append(layer as! AGSLayer)
+                }
+                thisMap.operationalLayers.removeAllObjects()
+                self!.sceneView.scene?.operationalLayers.addObjectsFromArray(layers)
+//                self!.sceneView.setViewpoint(thisMap.initialViewpoint!)
+//                // Rotate the camera
+//                let viewpoint = self!.sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)
+//                let targetPoint = viewpoint?.targetGeometry as! AGSPoint
+//                let camera = self!.sceneView.currentViewpointCamera()
+//                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
+//                self!.sceneView.setViewpointCamera(camera) // TODO need async?
+            }
+            self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
+        }
     }
 
     override var representedObject: AnyObject? {
