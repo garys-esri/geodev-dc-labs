@@ -12,13 +12,13 @@
 		4E0287E41DCB6FCB00D1F08D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287E31DCB6FCB00D1F08D /* Assets.xcassets */; };
 		4E0287E71DCB6FCB00D1F08D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287E51DCB6FCB00D1F08D /* Main.storyboard */; };
 		4E0287EF1DCB731100D1F08D /* ArcGIS.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */; };
-		666C59DC5F551577595F0474 /* Pods_Ex1_MapAndScene.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C2220E9F6005EB36C0805 /* Pods_Ex1_MapAndScene.framework */; };
+		666C59DC5F551577595F0474 /* Pods_WorkshopApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0329DE676BAEF8A9BC5C6127 /* Pods-Ex1_MapAndScene.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ex1_MapAndScene.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene.debug.xcconfig"; sourceTree = "<group>"; };
-		065191A5988F4172DBC47D66 /* Pods-Ex1_MapAndScene.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ex1_MapAndScene.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene.release.xcconfig"; sourceTree = "<group>"; };
-		0A8C2220E9F6005EB36C0805 /* Pods_Ex1_MapAndScene.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ex1_MapAndScene.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0329DE676BAEF8A9BC5C6127 /* Pods-WorkshopApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorkshopApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp.debug.xcconfig"; sourceTree = "<group>"; };
+		065191A5988F4172DBC47D66 /* Pods-WorkshopApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorkshopApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp.release.xcconfig"; sourceTree = "<group>"; };
+		0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WorkshopApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E0287DC1DCB6FCB00D1F08D /* WorkshopApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkshopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E0287DF1DCB6FCB00D1F08D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4E0287E11DCB6FCB00D1F08D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -33,7 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				666C59DC5F551577595F0474 /* Pods_Ex1_MapAndScene.framework in Frameworks */,
+				666C59DC5F551577595F0474 /* Pods_WorkshopApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,7 +43,7 @@
 		4E0287D31DCB6FCB00D1F08D = {
 			isa = PBXGroup;
 			children = (
-				4E0287DE1DCB6FCB00D1F08D /* Ex1_MapAndScene */,
+				4E0287DE1DCB6FCB00D1F08D /* WorkshopApp */,
 				4E0287DD1DCB6FCB00D1F08D /* Products */,
 				671404EF22B0E53C3565EFB7 /* Pods */,
 				BA39C5DE7B9A6F390C25112E /* Frameworks */,
@@ -58,7 +58,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4E0287DE1DCB6FCB00D1F08D /* Ex1_MapAndScene */ = {
+		4E0287DE1DCB6FCB00D1F08D /* WorkshopApp */ = {
 			isa = PBXGroup;
 			children = (
 				4E0287DF1DCB6FCB00D1F08D /* AppDelegate.swift */,
@@ -68,14 +68,14 @@
 				4E0287E81DCB6FCB00D1F08D /* Info.plist */,
 				4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */,
 			);
-			path = Ex1_MapAndScene;
+			path = WorkshopApp;
 			sourceTree = "<group>";
 		};
 		671404EF22B0E53C3565EFB7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0329DE676BAEF8A9BC5C6127 /* Pods-Ex1_MapAndScene.debug.xcconfig */,
-				065191A5988F4172DBC47D66 /* Pods-Ex1_MapAndScene.release.xcconfig */,
+				0329DE676BAEF8A9BC5C6127 /* Pods-WorkshopApp.debug.xcconfig */,
+				065191A5988F4172DBC47D66 /* Pods-WorkshopApp.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -83,7 +83,7 @@
 		BA39C5DE7B9A6F390C25112E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0A8C2220E9F6005EB36C0805 /* Pods_Ex1_MapAndScene.framework */,
+				0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -107,7 +107,7 @@
 			dependencies = (
 			);
 			name = WorkshopApp;
-			productName = Ex1_MapAndScene;
+			productName = WorkshopApp;
 			productReference = 4E0287DC1DCB6FCB00D1F08D /* WorkshopApp.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -185,7 +185,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BD7062CF8600D0E515AA3B59 /* [CP] Embed Pods Frameworks */ = {
@@ -200,7 +200,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -313,26 +313,26 @@
 		};
 		4E0287EC1DCB6FCB00D1F08D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0329DE676BAEF8A9BC5C6127 /* Pods-Ex1_MapAndScene.debug.xcconfig */;
+			baseConfigurationReference = 0329DE676BAEF8A9BC5C6127 /* Pods-WorkshopApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Ex1_MapAndScene/Info.plist;
+				INFOPLIST_FILE = WorkshopApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.Ex1-MapAndScene";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.WorkshopApp";
 				PRODUCT_NAME = WorkshopApp;
 			};
 			name = Debug;
 		};
 		4E0287ED1DCB6FCB00D1F08D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 065191A5988F4172DBC47D66 /* Pods-Ex1_MapAndScene.release.xcconfig */;
+			baseConfigurationReference = 065191A5988F4172DBC47D66 /* Pods-WorkshopApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Ex1_MapAndScene/Info.plist;
+				INFOPLIST_FILE = WorkshopApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.Ex1-MapAndScene";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.WorkshopApp";
 				PRODUCT_NAME = WorkshopApp;
 			};
 			name = Release;
