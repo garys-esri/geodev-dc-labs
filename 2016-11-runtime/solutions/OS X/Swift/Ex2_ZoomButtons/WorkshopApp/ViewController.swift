@@ -22,11 +22,11 @@ class ViewController: NSViewController {
     // Exercise 1: Outlets from storyboard
     @IBOutlet var parentView: NSView!
     @IBOutlet var mapView: AGSMapView!
+    @IBOutlet weak var sceneView: AGSSceneView!
     @IBOutlet weak var button_toggle2d3d: NSButton!
     
-    // Exercise 1: Declare threeD boolean and AGSSceneView variable
+    // Exercise 1: Declare threeD boolean
     private var threeD = false
-    private var sceneView: AGSSceneView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,11 +34,8 @@ class ViewController: NSViewController {
         // Exercise 1: Set 2D map's basemap
         mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographicBasemap())
         
-        // Exercise 1: Instantiate and set up 3D scene
-        sceneView = AGSSceneView(frame: mapView.frame)
-        sceneView.hidden = true
+        // Exercise 1: Set up 3D scene's basemap
         sceneView.scene = AGSScene(basemapType: AGSBasemapType.Imagery)
-        parentView.addSubview(sceneView)
     }
 
     override var representedObject: AnyObject? {
