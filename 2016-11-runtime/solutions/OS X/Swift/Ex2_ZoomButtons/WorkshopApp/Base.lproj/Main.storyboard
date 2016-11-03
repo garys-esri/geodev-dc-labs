@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <scenes>
@@ -692,14 +693,40 @@
                                     <action selector="button_toggle2d3d_onAction:" target="XfG-lQ-9wD" id="Lva-8V-JEL"/>
                                 </connections>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Wc4-uA-8pE">
+                                <rect key="frame" x="730" y="80" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="IPc-JF-SHI"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="zoom_out" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="8T9-ea-7wQ">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="j1t-0o-j6K">
+                                <rect key="frame" x="730" y="140" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="P1d-ZS-lCw"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="zoom_in" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="5ej-41-oeY">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="wbT-k6-CYe" secondAttribute="bottom" id="B4Q-O9-Fae"/>
+                            <constraint firstItem="xDu-Xi-bak" firstAttribute="top" secondItem="Wc4-uA-8pE" secondAttribute="bottom" constant="10" id="GGL-9m-E2h"/>
                             <constraint firstAttribute="bottom" secondItem="xDu-Xi-bak" secondAttribute="bottom" constant="20" id="IT6-cQ-1cB"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="NGa-SR-0xX"/>
+                            <constraint firstAttribute="trailing" secondItem="j1t-0o-j6K" secondAttribute="trailing" constant="20" id="TG7-ta-1gx"/>
+                            <constraint firstItem="Wc4-uA-8pE" firstAttribute="leading" secondItem="xDu-Xi-bak" secondAttribute="leading" id="Uzd-sE-CHl"/>
                             <constraint firstItem="xDu-Xi-bak" firstAttribute="leading" secondItem="wbT-k6-CYe" secondAttribute="trailing" constant="20" id="ixi-VG-yOK"/>
+                            <constraint firstAttribute="trailing" secondItem="Wc4-uA-8pE" secondAttribute="trailing" constant="20" id="rIS-Ji-JeC"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="vMy-ic-R7r"/>
+                            <constraint firstItem="Wc4-uA-8pE" firstAttribute="leading" secondItem="j1t-0o-j6K" secondAttribute="leading" id="x5M-lt-vtM"/>
                             <constraint firstAttribute="trailing" secondItem="xDu-Xi-bak" secondAttribute="trailing" constant="20" id="yPD-bL-cap"/>
+                            <constraint firstItem="Wc4-uA-8pE" firstAttribute="top" secondItem="j1t-0o-j6K" secondAttribute="bottom" constant="10" id="yht-Lk-NcV"/>
                         </constraints>
                     </view>
                     <connections>
@@ -714,5 +741,7 @@
     </scenes>
     <resources>
         <image name="three_d" width="50" height="50"/>
+        <image name="zoom_in" width="50" height="50"/>
+        <image name="zoom_out" width="50" height="50"/>
     </resources>
 </document>
