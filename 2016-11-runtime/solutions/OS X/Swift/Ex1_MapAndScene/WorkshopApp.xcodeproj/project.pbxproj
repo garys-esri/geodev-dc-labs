@@ -19,7 +19,7 @@
 		0329DE676BAEF8A9BC5C6127 /* Pods-Ex1_MapAndScene.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ex1_MapAndScene.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene.debug.xcconfig"; sourceTree = "<group>"; };
 		065191A5988F4172DBC47D66 /* Pods-Ex1_MapAndScene.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ex1_MapAndScene.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ex1_MapAndScene/Pods-Ex1_MapAndScene.release.xcconfig"; sourceTree = "<group>"; };
 		0A8C2220E9F6005EB36C0805 /* Pods_Ex1_MapAndScene.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ex1_MapAndScene.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4E0287DC1DCB6FCB00D1F08D /* Ex1_MapAndScene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ex1_MapAndScene.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E0287DC1DCB6FCB00D1F08D /* WorkshopApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkshopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E0287DF1DCB6FCB00D1F08D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4E0287E11DCB6FCB00D1F08D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4E0287E31DCB6FCB00D1F08D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -53,7 +53,7 @@
 		4E0287DD1DCB6FCB00D1F08D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4E0287DC1DCB6FCB00D1F08D /* Ex1_MapAndScene.app */,
+				4E0287DC1DCB6FCB00D1F08D /* WorkshopApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -91,9 +91,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4E0287DB1DCB6FCB00D1F08D /* Ex1_MapAndScene */ = {
+		4E0287DB1DCB6FCB00D1F08D /* WorkshopApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4E0287EB1DCB6FCB00D1F08D /* Build configuration list for PBXNativeTarget "Ex1_MapAndScene" */;
+			buildConfigurationList = 4E0287EB1DCB6FCB00D1F08D /* Build configuration list for PBXNativeTarget "WorkshopApp" */;
 			buildPhases = (
 				7351AD156E9C5121ECB21255 /* [CP] Check Pods Manifest.lock */,
 				4E0287D81DCB6FCB00D1F08D /* Sources */,
@@ -106,9 +106,9 @@
 			);
 			dependencies = (
 			);
-			name = Ex1_MapAndScene;
+			name = WorkshopApp;
 			productName = Ex1_MapAndScene;
-			productReference = 4E0287DC1DCB6FCB00D1F08D /* Ex1_MapAndScene.app */;
+			productReference = 4E0287DC1DCB6FCB00D1F08D /* WorkshopApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -126,7 +126,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4E0287D71DCB6FCB00D1F08D /* Build configuration list for PBXProject "Ex1_MapAndScene" */;
+			buildConfigurationList = 4E0287D71DCB6FCB00D1F08D /* Build configuration list for PBXProject "WorkshopApp" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -139,7 +139,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4E0287DB1DCB6FCB00D1F08D /* Ex1_MapAndScene */,
+				4E0287DB1DCB6FCB00D1F08D /* WorkshopApp */,
 			);
 		};
 /* End PBXProject section */
@@ -320,7 +320,7 @@
 				INFOPLIST_FILE = Ex1_MapAndScene/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.Ex1-MapAndScene";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = WorkshopApp;
 			};
 			name = Debug;
 		};
@@ -333,14 +333,14 @@
 				INFOPLIST_FILE = Ex1_MapAndScene/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.Ex1-MapAndScene";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = WorkshopApp;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4E0287D71DCB6FCB00D1F08D /* Build configuration list for PBXProject "Ex1_MapAndScene" */ = {
+		4E0287D71DCB6FCB00D1F08D /* Build configuration list for PBXProject "WorkshopApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4E0287E91DCB6FCB00D1F08D /* Debug */,
@@ -349,7 +349,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4E0287EB1DCB6FCB00D1F08D /* Build configuration list for PBXNativeTarget "Ex1_MapAndScene" */ = {
+		4E0287EB1DCB6FCB00D1F08D /* Build configuration list for PBXNativeTarget "WorkshopApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4E0287EC1DCB6FCB00D1F08D /* Debug */,
