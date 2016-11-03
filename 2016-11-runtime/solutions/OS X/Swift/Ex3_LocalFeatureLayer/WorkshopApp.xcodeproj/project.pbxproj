@@ -12,6 +12,7 @@
 		4E0287E41DCB6FCB00D1F08D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287E31DCB6FCB00D1F08D /* Assets.xcassets */; };
 		4E0287E71DCB6FCB00D1F08D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287E51DCB6FCB00D1F08D /* Main.storyboard */; };
 		4E0287EF1DCB731100D1F08D /* ArcGIS.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */; };
+		4EDC67711DCBE1B2004392EC /* DC_Crime_Data.mmpk in Resources */ = {isa = PBXBuildFile; fileRef = 4EDC67701DCBE1B2004392EC /* DC_Crime_Data.mmpk */; };
 		666C59DC5F551577595F0474 /* Pods_WorkshopApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,7 @@
 		4E0287E61DCB6FCB00D1F08D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4E0287E81DCB6FCB00D1F08D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-OSX/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = SOURCE_ROOT; };
+		4EDC67701DCBE1B2004392EC /* DC_Crime_Data.mmpk */ = {isa = PBXFileReference; lastKnownFileType = file; name = DC_Crime_Data.mmpk; path = ../../../../data/DC_Crime_Data.mmpk; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 		4E0287D31DCB6FCB00D1F08D = {
 			isa = PBXGroup;
 			children = (
+				4EDC67701DCBE1B2004392EC /* DC_Crime_Data.mmpk */,
 				4E0287DE1DCB6FCB00D1F08D /* WorkshopApp */,
 				4E0287DD1DCB6FCB00D1F08D /* Products */,
 				671404EF22B0E53C3565EFB7 /* Pods */,
@@ -149,6 +152,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EDC67711DCBE1B2004392EC /* DC_Crime_Data.mmpk in Resources */,
 				4E0287EF1DCB731100D1F08D /* ArcGIS.bundle in Resources */,
 				4E0287E41DCB6FCB00D1F08D /* Assets.xcassets in Resources */,
 				4E0287E71DCB6FCB00D1F08D /* Main.storyboard in Resources */,
@@ -319,7 +323,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = WorkshopApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.WorkshopApp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.esri.wdc.geodev201611.WorkshopApp;
 				PRODUCT_NAME = WorkshopApp;
 			};
 			name = Debug;
@@ -332,7 +336,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = WorkshopApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.WorkshopApp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.esri.wdc.geodev201611.WorkshopApp;
 				PRODUCT_NAME = WorkshopApp;
 			};
 			name = Release;

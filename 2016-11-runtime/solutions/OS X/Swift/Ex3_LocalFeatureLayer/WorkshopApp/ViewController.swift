@@ -21,6 +21,9 @@ class ViewController: NSViewController {
     
     // Exercise 1: Specify elevation service URL
     let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+    
+    // Exercise 3: Specify mobile map package path
+    private let MMPK_PATH = NSBundle.mainBundle().pathForResource("DC_Crime_Data", ofType:"mmpk")
 
     // Exercise 1: Outlets from storyboard
     @IBOutlet var parentView: NSView!
@@ -42,6 +45,18 @@ class ViewController: NSViewController {
         let surface = AGSSurface()
         surface.elevationSources.append(AGSArcGISTiledElevationSource(URL: NSURL(string: ELEVATION_IMAGE_SERVICE)!));
         sceneView.scene!.baseSurface = surface;
+        
+        /**
+         Exercise 3: Open a mobile map package (.mmpk) and
+         add its operational layers to the map
+         */
+        let mmpk = AGSMobileMapPackage(path: MMPK_PATH!)
+        mmpk.loadWithCompletion { [weak self] (error: NSError?) in
+            if 0 < mmpk.maps.count {
+                self!.mapView.map = mmpk.maps[0]
+            }
+            self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
+        }
     }
 
     override var representedObject: AnyObject? {
