@@ -19,13 +19,22 @@ import ArcGIS
 
 class ViewController: UIViewController {
     
-    // Exercise 1: Connect map and scene views to controller
+    // Exercise 1: Specify elevation service URL
+    private final var ELEVATION_IMAGE_SERVICE =
+            "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
+    
+    // Exercise 1: Connect parent view to controller
+    @IBOutlet var parentView: UIView!
+    
+    // Exercise 1: Connect map view to controller
     @IBOutlet weak var mapView: AGSMapView!
     
     // Exercise 1: Connect 2D/3D toggle button to controller
     @IBOutlet weak var button_toggle2d3d: UIButton!
     
-    var threeD = false
+    private weak var sceneView: AGSSceneView?
+    private weak var scene: AGSScene?
+    private var threeD = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +58,24 @@ class ViewController: UIViewController {
     @IBAction func button_toggle2d3d_onAction(sender: UIButton) {
         threeD = !threeD
         button_toggle2d3d.setImage(UIImage(named: threeD ? "two-d" : "three-d"), forState: UIControlState.Normal)
+        
+        // Exercise 1: Switch between 2D map and 3D scene
+        if (threeD) {
+            if (nil === scene) {
+                // Set up the 3D scene. This only happens the first time the user switches to 3D.
+                scene = AGSScene();
+                scene!.basemap = AGSBasemap.imageryBasemap()
+                let surface = AGSSurface()
+                surface.elevationSources.append(AGSArcGISTiledElevationSource(URL: NSURL(string: ELEVATION_IMAGE_SERVICE)!))
+                scene?.baseSurface = surface
+                sceneView = AGSSceneView()
+            }
+            mapView.removeFromSuperview()
+            parentView.addSubview(sceneView!)
+        } else {
+            sceneView!.removeFromSuperview()
+            parentView.addSubview(mapView)
+        }
     }
 
 }

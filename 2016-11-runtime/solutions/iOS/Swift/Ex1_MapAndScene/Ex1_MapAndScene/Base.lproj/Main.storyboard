@@ -46,6 +46,7 @@
                     <connections>
                         <outlet property="button_toggle2d3d" destination="0fO-uO-grw" id="IOX-P9-H6a"/>
                         <outlet property="mapView" destination="sQo-RN-e3B" id="UEa-8i-JfQ"/>
+                        <outlet property="parentView" destination="8bC-Xf-vdC" id="U02-Mq-NRB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
