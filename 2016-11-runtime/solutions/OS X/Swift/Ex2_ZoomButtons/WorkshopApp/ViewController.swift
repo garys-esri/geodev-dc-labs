@@ -53,6 +53,53 @@ class ViewController: NSViewController {
         mapView.hidden = threeD
         sceneView.hidden = !threeD
     }
+    
+    /**
+     Exercise 2: zoom in
+     */
+    @IBAction func button_zoomIn_onAction(sender: NSButton) {
+        zoom(2)
+    }
+    
+    /**
+     Exercise 2: zoom out
+     */
+    @IBAction func button_zoomOut_onAction(sender: NSButton) {
+        zoom(0.5)
+    }
+    
+    /**
+     Exercise 2: determine whether to call zoomMap or zoomScene
+     */
+    private func zoom(factor: Double) {
+        if (threeD) {
+            zoomScene(factor);
+        } else {
+            zoomMap(factor);
+        }
+    }
+    
+    /**
+     Exercise 2: Utility method for zooming the 2D map
+     
+     - parameters:
+        - factor: The zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
+     */
+    private func zoomMap(factor: Double) {
+        mapView.setViewpointScale(mapView.mapScale / factor,
+                                  completion: nil);
+    }
+    
+    /**
+     Exercise 2: Utility method for zooming the 3D scene
+     
+     - parameters:
+        - factor: The zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
+     */
+    private func zoomScene(factor: Double) {
+        let target = sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)?.targetGeometry as! AGSPoint
+        let camera = sceneView.currentViewpointCamera().zoomTowardTargetPoint(target, factor: factor)
+        sceneView.setViewpointCamera(camera, duration: 0.5, completion: nil)
+    }
 
 }
-

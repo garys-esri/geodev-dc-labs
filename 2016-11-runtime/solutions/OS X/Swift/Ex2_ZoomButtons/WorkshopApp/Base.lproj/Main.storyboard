@@ -705,6 +705,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="button_zoomOut_onAction:" target="XfG-lQ-9wD" id="tri-ua-D4T"/>
+                                </connections>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="j1t-0o-j6K">
                                 <rect key="frame" x="730" y="140" width="50" height="50"/>
@@ -715,6 +718,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="button_zoomIn_onAction:" target="XfG-lQ-9wD" id="jAJ-qz-CoL"/>
+                                </connections>
                             </button>
                         </subviews>
                         <constraints>
