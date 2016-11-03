@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <scenes>
@@ -676,6 +677,9 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="wbT-k6-CYe" customClass="AGSMapView">
                                 <rect key="frame" x="0.0" y="0.0" width="710" height="450"/>
                             </customView>
+                            <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pad-PX-zXx" customClass="AGSSceneView">
+                                <rect key="frame" x="0.0" y="0.0" width="710" height="450"/>
+                            </customView>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="xDu-Xi-bak">
                                 <rect key="frame" x="730" y="20" width="50" height="50"/>
                                 <constraints>
@@ -694,10 +698,14 @@
                             </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="pad-PX-zXx" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="2ge-an-O8L"/>
+                            <constraint firstAttribute="bottom" secondItem="pad-PX-zXx" secondAttribute="bottom" id="3U4-R7-k6w"/>
                             <constraint firstAttribute="bottom" secondItem="wbT-k6-CYe" secondAttribute="bottom" id="B4Q-O9-Fae"/>
                             <constraint firstAttribute="bottom" secondItem="xDu-Xi-bak" secondAttribute="bottom" constant="20" id="IT6-cQ-1cB"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="NGa-SR-0xX"/>
+                            <constraint firstItem="pad-PX-zXx" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="a14-b2-6wJ"/>
                             <constraint firstItem="xDu-Xi-bak" firstAttribute="leading" secondItem="wbT-k6-CYe" secondAttribute="trailing" constant="20" id="ixi-VG-yOK"/>
+                            <constraint firstItem="xDu-Xi-bak" firstAttribute="leading" secondItem="pad-PX-zXx" secondAttribute="trailing" constant="20" id="sIG-cf-o0q"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="vMy-ic-R7r"/>
                             <constraint firstAttribute="trailing" secondItem="xDu-Xi-bak" secondAttribute="trailing" constant="20" id="yPD-bL-cap"/>
                         </constraints>
@@ -706,6 +714,7 @@
                         <outlet property="button_toggle2d3d" destination="xDu-Xi-bak" id="CrW-ec-imi"/>
                         <outlet property="mapView" destination="wbT-k6-CYe" id="bFw-uj-dvY"/>
                         <outlet property="parentView" destination="m2S-Jp-Qdl" id="KmB-JH-eGP"/>
+                        <outlet property="sceneView" destination="pad-PX-zXx" id="wY2-Yg-wgv"/>
                     </connections>
                 </viewController>
             </objects>
