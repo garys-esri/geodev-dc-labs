@@ -18,6 +18,8 @@ import Cocoa
 import ArcGIS
 
 class ViewController: NSViewController {
+    
+    let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
 
     // Exercise 1: Outlets from storyboard
     @IBOutlet var parentView: NSView!
@@ -34,8 +36,11 @@ class ViewController: NSViewController {
         // Exercise 1: Set 2D map's basemap
         mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographicBasemap())
         
-        // Exercise 1: Set up 3D scene's basemap
+        // Exercise 1: Set up 3D scene's basemap and elevation
         sceneView.scene = AGSScene(basemapType: AGSBasemapType.Imagery)
+        let surface = AGSSurface()
+        surface.elevationSources.append(AGSArcGISTiledElevationSource(URL: NSURL(string: ELEVATION_IMAGE_SERVICE)!));
+        sceneView.scene!.baseSurface = surface;
     }
 
     override var representedObject: AnyObject? {
