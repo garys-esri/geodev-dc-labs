@@ -722,6 +722,19 @@
                                     <action selector="button_zoomIn_onAction:" target="XfG-lQ-9wD" id="jAJ-qz-CoL"/>
                                 </connections>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="c2U-q3-whr">
+                                <rect key="frame" x="730" y="200" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="88y-LW-zk1"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="location" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="jAT-Ym-olX">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="button_bufferAndQuery_onAction:" target="XfG-lQ-9wD" id="p5W-b4-R1s"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="wbT-k6-CYe" secondAttribute="bottom" id="B4Q-O9-Fae"/>
@@ -732,8 +745,11 @@
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="NGa-SR-0xX"/>
                             <constraint firstAttribute="trailing" secondItem="j1t-0o-j6K" secondAttribute="trailing" constant="20" id="TG7-ta-1gx"/>
                             <constraint firstItem="Wc4-uA-8pE" firstAttribute="leading" secondItem="xDu-Xi-bak" secondAttribute="leading" id="Uzd-sE-CHl"/>
+                            <constraint firstItem="c2U-q3-whr" firstAttribute="leading" secondItem="WYL-aZ-GA5" secondAttribute="trailing" constant="20" id="VCH-Dk-9Ir"/>
                             <constraint firstItem="WYL-aZ-GA5" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="dIk-ZM-Akp"/>
+                            <constraint firstAttribute="trailing" secondItem="c2U-q3-whr" secondAttribute="trailing" constant="20" id="hb9-dC-Oer"/>
                             <constraint firstItem="xDu-Xi-bak" firstAttribute="leading" secondItem="wbT-k6-CYe" secondAttribute="trailing" constant="20" id="ixi-VG-yOK"/>
+                            <constraint firstItem="j1t-0o-j6K" firstAttribute="top" secondItem="c2U-q3-whr" secondAttribute="bottom" constant="10" id="ncm-KO-LHN"/>
                             <constraint firstItem="j1t-0o-j6K" firstAttribute="leading" secondItem="WYL-aZ-GA5" secondAttribute="trailing" constant="20" id="pv3-vY-xfj"/>
                             <constraint firstAttribute="trailing" secondItem="Wc4-uA-8pE" secondAttribute="trailing" constant="20" id="rIS-Ji-JeC"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="vMy-ic-R7r"/>
@@ -754,6 +770,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="location" width="50" height="50"/>
         <image name="three_d" width="50" height="50"/>
         <image name="zoom_in" width="50" height="50"/>
         <image name="zoom_out" width="50" height="50"/>

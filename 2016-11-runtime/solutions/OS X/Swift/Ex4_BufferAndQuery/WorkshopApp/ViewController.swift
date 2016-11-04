@@ -17,6 +17,62 @@ import Cocoa
 
 import ArcGIS
 
+/**
+ Exercise 4: A touch delegate for buffering and querying.
+ */
+class BufferAndQueryTouchDelegate: NSObject, AGSMapViewTouchDelegate {
+    
+    // Exercise 4: Declare symbols for click and buffer
+    private let CLICK_AND_BUFFER_COLOR = NSColor(red: 1.0, green: 0.647, blue: 0.0, alpha: 1.0)
+    private let CLICK_SYMBOL: AGSMarkerSymbol
+    private let BUFFER_SYMBOL: AGSFillSymbol
+    
+    // Exercise 4: Declare the graphics overlay
+    private let graphicsOverlay: AGSGraphicsOverlay
+    
+    // Exercise 4: Store the graphics overlay
+    init(mapGraphics: AGSGraphicsOverlay) {
+        self.graphicsOverlay = mapGraphics
+        
+        // Exercise 4: Instantiate symbols for click and buffer
+        CLICK_SYMBOL = AGSSimpleMarkerSymbol(
+            style: AGSSimpleMarkerSymbolStyle.Circle,
+            color: CLICK_AND_BUFFER_COLOR,
+            size: 10)
+        BUFFER_SYMBOL = AGSSimpleFillSymbol(
+            style: AGSSimpleFillSymbolStyle.Null,
+            color: NSColor(deviceWhite: 1, alpha: 0),
+            outline: AGSSimpleLineSymbol(
+                style: AGSSimpleLineSymbolStyle.Solid,
+                color: CLICK_AND_BUFFER_COLOR,
+                width: 3))
+    }
+    
+    /**
+     Exercise 4: Method that runs when buffer and query is active and the user clicks the map.
+     */
+    func mapView(mapView: AGSMapView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        // Buffer by 1000 meters
+        let buffer = AGSGeometryEngine.geodesicBufferGeometry(
+            mapPoint, distance: 1000.0, distanceUnit: AGSLinearUnit.meters(), maxDeviation: 1,
+            curveType: AGSGeodeticCurveType.Geodesic)
+        
+        // Show click and buffer as graphics
+        graphicsOverlay.graphics.removeAllObjects()
+        graphicsOverlay.graphics.addObject(AGSGraphic(geometry: buffer, symbol: BUFFER_SYMBOL))
+        graphicsOverlay.graphics.addObject(AGSGraphic(geometry: mapPoint, symbol: CLICK_SYMBOL))
+        
+        // Run the query
+        let query = AGSQueryParameters()
+        query.geometry = buffer
+        let operationalLayers = mapView.map?.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
+        for layer in operationalLayers! {
+            layer.selectFeaturesWithQuery(query, mode: AGSSelectionMode.New, completion: nil)
+        }
+    }
+    
+}
+
 class ViewController: NSViewController {
     
     // Exercise 1: Specify elevation service URL
@@ -33,6 +89,19 @@ class ViewController: NSViewController {
     
     // Exercise 1: Declare threeD boolean
     private var threeD = false
+    
+    // Exercise 4: Declare buffer and query touch delegate
+    private let bufferAndQueryTouchDelegate: BufferAndQueryTouchDelegate
+    
+    // Exercise 4: Declare and instantiate graphics overlay for buffer and query
+    private let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
+    
+    required init?(coder: NSCoder) {
+        // Exercise 4: Instantiate buffer and query touch delegate
+        self.bufferAndQueryTouchDelegate = BufferAndQueryTouchDelegate(mapGraphics: bufferAndQueryMapGraphics)
+        
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,8 +128,8 @@ class ViewController: NSViewController {
         }
         
         /**
-         * Exercise 3: Open a mobile map package (.mmpk) and
-         * add its operational layers to the scene
+         Exercise 3: Open a mobile map package (.mmpk) and
+         add its operational layers to the scene
          */
         let sceneMmpk = AGSMobileMapPackage(path: MMPK_PATH!)
         sceneMmpk.loadWithCompletion { [weak self] (error: NSError?) in
@@ -89,6 +158,9 @@ class ViewController: NSViewController {
             }
             self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
         }
+        
+        // Exercise 4: Add a graphics overlay to the map for the click and buffer
+        mapView.graphicsOverlays.addObject(bufferAndQueryMapGraphics)
     }
 
     override var representedObject: AnyObject? {
@@ -153,6 +225,17 @@ class ViewController: NSViewController {
         let target = sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)?.targetGeometry as! AGSPoint
         let camera = sceneView.currentViewpointCamera().zoomTowardTargetPoint(target, factor: factor)
         sceneView.setViewpointCamera(camera, duration: 0.5, completion: nil)
+    }
+    
+    /**
+     Exercise 4: Enable a map click for buffer and query
+     */
+    @IBAction func button_bufferAndQuery_onAction(button_bufferAndQuery: NSButton) {
+        mapView.touchDelegate = (NSOnState == button_bufferAndQuery.state) ? bufferAndQueryTouchDelegate : nil
+        /**
+         NOTE: In Quartz Beta 1, AGSSceneView does not have a touchDelegate property.
+         This capability will be there in the Quartz release.
+         */
     }
 
 }

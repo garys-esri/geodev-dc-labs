@@ -59,8 +59,8 @@ class ViewController: NSViewController {
         }
         
         /**
-         * Exercise 3: Open a mobile map package (.mmpk) and
-         * add its operational layers to the scene
+         Exercise 3: Open a mobile map package (.mmpk) and
+         add its operational layers to the scene
          */
         let sceneMmpk = AGSMobileMapPackage(path: MMPK_PATH!)
         sceneMmpk.loadWithCompletion { [weak self] (error: NSError?) in
