@@ -72,13 +72,20 @@ class ViewController: NSViewController {
                 }
                 thisMap.operationalLayers.removeAllObjects()
                 self!.sceneView.scene?.operationalLayers.addObjectsFromArray(layers)
-//                self!.sceneView.setViewpoint(thisMap.initialViewpoint!)
-//                // Rotate the camera
-//                let viewpoint = self!.sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)
-//                let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-//                let camera = self!.sceneView.currentViewpointCamera()
-//                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-//                self!.sceneView.setViewpointCamera(camera) // TODO need async?
+                
+                // Here is the intended way of getting the layers' viewpoint:
+                // self!.sceneView.setViewpoint(thisMap.initialViewpoint!)
+                // However, AGSMap.initialViewpoint is not working in ArcGIS Runtime
+                // Quartz Beta 1, and the Runtime development team is researching the
+                // issue. Therefore, let's hard-code the coordinates for Washington, D.C.
+                self!.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
+                
+                // Rotate the camera
+                let viewpoint = self!.sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)
+                let targetPoint = viewpoint?.targetGeometry as! AGSPoint
+                let camera = self!.sceneView.currentViewpointCamera()
+                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
+                self!.sceneView.setViewpointCamera(camera)
             }
             self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
         }
