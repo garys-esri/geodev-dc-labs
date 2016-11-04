@@ -73,6 +73,79 @@ class BufferAndQueryTouchDelegate: NSObject, AGSMapViewTouchDelegate {
     
 }
 
+/**
+ * Exercise 5: A touch delegate for routing.
+ */
+class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
+    
+    // Exercise 5: Declare and instantiate symbols for click and buffer
+    private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
+        style: AGSSimpleMarkerSymbolStyle.Triangle,
+        color: NSColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
+        size: 10)
+    private let ROUTE_DESTINATION_SYMBOL = AGSSimpleMarkerSymbol(
+        style: AGSSimpleMarkerSymbolStyle.Square,
+        color: NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
+        size: 10)
+    private let ROUTE_LINE_SYMBOL = AGSSimpleLineSymbol(
+        style: AGSSimpleLineSymbolStyle.Solid,
+        color: NSColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
+        width: 5)
+    
+    // Exercise 5: Declare routing fields
+    private let mapRouteGraphics: AGSGraphicsOverlay
+    private let routeTask: AGSRouteTask
+    private let routeParameters: AGSRouteParameters
+    private var originPoint: AGSPoint? = nil
+    
+    init(
+        mapGraphics: AGSGraphicsOverlay,
+        routeTask: AGSRouteTask,
+        routeParameters: AGSRouteParameters) {
+        self.mapRouteGraphics = mapGraphics
+        self.routeTask = routeTask
+        self.routeParameters = routeParameters
+    }
+    
+    // Allow a client to reset the routing process
+    func reset() {
+        originPoint = nil
+        mapRouteGraphics.graphics.removeAllObjects()
+    }
+    
+    /**
+     Exercise 5: Method that runs when routing is active and the user clicks the map.
+     */
+    func mapView(mapView: AGSMapView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        let graphics = mapRouteGraphics.graphics
+        var point = mapPoint
+        if point.hasZ {
+            point = AGSPoint(x: point.x, y: point.y, spatialReference: point.spatialReference)
+        }
+        if (nil == originPoint) {
+            originPoint = point
+            graphics.removeAllObjects()
+            graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_ORIGIN_SYMBOL))
+        } else {
+            graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
+            routeParameters.clearStops()
+            var stops: [AGSStop] = []
+            for p in [ originPoint, point ] {
+                stops.append(AGSStop(point: p!))
+            }
+            routeParameters.setStops(stops)
+            routeTask.solveRouteWithParameters(routeParameters, completion: { (routeResult, err) in
+                if 0 < routeResult?.routes.count {
+                    graphics.addObject(AGSGraphic(
+                        geometry: routeResult!.routes[0].routeGeometry,
+                        symbol: self.ROUTE_LINE_SYMBOL))
+                }
+                self.originPoint = nil
+            })
+        }
+    }
+}
+
 class ViewController: NSViewController {
     
     // Exercise 1: Specify elevation service URL
@@ -87,6 +160,10 @@ class ViewController: NSViewController {
     @IBOutlet weak var sceneView: AGSSceneView!
     @IBOutlet weak var button_toggle2d3d: NSButton!
     
+    // Exercise 5: Outlets from storyboard
+    @IBOutlet weak var button_bufferAndQuery: NSButton!
+    @IBOutlet weak var button_routing: NSButton!
+    
     // Exercise 1: Declare threeD boolean
     private var threeD = false
     
@@ -96,11 +173,39 @@ class ViewController: NSViewController {
     // Exercise 4: Declare and instantiate graphics overlay for buffer and query
     private let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
     
+    // Exercise 5: Declare routing touch delegate
+    private var routingTouchDelegate: RoutingTouchDelegate?
+    
+    // Exercise 5: Declare and instantiate graphics overlay for routing
+    private let routingMapGraphics = AGSGraphicsOverlay()
+    
     required init?(coder: NSCoder) {
         // Exercise 4: Instantiate buffer and query touch delegate
         self.bufferAndQueryTouchDelegate = BufferAndQueryTouchDelegate(mapGraphics: bufferAndQueryMapGraphics)
         
         super.init(coder: coder)
+        
+        // Exercise 5: Instantiate routing objects
+        let routeTask = AGSRouteTask(URL: NSURL(string: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
+        /**
+         Note: for ArcGIS Online routing, this tutorial uses a username and password
+         in the source code for simplicity. For security reasons, you would not
+         do it this way in a real app. Instead, you would do one of the following:
+         - Use an OAuth 2.0 user login
+         - Use an OAuth 2.0 app login (not directly supported in ArcGIS Runtime Quartz as of Beta 1)
+         - Challenge the user for credentials
+         */
+        // Don't share this code without removing plain text username and password!!!
+        routeTask.credential = AGSCredential(user: "myUsername", password: "myPassword")
+        routeTask.defaultRouteParametersWithCompletion { (routeParameters, err) in
+            var routingTouchDelegate: RoutingTouchDelegate? = nil
+            if nil == routeParameters {
+                self.button_routing.enabled = false
+            } else {
+                routingTouchDelegate = RoutingTouchDelegate(mapGraphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+            }
+            self.routingTouchDelegate = routingTouchDelegate
+        }
     }
     
     override func viewDidLoad() {
@@ -161,6 +266,9 @@ class ViewController: NSViewController {
         
         // Exercise 4: Add a graphics overlay to the map for the click and buffer
         mapView.graphicsOverlays.addObject(bufferAndQueryMapGraphics)
+        
+        // Exercise 5: Add a graphics overlay to the map for the routing
+        mapView.graphicsOverlays.addObject(routingMapGraphics)
     }
 
     override var representedObject: AnyObject? {
@@ -236,6 +344,27 @@ class ViewController: NSViewController {
          NOTE: In Quartz Beta 1, AGSSceneView does not have a touchDelegate property.
          This capability will be there in the Quartz release.
          */
+        
+        // Exercise 5: Unselect the routing button
+        if NSOnState == button_bufferAndQuery.state {
+            button_routing.state = NSOffState
+        }
     }
 
+    /**
+     Exercise 5: Enable a map click for routing
+     */
+    @IBAction func button_routing_onAction(button_routing: NSButton) {
+        mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegate : nil
+        
+        // Exercise 5: Unselect the buffer and query button
+        if NSOnState == button_routing.state {
+            button_bufferAndQuery.state = NSOffState
+        }
+        
+        if (nil != routingTouchDelegate) {
+            routingTouchDelegate!.reset()
+        }
+    }
+    
 }

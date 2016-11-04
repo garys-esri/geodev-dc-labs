@@ -735,11 +735,26 @@
                                     <action selector="button_bufferAndQuery_onAction:" target="XfG-lQ-9wD" id="p5W-b4-R1s"/>
                                 </connections>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Isb-LA-cFX">
+                                <rect key="frame" x="730" y="260" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="2BI-O5-tpD"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="routing" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="3iF-Lr-Zt4">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="button_routing_onAction:" target="XfG-lQ-9wD" id="NjE-Ta-Pqk"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="wbT-k6-CYe" secondAttribute="bottom" id="B4Q-O9-Fae"/>
                             <constraint firstAttribute="bottom" secondItem="WYL-aZ-GA5" secondAttribute="bottom" id="FdL-pl-3UF"/>
+                            <constraint firstItem="Isb-LA-cFX" firstAttribute="leading" secondItem="WYL-aZ-GA5" secondAttribute="trailing" constant="20" id="G27-cj-ClZ"/>
                             <constraint firstItem="xDu-Xi-bak" firstAttribute="top" secondItem="Wc4-uA-8pE" secondAttribute="bottom" constant="10" id="GGL-9m-E2h"/>
+                            <constraint firstAttribute="trailing" secondItem="Isb-LA-cFX" secondAttribute="trailing" constant="20" id="Hj7-fM-V6E"/>
                             <constraint firstAttribute="bottom" secondItem="xDu-Xi-bak" secondAttribute="bottom" constant="20" id="IT6-cQ-1cB"/>
                             <constraint firstItem="WYL-aZ-GA5" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="K0n-TI-5Ag"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="NGa-SR-0xX"/>
@@ -751,6 +766,7 @@
                             <constraint firstItem="xDu-Xi-bak" firstAttribute="leading" secondItem="wbT-k6-CYe" secondAttribute="trailing" constant="20" id="ixi-VG-yOK"/>
                             <constraint firstItem="j1t-0o-j6K" firstAttribute="top" secondItem="c2U-q3-whr" secondAttribute="bottom" constant="10" id="ncm-KO-LHN"/>
                             <constraint firstItem="j1t-0o-j6K" firstAttribute="leading" secondItem="WYL-aZ-GA5" secondAttribute="trailing" constant="20" id="pv3-vY-xfj"/>
+                            <constraint firstItem="c2U-q3-whr" firstAttribute="top" secondItem="Isb-LA-cFX" secondAttribute="bottom" constant="10" id="pwd-51-lHv"/>
                             <constraint firstAttribute="trailing" secondItem="Wc4-uA-8pE" secondAttribute="trailing" constant="20" id="rIS-Ji-JeC"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="vMy-ic-R7r"/>
                             <constraint firstItem="Wc4-uA-8pE" firstAttribute="leading" secondItem="j1t-0o-j6K" secondAttribute="leading" id="x5M-lt-vtM"/>
@@ -759,6 +775,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="button_bufferAndQuery" destination="c2U-q3-whr" id="M9F-Xc-BFy"/>
+                        <outlet property="button_routing" destination="Isb-LA-cFX" id="1gl-Uc-A34"/>
                         <outlet property="button_toggle2d3d" destination="xDu-Xi-bak" id="CrW-ec-imi"/>
                         <outlet property="mapView" destination="wbT-k6-CYe" id="bFw-uj-dvY"/>
                         <outlet property="parentView" destination="m2S-Jp-Qdl" id="KmB-JH-eGP"/>
@@ -771,6 +789,7 @@
     </scenes>
     <resources>
         <image name="location" width="50" height="50"/>
+        <image name="routing" width="50" height="50"/>
         <image name="three_d" width="50" height="50"/>
         <image name="zoom_in" width="50" height="50"/>
         <image name="zoom_out" width="50" height="50"/>
