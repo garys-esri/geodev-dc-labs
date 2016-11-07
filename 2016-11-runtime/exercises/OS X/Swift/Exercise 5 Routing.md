@@ -4,8 +4,7 @@ ArcGIS Runtime Quartz will feature the ability to run ArcGIS geoprocessing for a
 
 This exercise walks you through the following:
 - Get the user to click an origin point and a destination point
-- Calculate a driving route from the origin to the destination
-- Display the route on the map or scene
+- Calculate a driving route and display it on the map
 
 Prerequisites:
 - Complete [Exercise 4](Exercise 4 Buffer and Query.md), or get the Exercise 4 code solution compiling and running properly in Xcode.
@@ -99,7 +98,6 @@ After doing Exercise 4, this should seem familiar to you.
 
     ```
     graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
-
     ```
 
 1. Open `Main.storyboard` and add a new button to enable routing. Make it very similar to the buffer and query button, but use the `routing` image. Set constraints, size, and all else as with previous buttons. Most importantly, change the button type to **Push On Push Off**.
@@ -158,7 +156,7 @@ After doing Exercise 4, this should seem familiar to you.
 
     ![Origin and destination](12-origin-and-destination.png)
     
-## Display the route on the map
+## Calculate a driving route and display it on the map
 
 1. In `RoutingTouchDelegate`, declare a `RouteTask` field and a `RouteParameters` field:
 
