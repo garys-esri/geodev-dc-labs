@@ -5,7 +5,7 @@ This exercise walks you through the following:
 - Zoom in and out on the map and the scene
 
 Prerequisites:
-- Complete [Exercise 1](Exercise 1 Map and Scene.md), or get the Exercise 1 code solution compiling and running properly, preferably in an IDE.
+- Complete [Exercise 1](Exercise 1 Map and Scene.md), or get the Exercise 1 code solution compiling and running properly in Xcode.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/OS X/Swift/Ex2_ZoomButtons), available in this repository.
 
