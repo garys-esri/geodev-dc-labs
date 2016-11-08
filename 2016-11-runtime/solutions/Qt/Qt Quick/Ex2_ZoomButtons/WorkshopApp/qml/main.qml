@@ -51,6 +51,7 @@ ApplicationWindow {
 
     // Exercise 1: Add 2D/3D toggle button
     Button {
+        id: button_toggle2d3d
         iconSource: "qrc:///Resources/three_d.png"
         anchors.right: mapView.right
         anchors.rightMargin: 20
@@ -70,22 +71,53 @@ ApplicationWindow {
 
     // Exercise 2: Add a zoom out button
     Button {
+        id: button_zoomOut
         iconSource: "qrc:///Resources/zoom_out.png"
         anchors.right: mapView.right
         anchors.rightMargin: 20
-        anchors.bottom: mapView.bottom
-        anchors.bottomMargin: 20
+        anchors.bottom: button_toggle2d3d.top
+        anchors.bottomMargin: 10
 
-        // Exercise 1: Handle 2D/3D toggle button click
         onClicked: {
-            threeD = !threeD
-            mapView.visible = !threeD
-            sceneView.visible = threeD
-            iconSource = "qrc:///Resources/" +
-                    (threeD ? "two" : "three") +
-                    "_d.png"
+            zoom(0.5)
         }
     }
 
     // Exercise 2: Add a zoom in button
+    Button {
+        id: button_zoomIn
+        iconSource: "qrc:///Resources/zoom_in.png"
+        anchors.right: mapView.right
+        anchors.rightMargin: 20
+        anchors.bottom: button_zoomOut.top
+        anchors.bottomMargin: 10
+
+        onClicked: {
+            zoom(2)
+        }
+    }
+
+    /*
+      Exercise 2: Determine whether to call zoomMap or zoomScene
+    */
+    function zoom(factor) {
+        var zoomFunction = threeD ? zoomScene : zoomMap
+        zoomFunction(factor)
+    }
+
+    /*
+      Exercise 2: Utility method for zooming the 2D map
+    */
+    function zoomMap(factor) {
+        mapView.setViewpointScale(mapView.mapScale / factor)
+    }
+
+    /*
+      Exercise 2: Utility method for zooming the 3D scene
+    */
+    function zoomScene(factor) {
+        var target = sceneView.currentViewpointCenter.center
+        var camera = sceneView.currentViewpointCamera.zoomToward(target, factor)
+        sceneView.setViewpointCameraAndSeconds(camera, 0.5)
+    }
 }
