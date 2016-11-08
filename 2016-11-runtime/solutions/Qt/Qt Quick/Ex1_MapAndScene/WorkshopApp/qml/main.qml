@@ -51,6 +51,7 @@ ApplicationWindow {
 
     // Exercise 1: Add 2D/3D toggle button
     Button {
+        id: button_toggle2d3d
         iconSource: "qrc:///Resources/three_d.png"
         anchors.right: mapView.right
         anchors.rightMargin: 20
