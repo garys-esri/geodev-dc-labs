@@ -83,14 +83,23 @@ ApplicationWindow {
         onLoadStatusChanged: {
             if (loadStatus === Enums.LoadStatusLoaded) {
                 var thisMap = sceneMmpk.maps[0];
-                var layers = []
+                var layers = [];
                 thisMap.operationalLayers.forEach(function (layer) {
                     layers.push(layer);
                 });
                 thisMap.operationalLayers.clear();
                 layers.forEach(function (layer) {
-                    sceneView.scene.operationalLayers.append(layer)
+                    sceneView.scene.operationalLayers.append(layer);
                 });
+
+                // Zoom and rotate
+                var camera = ArcGISRuntimeEnvironment.createObject("Camera", {
+                    location: thisMap.initialViewpoint.extent.center,
+                    heading: 0,
+                    pitch: 0,
+                    roll: 0
+                }).elevate(20000).rotateAround(thisMap.initialViewpoint.extent.center, 45, 65, 0);
+                sceneView.setViewpointCamera(camera);
             }
         }
     }
