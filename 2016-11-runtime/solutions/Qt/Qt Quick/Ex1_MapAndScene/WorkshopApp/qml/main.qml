@@ -23,6 +23,9 @@ ApplicationWindow {
     height: 600
     title: "Workshop App"
 
+    // Exercise 1: Declare a variable to track 2D vs. 3D
+    property bool threeD: false
+
     // add a mapView component
     MapView {
         id: mapView
@@ -56,10 +59,11 @@ ApplicationWindow {
 
         // Exercise 1: Handle 2D/3D toggle button click
         onClicked: {
-            mapView.visible = !mapView.visible
-            sceneView.visible = !sceneView.visible
+            threeD = !threeD
+            mapView.visible = !threeD
+            sceneView.visible = threeD
             iconSource = "qrc:///Resources/" +
-                    (sceneView.visible ? "two" : "three") +
+                    (threeD ? "two" : "three") +
                     "_d.png"
         }
     }
