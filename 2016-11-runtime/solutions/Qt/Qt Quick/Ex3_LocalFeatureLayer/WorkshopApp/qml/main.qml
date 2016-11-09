@@ -71,7 +71,7 @@ ApplicationWindow {
         }
     }
 
-    // Exercise 3: Add a mobile map package to the 2D map
+    // Exercise 3: Add a mobile map package to the 3D scene
     MobileMapPackage {
         id: sceneMmpk
         path: mmpkPath
