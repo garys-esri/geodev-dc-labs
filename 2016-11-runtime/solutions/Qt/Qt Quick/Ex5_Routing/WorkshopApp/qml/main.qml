@@ -29,6 +29,10 @@ ApplicationWindow {
     // Exercise 3: Specify mobile map package path
     readonly property string mmpkPath: "../../../../../data/DC_Crime_Data.mmpk"
 
+    // Exercise 5: Declare origin point and route parameters variables
+    property var originPoint: undefined
+    property var routeParameters: undefined
+
     // Exercise 4: Create symbols for click and buffer
     SimpleMarkerSymbol {
         id: clickSymbol
@@ -46,6 +50,26 @@ ApplicationWindow {
         }
     }
 
+    // Exercise 5: Create symbols for routing
+    SimpleMarkerSymbol {
+        id: routeOriginSymbol
+        style: Enums.SimpleMarkerSymbolStyleTriangle
+        color: "#C000FF00"
+        size: 10
+    }
+    SimpleMarkerSymbol {
+        id: routeDestinationSymbol
+        style: Enums.SimpleMarkerSymbolStyleSquare
+        color: "#C0FF0000"
+        size: 10
+    }
+    SimpleLineSymbol {
+        id: routeLineSymbol
+        style: Enums.SimpleLineSymbolStyleSolid
+        color: "#C0550055"
+        width: 5
+    }
+
     // Exercise 4: Create graphics overlays
     GraphicsOverlay {
         id: bufferAndQueryMapGraphics
@@ -57,9 +81,67 @@ ApplicationWindow {
         }
     }
 
+    // Exercise 5: Create graphics overlays for routing
+    GraphicsOverlay {
+        id: mapRouteGraphics
+    }
+    GraphicsOverlay {
+        id: sceneRouteGraphics
+        sceneProperties: LayerSceneProperties {
+            surfacePlacement: Enums.SurfacePlacementDraped
+        }
+    }
+
     // Exercise 4: Create a query parameters object
     QueryParameters {
         id: query
+    }
+
+    // Exercise 5: Create route task
+    RouteTask {
+        id: routeTask
+        url: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World"
+        /*
+          Note: for ArcGIS Online routing, this tutorial uses a username and password
+          in the source code for simplicity. For security reasons, you would not
+          do it this way in a real app. Instead, you would do one of the following:
+          - Use an OAuth 2.0 user login
+          - Use an OAuth 2.0 app login (not directly supported in ArcGIS Runtime Quartz as of Beta 1)
+          - Challenge the user for credentials
+        */
+        credential: Credential {
+            username: "gsheppard_efsbs_user"
+            password: "tiger123"
+        }
+
+        Component.onCompleted: {
+            load();
+        }
+
+        onLoadStatusChanged: {
+            if (Enums.LoadStatusLoaded === loadStatus) {
+                generateDefaultParameters();
+            }
+        }
+
+        onGenerateDefaultParametersStatusChanged: {
+            if (Enums.TaskStatusCompleted === generateDefaultParametersStatus) {
+                routeParameters = generateDefaultParametersResult;
+                button_routing.visible = true;
+            }
+        }
+
+        onSolveRouteStatusChanged: {
+            if (Enums.TaskStatusCompleted === solveRouteStatus && solveRouteResult && 0 < solveRouteResult.routes.length) {
+                var routeGraphic = ArcGISRuntimeEnvironment.createObject("Graphic", {
+                    geometry: solveRouteResult.routes[0].routeGeometry,
+                    symbol: routeLineSymbol
+                });
+                (threeD ? sceneRouteGraphics : mapRouteGraphics).graphics.append(routeGraphic);
+            } else if (error) {
+                console.log("Error: " + error.message);
+            }
+        }
     }
 
     // add a mapView component
@@ -76,12 +158,20 @@ ApplicationWindow {
         // Exercise 4: Add graphics overlay
         Component.onCompleted: {
             graphicsOverlays.append(bufferAndQueryMapGraphics)
+
+            // Exercise 5: Add routing graphics overlay
+            graphicsOverlays.append(mapRouteGraphics)
         }
 
         // Exercise 4: Listen for mouse click and do buffer and query
         onMouseClicked: function (event) {
             if (button_bufferAndQuery.checked) {
                 bufferAndQuery(event);
+
+            // Exercise 5: If routing button is selected, add stop
+            } else if (button_routing.checked) {
+                addStopToRoute(event);
+
             }
         }
     }
@@ -118,12 +208,20 @@ ApplicationWindow {
         // Exercise 4: Add graphics overlay
         Component.onCompleted: {
             graphicsOverlays.append(bufferAndQuerySceneGraphics)
+
+            // Exercise 5: Add routing graphics overlay
+            graphicsOverlays.append(sceneRouteGraphics)
         }
 
         // Exercise 4: Listen for mouse click and do buffer and query
         onMouseClicked: function (event) {
             if (button_bufferAndQuery.checked) {
                 bufferAndQuery(event);
+
+            // Exercise 5: If routing button is selected, add stop
+            } else if (button_routing.checked) {
+                addStopToRoute(event);
+
             }
         }
     }
@@ -178,6 +276,9 @@ ApplicationWindow {
             iconSource = "qrc:///Resources/" +
                     (threeD ? "two" : "three") +
                     "_d.png"
+
+            // Exercise 5: Set originPoint to undefined to reset routing when switching between 2D and 3D
+            originPoint = undefined;
         }
     }
 
@@ -218,6 +319,32 @@ ApplicationWindow {
         anchors.bottom: button_zoomIn.top
         anchors.bottomMargin: 10
         checkable: true
+
+        // Exercise 5: If this button is checked, uncheck the routing button
+        onCheckedChanged: {
+            if (checked) {
+                button_routing.checked = false;
+            }
+        }
+    }
+
+    // Exercise 5: Add a routing button
+    Button {
+        id: button_routing
+        iconSource: "qrc:///Resources/routing.png"
+        anchors.right: mapView.right
+        anchors.rightMargin: 20
+        anchors.bottom: button_bufferAndQuery.top
+        anchors.bottomMargin: 10
+        checkable: true
+        visible: false
+
+        // If this button is checked, uncheck the buffer and query button
+        onCheckedChanged: {
+            if (checked) {
+                button_bufferAndQuery.checked = false
+            }
+        }
     }
 
     /*
@@ -287,6 +414,47 @@ ApplicationWindow {
                     layer.selectFeaturesWithQuery(query, Enums.SelectionModeNew);
                 }
             });
+        }
+    }
+
+    /*
+      Exercise 5: Add a stop to the route, and calculate the route if we have two stops.
+    */
+    function addStopToRoute(event) {
+        if (Qt.LeftButton === event.button) {
+            var point = getGeoPoint(event);
+            if (point.hasZ) {
+                point = ArcGISRuntimeEnvironment.createObject("Point", {
+                    x: point.x,
+                    y: point.y,
+                    spatialReference: point.spatialReference
+                });
+            }
+            var graphics = (threeD ? sceneRouteGraphics : mapRouteGraphics).graphics;
+            if (!originPoint) {
+                originPoint = point;
+                graphics.clear();
+                graphics.append(ArcGISRuntimeEnvironment.createObject("Graphic", {
+                    geometry: point,
+                    symbol: routeOriginSymbol
+                }));
+            } else {
+                graphics.append(ArcGISRuntimeEnvironment.createObject("Graphic", {
+                    geometry: point,
+                    symbol: routeDestinationSymbol
+                }));
+                routeParameters.clearStops();
+                var stops = [];
+                [originPoint, point].forEach(function (p) {
+                    stops.push(ArcGISRuntimeEnvironment.createObject("Stop", {
+                        geometry: p
+                    }));
+                });
+                routeParameters.setStops(stops);
+                routeTask.solveRoute(routeParameters);
+
+                originPoint = null;
+            }
         }
     }
 }
