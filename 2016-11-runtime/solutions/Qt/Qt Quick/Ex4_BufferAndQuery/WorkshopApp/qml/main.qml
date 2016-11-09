@@ -29,6 +29,34 @@ ApplicationWindow {
     // Exercise 3: Specify mobile map package path
     readonly property string mmpkPath: "../../../../../data/DC_Crime_Data.mmpk"
 
+    // Exercise 4: Create symbols for click and buffer
+    SimpleMarkerSymbol {
+        id: clickSymbol
+        style: Enums.SimpleMarkerSymbolStyleCircle
+        color: "#FFA500"
+        size: 10
+    }
+    SimpleFillSymbol {
+        id: bufferSymbol
+        style: Enums.SimpleFillSymbolStyleNull
+        outline: SimpleLineSymbol {
+            style: Enums.SimpleLineSymbolStyleSolid
+            color: "#FFA500"
+            width: 3
+        }
+    }
+
+    // Exercise 4: Create graphics overlays
+    GraphicsOverlay {
+        id: bufferAndQueryMapGraphics
+    }
+    GraphicsOverlay {
+        id: bufferAndQuerySceneGraphics
+        sceneProperties: LayerSceneProperties {
+            surfacePlacement: Enums.SurfacePlacementDraped
+        }
+    }
+
     // add a mapView component
     MapView {
         id: mapView
@@ -38,6 +66,18 @@ ApplicationWindow {
         Map {
             // Exercise 1: Add a basemap
             BasemapNationalGeographic {}
+        }
+
+        // Exercise 4: Add graphics overlay
+        Component.onCompleted: {
+            graphicsOverlays.append(bufferAndQueryMapGraphics)
+        }
+
+        // Exercise 4: Listen for mouse click and do buffer and query
+        onMouseClicked: function (event) {
+            if (button_bufferAndQuery.checked) {
+                bufferAndQuery(event);
+            }
         }
     }
 
@@ -69,9 +109,21 @@ ApplicationWindow {
         Scene {
             BasemapImagery {}
         }
+
+        // Exercise 4: Add graphics overlay
+        Component.onCompleted: {
+            graphicsOverlays.append(bufferAndQuerySceneGraphics)
+        }
+
+        // Exercise 4: Listen for mouse click and do buffer and query
+        onMouseClicked: function (event) {
+            if (button_bufferAndQuery.checked) {
+                bufferAndQuery(event);
+            }
+        }
     }
 
-    // Exercise 3: Add a mobile map package to the 2D map
+    // Exercise 3: Add a mobile map package to the 3D scene
     MobileMapPackage {
         id: sceneMmpk
         path: mmpkPath
@@ -160,10 +212,7 @@ ApplicationWindow {
         anchors.rightMargin: 20
         anchors.bottom: button_zoomIn.top
         anchors.bottomMargin: 10
-
-        onClicked: {
-            zoom(2)
-        }
+        checkable: true
     }
 
     /*
@@ -188,5 +237,36 @@ ApplicationWindow {
         var target = sceneView.currentViewpointCenter.center
         var camera = sceneView.currentViewpointCamera.zoomToward(target, factor)
         sceneView.setViewpointCameraAndSeconds(camera, 0.5)
+    }
+
+    /*
+      Exercise 4: Convert a MouseEvent to a geographic point.
+    */
+    function getGeoPoint(event) {
+        var func = threeD ? sceneView.screenToBaseSurface : mapView.screenToLocation;
+        return func(event.x, event.y);
+    }
+
+    /*
+      Exercise 4: Buffer and query
+    */
+    function bufferAndQuery(event) {
+        if (Qt.LeftButton === event.button) {
+            var geoPoint = getGeoPoint(event);
+            // Buffer by 1000 meters
+            var buffer = GeometryEngine.bufferGeodesic(geoPoint, 1000, Enums.LinearUnitIdMeters, 1, Enums.GeodeticCurveTypeGeodesic)
+
+            // Show click and buffer as graphics
+            var graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).graphics;
+            graphics.clear();
+            graphics.append(ArcGISRuntimeEnvironment.createObject("Graphic", {
+                geometry: buffer,
+                symbol: bufferSymbol
+            }));
+            graphics.append(ArcGISRuntimeEnvironment.createObject("Graphic", {
+                geometry: geoPoint,
+                symbol: clickSymbol
+            }));
+        }
     }
 }
