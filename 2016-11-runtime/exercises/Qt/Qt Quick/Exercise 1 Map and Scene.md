@@ -2,7 +2,6 @@
 
 This exercise walks you through the following:
 - Create a new Qt Quick app with ArcGIS Runtime
-- Add a 2D map to the app
 - Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 Prerequisites:
