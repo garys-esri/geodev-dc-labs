@@ -110,8 +110,8 @@ ApplicationWindow {
           - Challenge the user for credentials
         */
         credential: Credential {
-            username: "gsheppard_efsbs_user"
-            password: "tiger123"
+            username: "myUsername"
+            password: "myPassword"
         }
 
         Component.onCompleted: {
