@@ -80,6 +80,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
             thisMap.getOperationalLayers().clear();
             scene.getOperationalLayers().addAll(layers);
         });
+        thisMap.loadAsync();
     }
     ```
     
