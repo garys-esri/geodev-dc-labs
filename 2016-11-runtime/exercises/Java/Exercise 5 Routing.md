@@ -51,10 +51,10 @@ After doing Exercise 4, this should seem familiar to you.
     
 1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`:
 
-        ```
-        sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
-        sceneView.getGraphicsOverlays().add(sceneRouteGraphics);
-        ```
+    ```
+    sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
+    sceneView.getGraphicsOverlays().add(sceneRouteGraphics);
+    ```
 
 1. In your `start(Stage)` method, place the routing toggle button in the UI:
 
