@@ -1,4 +1,4 @@
-package com.esri.wdc.geodev201611;
+package com.esri.wdc.geodev;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
-import com.esri.arcgisruntime.datasource.QueryParameters;
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
@@ -19,7 +19,7 @@ import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.LayerList;
-import com.esri.arcgisruntime.mapping.mobilemappackage.MobileMapPackage;
+import com.esri.arcgisruntime.mapping.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
@@ -28,10 +28,10 @@ import com.esri.arcgisruntime.security.UserCredential;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
-import com.esri.arcgisruntime.tasks.route.RouteParameters;
-import com.esri.arcgisruntime.tasks.route.RouteResult;
-import com.esri.arcgisruntime.tasks.route.RouteTask;
-import com.esri.arcgisruntime.tasks.route.Stop;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteParameters;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteResult;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteTask;
+import com.esri.arcgisruntime.tasks.networkanalysis.Stop;
 import com.esri.arcgisruntime.util.ListenableList;
 
 import java.util.List;
@@ -113,7 +113,7 @@ public class MainActivity extends Activity {
         mapView.getGraphicsOverlays().add(routeGraphics);
 
         // Exercise 5: Create routing objects
-        routeTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
+        routeTask = new RouteTask(this, "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
         /**
          * Note: for ArcGIS Online routing, this tutorial uses a username and password
          * in the source code for simplicity. For security reasons, you would not
@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
         // Don't share this code without removing plain text username and password!!!
         routeTask.setCredential(new UserCredential("theUsername", "thePassword"));
         try {
-            routeParameters = routeTask.generateDefaultParametersAsync().get();
+            routeParameters = routeTask.createDefaultParametersAsync().get();
         } catch (InterruptedException | ExecutionException e) {
             routeTask = null;
             Log.e(TAG, "Could not get route parameters", e);
@@ -284,7 +284,7 @@ public class MainActivity extends Activity {
             for (Point p : new Point[]{ originPoint, point }) {
                 routeParameters.getStops().add(new Stop(p));
             }
-            final ListenableFuture<RouteResult> solveFuture = routeTask.solveAsync(routeParameters);
+            final ListenableFuture<RouteResult> solveFuture = routeTask.solveRouteAsync(routeParameters);
             solveFuture.addDoneListener(new Runnable() {
                 @Override
                 public void run() {
