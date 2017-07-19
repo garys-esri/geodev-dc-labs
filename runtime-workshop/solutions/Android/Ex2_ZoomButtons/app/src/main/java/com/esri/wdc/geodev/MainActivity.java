@@ -1,4 +1,4 @@
-package com.esri.wdc.geodev201611;
+package com.esri.wdc.geodev;
 
 import android.app.Activity;
 import android.os.Bundle;
