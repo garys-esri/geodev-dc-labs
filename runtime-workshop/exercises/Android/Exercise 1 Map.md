@@ -10,7 +10,7 @@ Prerequisites:
 - Install Android Studio. (You can build apps using the Android SDK Tools and a different IDE of your choice, but these exercises assume that you have installed Android Studio.)
 - Enable developer mode on your Android 4.1 or higher device. You may also need to install USB drivers for your device. If you use an emulator instead of a physical device, you must [configure hardware acceleration](https://developer.android.com/studio/run/emulator-acceleration.html).
 
-For more details on these prerequisites, see the [ArcGIS Runtime SDK for Android (Quartz Beta) system requirements](https://developers.arcgis.com/android/beta/guide/system-requirements.htm).
+For more details on these prerequisites, see the [ArcGIS Runtime SDK for Android system requirements](https://developers.arcgis.com/android/latest/guide/system-requirements.htm).
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex1_Map), available in this repository.
 
