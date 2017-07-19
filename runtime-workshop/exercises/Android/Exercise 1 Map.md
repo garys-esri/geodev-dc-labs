@@ -10,7 +10,7 @@ Prerequisites:
 - Install Android Studio. (You can build apps using the Android SDK Tools and a different IDE of your choice, but these exercises assume that you have installed Android Studio.)
 - Enable developer mode on your Android 4.1 or higher device. You may also need to install USB drivers for your device. If you use an emulator instead of a physical device, you must [configure hardware acceleration](https://developer.android.com/studio/run/emulator-acceleration.html).
 
-For more details on these prerequisites, see the [ArcGIS Runtime SDK for Android (Quartz Beta) system requirements](https://developers.arcgis.com/android/beta/guide/system-requirements.htm).
+For more details on these prerequisites, see the [ArcGIS Runtime SDK for Android system requirements](https://developers.arcgis.com/android/latest/guide/system-requirements.htm).
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex1_Map), available in this repository.
 
@@ -47,7 +47,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         })
         testCompile 'junit:junit:4.12'
         // Add the next line
-        compile 'com.esri.arcgisruntime:arcgis-android:100.0.0-beta-3'
+        compile 'com.esri.arcgisruntime:arcgis-android:100.1.0'
     }
     ```
     
@@ -126,4 +126,4 @@ If you have trouble, **refer to the solution code**, which is linked near the be
 
 If you completed the exercise, congratulations! You learned how to add a map to an app, using ArcGIS Runtime.
 
-Ready for more? Start on [**Exercise 2: Add Zoom In and Zoom Out Buttons**](Exercise 2 Zoom Buttons.md).
+Ready for more? Start on [**Exercise 2: Add Zoom In and Zoom Out Buttons**](Exercise%202%20Zoom%20Buttons.md).
