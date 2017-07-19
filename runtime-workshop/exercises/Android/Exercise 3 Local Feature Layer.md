@@ -16,6 +16,8 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
     ```
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     ```
+    
+    _Note: in Android 6 and higher, in addition to the `uses-permission` element, a production app should include Java code to [request permissions at runtime](https://developer.android.com/training/permissions/requesting.html). Since this workshop is not about Android permissions, go to **Settings > _Apps > <your app> > Permissions** on your Android device and grant the **Storage** permission manually._
 
 1. In your class, instantiate a constant called `MMPK_PATH` with the absolute path of the mobile map package you downloaded. In a real app, you might include this file as a resource in your app, but for this exercise, be lazy and just use the copy you put on the device in a previous step. In many cases, you may be able to use `Environment.getExternalStorageDirectory().getPath()` to get the first part of the path. For example, if you put `DC_Crime_Data.mmpk` in a directory called `data` in your device's normal storage directory, you can instantiate the path like this:
 

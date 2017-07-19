@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "25"
+    compileSdkVersion 26
+    buildToolsVersion '25.0.3'
     defaultConfig {
-        applicationId "com.esri.wdc.geodev201611"
+        applicationId "com.esri.wdc.geodev"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 26
+        versionCode 2
+        versionName "2017.09"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -27,7 +27,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     // Exercise 1: Add ArcGIS Runtime
-    compile 'com.esri.arcgisruntime:arcgis-android:100.0.0-beta-3'
+    compile 'com.esri.arcgisruntime:arcgis-android:100.1.0'
 }
 
 task copyResources(type: Copy) {

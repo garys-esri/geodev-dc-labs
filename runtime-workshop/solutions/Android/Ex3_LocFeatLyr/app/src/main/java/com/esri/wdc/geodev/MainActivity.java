@@ -1,4 +1,4 @@
-package com.esri.wdc.geodev201611;
+package com.esri.wdc.geodev;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
-import com.esri.arcgisruntime.mapping.mobilemappackage.MobileMapPackage;
+import com.esri.arcgisruntime.mapping.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.List;
