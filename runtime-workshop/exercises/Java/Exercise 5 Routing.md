@@ -1,6 +1,6 @@
 # Exercise 5: Routing (Java)
 
-ArcGIS Runtime 100.0 features the ability to run ArcGIS geoprocessing for analysis and data management. The `GeoprocessingTask` class lets you call any geoprocessing service and many geoprocessing packages (.gpk). ArcGIS Runtime provides more specific support for certain types of geoprocessing, such as network routing using Network Analyst services or local network datasets. By learning how to use routing in this exercise, you will learn key skills that will help you use other geoprocessing capabilities that ArcGIS Runtime supports.
+ArcGIS Runtime 100.1.0 features the ability to run ArcGIS geoprocessing for analysis and data management. The `GeoprocessingTask` class lets you call any geoprocessing service and many geoprocessing packages (.gpk). ArcGIS Runtime provides more specific support for certain types of geoprocessing, such as network routing using Network Analyst services or local network datasets. By learning how to use routing in this exercise, you will learn key skills that will help you use other geoprocessing capabilities that ArcGIS Runtime supports.
 
 This exercise walks you through the following:
 - Get the user to click an origin point and a destination point
