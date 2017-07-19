@@ -81,30 +81,24 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     
 ## Add ArcGIS Runtime to the app
 
-You have three options for adding ArcGIS Runtime 100.0 to your Java application project. Choose one of the following:
+You have three options for adding ArcGIS Runtime 100.1.0 to your Java application project. Choose one of the following:
 
 1. **Use Gradle**: you can use Gradle if you started the exercise by creating a Gradle project. Open `build.gradle` and add ArcGIS dependencies. See [Develop your first map app with Gradle](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app-with-gradle.htm) for details.
 
     ```
-    group 'demoApp'
-    version '1.0' 
-    apply plugin: 'java'
+    apply plugin: 'eclipse'
     apply plugin: 'application'
     apply plugin: 'com.esri.arcgisruntime.java'
+
     buildscript {
-        repositories {
-            maven {
-                url 'https://esri.bintray.com/arcgis'
-            }
-        }
-        dependencies {
-            classpath 'com.esri.arcgisruntime:gradle-arcgis-java-plugin:1.0.0'
-        }
+        repositories { maven { url 'https://esri.bintray.com/arcgis' } }
+        dependencies { classpath 'com.esri.arcgisruntime:gradle-arcgis-java-plugin:1.0.0' }
     }
-    arcgis.version = '100.0.0'
-    run {
-        mainClassName = "demoApp.MyMapApp"
-    }
+
+    arcgis.version = '100.1.0'
+
+    // download javadoc
+    eclipse.classpath.downloadJavadoc = true
     ```
 
 2. **Use Maven**: you can use Maven if you started the exercise by creating a Maven project. Open `pom.xml` and add ArcGIS dependencies. See [Develop your first map app with Maven](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app-with-maven.htm) for details.
@@ -128,7 +122,7 @@ You have three options for adding ArcGIS Runtime 100.0 to your Java application 
         <dependency>
             <groupId>com.esri.arcgisruntime</groupId>
             <artifactId>arcgis-java</artifactId>
-            <version>100.0.0</version>
+            <version>100.1.0</version>
         </dependency>
     </dependencies>
 
@@ -139,14 +133,14 @@ You have three options for adding ArcGIS Runtime 100.0 to your Java application 
                 <artifactId>arcgis-java-maven-plugin</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <version>100.0.0</version>
+                    <version>100.1.0</version>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     ```
 
-3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK (version 100.0.0) for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
+3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK (version 100.1.0) for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
 
 ## Add a 2D map to the app
 
@@ -192,7 +186,7 @@ You have three options for adding ArcGIS Runtime 100.0 to your Java application 
     
 ## Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
-The 100.0 release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
+Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
 
 1. Before your constructor, instantiate a constant for the URL of an elevation service:
 
