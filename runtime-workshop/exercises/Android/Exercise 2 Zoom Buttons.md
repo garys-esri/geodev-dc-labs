@@ -5,7 +5,7 @@ This exercise walks you through the following:
 - Zoom in and out on the map
 
 Prerequisites:
-- Complete [Exercise 1](Exercise 1 Map.md), or get the Exercise 1 code solution compiling and running properly, preferably in an IDE.
+- Complete [Exercise 1](Exercise%201%20Map.md), or get the Exercise 1 code solution compiling and running properly, preferably in an IDE.
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex2_ZoomButtons), available in this repository.
 
@@ -80,4 +80,4 @@ If you have trouble, **refer to the solution code**, which is linked near the be
 
 If you completed the exercise, congratulations! You learned how to add buttons that programmatically zoom in and out on a map.
 
-Ready for more? Start on [**Exercise 3: Add a Feature Layer**](Exercise 3 Local Feature Layer.md).
+Ready for more? Start on [**Exercise 3: Add a Feature Layer**](Exercise%203%20Local%20Feature%20Layer.md).
