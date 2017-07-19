@@ -1,8 +1,7 @@
-package com.esri.wdc.geodev201611;
+package com.esri.wdc.geodev;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
@@ -51,29 +50,4 @@ public class MainActivity extends Activity {
         mapView.dispose();
         super.onDestroy();
     }
-
-    /**
-     * Exercise 2: Listener for zoom out button.
-     * @param view The button.
-     */
-    public void imageButton_zoomOut_onClick(View view) {
-        zoom(0.5);
-    }
-
-    /**
-     * Exercise 2: Listener for zoom in button.
-     * @param view The button.
-     */
-    public void imageButton_zoomIn_onClick(View view) {
-        zoom(2.0);
-    }
-
-    /**
-     * Exercise 2: Zoom by a factor.
-     * @param factor The zoom factor (0 to 1 to zoom out, > 1 to zoom in).
-     */
-    private void zoom(double factor) {
-        mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
-    }
-
 }

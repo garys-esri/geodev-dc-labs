@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.esri.wdc.geodev201611">
+    package="com.esri.wdc.geodev">
 
     <!-- Exercise 1: Request INTERNET permission and declare OpenGL usage -->
     <uses-permission android:name="android.permission.INTERNET" />
