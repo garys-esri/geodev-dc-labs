@@ -1,21 +1,19 @@
-/*******************************************************************************
- * Copyright 2016 Esri
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- ******************************************************************************/
-import QtQuick 2.3
-import QtQuick.Controls 1.2
-import Esri.ArcGISRuntime 100.0
+
+// Copyright 2016-2017 ESRI
+//
+// All rights reserved under the copyright laws of the United States
+// and applicable international laws, treaties, and conventions.
+//
+// You may freely redistribute and use this sample code, with or
+// without modification, provided you include the original copyright
+// notice and use restrictions.
+//
+// See the Sample code usage restrictions document for further information.
+//
+
+import QtQuick 2.6
+import QtQuick.Controls 1.4
+import Esri.ArcGISRuntime 100.1
 
 ApplicationWindow {
     id: appWindow
@@ -27,12 +25,15 @@ ApplicationWindow {
     property bool threeD: false
 
     // Exercise 3: Specify mobile map package path
-    readonly property string mmpkPath: "../../../../../data/DC_Crime_Data.mmpk"
+    readonly property url mmpkPath: workingDirectory + "/../../../../../../data/DC_Crime_Data.mmpk"
 
     // add a mapView component
     MapView {
         id: mapView
         anchors.fill: parent
+        wrapAroundMode: Enums.WrapAroundModeDisabled
+        // set focus to enable keyboard navigation
+        focus: true
 
         // add a map to the mapview
         Map {
@@ -53,6 +54,11 @@ ApplicationWindow {
         }
 
         onLoadStatusChanged: {
+            if (loadError) {
+                console.log("Error message is " + loadError.message);
+                console.log("Additional message is " + loadError.additionalMessage);
+                console.log("Let me be clear: path is " + mmpkPath)
+            }
             if (loadStatus === Enums.LoadStatusLoaded) {
                 mapView.map = mmpk.maps[0];
                 mapView.map.basemap = basemap;
