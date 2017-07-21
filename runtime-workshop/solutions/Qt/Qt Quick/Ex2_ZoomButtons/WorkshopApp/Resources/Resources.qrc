@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/Resources">
         <file>AppIcon.png</file>
+        <file>car.png</file>
+        <file>drivetime.png</file>
+        <file>gray_background.png</file>
         <file>location.png</file>
         <file>location_selected.png</file>
         <file>routing.png</file>
