@@ -8,7 +8,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 3](Exercise%203%20Local%20Feature%20Layer.md), or get the Exercise 3 code solution compiling and running properly in Qt Creator.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt Quick/Ex4_BufferAndQuery), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex4_BufferAndQuery), available in this repository.
 
 ## Get the user to click a point
 

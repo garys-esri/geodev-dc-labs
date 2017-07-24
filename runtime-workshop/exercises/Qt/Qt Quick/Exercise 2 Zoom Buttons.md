@@ -7,7 +7,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 1](Exercise%201%20Map%20and%20Scene.md), or get the Exercise 1 code solution compiling and running properly in Qt Creator.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt Quick/Ex2_ZoomButtons), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex2_ZoomButtons), available in this repository.
 
 ## Add zoom in and zoom out buttons to the UI
 
