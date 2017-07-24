@@ -15,17 +15,21 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
 1. Download the [D.C. Crime Data mobile map package (`DC_Crime_Data.mmpk`)](../../../data/DC_Crime_Data.mmpk) that we have prepared for you. For this exercise, you can put it in your application working directory, leave it in your downloads directory, or put it anywhere that your app will be able to access it.
 
-1. In Qt Creator, under Sources, open your `.cpp` file. After the `QQmlApplicationEngine` object is instantiated, set a context property for the app's working directory:
+1. If you want your app to use a relative path to access the mobile map package, you need to set a _context property_ so that your QML code can access your working directory. In Qt Creator, under Sources, open your `.cpp` file. After the `QQmlApplicationEngine` object is instantiated, set a context property for the app's working directory:
 
     ```
     appEngine.rootContext()->setContextProperty("workingDirectory", QUrl::fromLocalFile(app.applicationDirPath()));
     ```
+    
+    _Setting this context property is unnecessary if you choose to hard-code the MMPK path in the next step._
 
 1. In your QML file, declare a constant for the location of your downloaded MMPK:
 
     ```
     readonly property url mmpkPath: workingDirectory + "/../../../../../../data/DC_Crime_Data.mmpk"
     ```
+    
+    _`workingDirectory` refers to the context property set in the previous step. If you do not set this context property in C++, it will not exist in QML._
 
 1. After your `MapView`, add a `MobileMapPackage`. Load it and set its map on your `MapView`. Don't forget to reset the basemap. Here's the code:
 

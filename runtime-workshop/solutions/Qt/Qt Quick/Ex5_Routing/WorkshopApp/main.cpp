@@ -15,10 +15,10 @@
 #include <QSettings>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QQuickWindow>
 #include <QCommandLineParser>
 #include <QDir>
-#include <QSurfaceFormat>
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -41,23 +41,15 @@
 #define kShowMinimized                  "minimized"
 #define kShowFullScreen                 "fullscreen"
 #define kShowNormal                     "normal"
+#define STRINGIZE(x) #x
+#define QUOTE(x) STRINGIZE(x)
 
 //------------------------------------------------------------------------------
 
 int main(int argc, char *argv[])
 {
-#if defined(Q_OS_WIN)
-    if (QT_VERSION_MAJOR == 5 && QT_VERSION_MINOR > 6)
-    {
-        // Workaround for Qt versions greater than 5.6
-        // Force to OpenGL ES 3
-        QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
-        fmt.setVersion(3, 0);
-        QSurfaceFormat::setDefaultFormat(fmt);
-    }
-#endif
-
     qDebug() << "Initializing application";
+
 
     QGuiApplication app(argc, argv);
 
@@ -78,17 +70,34 @@ int main(int argc, char *argv[])
 
     // Initialize license
 
-#ifdef kClientId
-    QCoreApplication::instance()->setProperty("Esri.ArcGISRuntime.clientId", kClientId);
 #ifdef kLicense
     QCoreApplication::instance()->setProperty("Esri.ArcGISRuntime.license", kLicense);
-#endif
 #endif
 
     // Intialize application window
 
     QQmlApplicationEngine appEngine;
     appEngine.addImportPath(QDir(QCoreApplication::applicationDirPath()).filePath("qml"));
+
+    // Exercise 3: Pass working directory to QML
+    appEngine.rootContext()->setContextProperty("workingDirectory", QUrl::fromLocalFile(app.applicationDirPath()));
+
+    QString arcGISRuntimeImportPath = QUOTE(ARCGIS_RUNTIME_IMPORT_PATH);
+    QString arcGISToolkitImportPath = QUOTE(ARCGIS_TOOLKIT_IMPORT_PATH);
+
+#if defined(LINUX_PLATFORM_REPLACEMENT)
+    // on some linux platforms the string 'linux' is replaced with 1
+    // fix the replacement paths which were created
+    QString replaceString = QUOTE(LINUX_PLATFORM_REPLACEMENT);
+    arcGISRuntimeImportPath = arcGISRuntimeImportPath.replace(replaceString, "linux", Qt::CaseSensitive);
+    arcGISToolkitImportPath = arcGISToolkitImportPath.replace(replaceString, "linux", Qt::CaseSensitive);
+#endif
+
+    // Add the Runtime and Extras path
+    appEngine.addImportPath(arcGISRuntimeImportPath);
+    // Add the Toolkit path
+    appEngine.addImportPath(arcGISToolkitImportPath);
+
     appEngine.load(QUrl(kApplicationSourceUrl));
 
     auto topLevelObject = appEngine.rootObjects().value(0);
