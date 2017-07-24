@@ -166,7 +166,7 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     query.geometry = buffer;
     ```
     
-1. For each of the `FeatureLayer` objects in the operational layers of the `SceneView`'s scene or the `MapView`'s map, call `selectFeaturesWithQuery`. Use `Enums.SelectionModeNew` to do a new selection, as opposed to adding to or removing from the current selection. _Note: ArcGIS Runtime Quartz Beta 1 highlights selected features on the map but not on the scene. It is anticipated that this behavior will be fixed in the ArcGIS Runtime Quartz release._ Add this code after instantiating the query object and setting its geometry:
+1. For each of the `FeatureLayer` objects in the operational layers of the `SceneView`'s scene or the `MapView`'s map, call `selectFeaturesWithQuery`. Use `Enums.SelectionModeNew` to do a new selection, as opposed to adding to or removing from the current selection. Add this code after instantiating the query object and setting its geometry:
 
     ```
     var operationalLayers = threeD ? sceneView.scene.operationalLayers : mapView.map.operationalLayers;
@@ -177,7 +177,7 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     });
     ```
     
-1. Run your app. Verify on the 2D map that features within the clicked buffer are highlighted on the map:
+1. Run your app. Verify on the 2D map and 3D scene that features within the clicked buffer are highlighted on the map:
 
     ![Selected features](11-selected-features.png)
     

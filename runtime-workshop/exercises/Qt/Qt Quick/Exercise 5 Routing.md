@@ -1,6 +1,6 @@
 # Exercise 5: Routing (Qt Quick)
 
-ArcGIS Runtime Quartz will feature the ability to run ArcGIS geoprocessing for analysis and data management. Quartz Beta 1 offers a taste of geoprocessing by supporting network routing using Network Analyst services and using local network datasets. By learning how to use routing in this exercise, you will learn key skills that will help you use other geoprocessing capabilities coming in Quartz.
+ArcGIS Runtime features the ability to run ArcGIS geoprocessing for analysis and data management. The `GeoprocessingTask` class lets you call any geoprocessing service and many geoprocessing packages (.gpk). ArcGIS Runtime provides more specific support for certain types of geoprocessing, such as network routing using Network Analyst services or local network datasets. By learning how to use routing in this exercise, you will learn key skills that will help you use other geoprocessing capabilities that ArcGIS Runtime supports.
 
 This exercise walks you through the following:
 - Get the user to click an origin point and a destination point
@@ -207,7 +207,7 @@ After doing Exercise 4, this should seem familiar to you.
     property var routeParameters: undefined
     ```
     
-1. Create a `RouteTask` object and use an ArcGIS Online username and password. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login (not supported in ArcGIS Runtime Quartz Beta 3, and presents a problem of its own since you shouldn't hard-code your client secret), or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password._ Also, load the `RouteTask`. Here is the code to add to ApplicationWindow:
+1. Create a `RouteTask` object and use an ArcGIS Online username and password. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login, or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password._ Also, load the `RouteTask`. Here is the code to add to ApplicationWindow:
 
     ```
     RouteTask {
@@ -290,9 +290,9 @@ If you completed the exercise, congratulations! You learned how to calculate a d
 
 Ready for more? Choose from the following bonus challenges:
 - Instead of hard-coding your ArcGIS Online username and password, challenge the user for a username and password. This is more of a UI problem than an ArcGIS problem; just get the username and password in a dialog or something and use them to create a `Credential` object.
-- In fact, you can do even better than creating your own username/password dialog. A wise user will feel nervous about typing his or her username and password into an arbitrary app. You can give the user some reassurance by implementing an OAuth 2.0 user login, in which ArcGIS Online (or ArcGIS Enterprise) generates a login page, which you display in a web control. That way, your program never directly handles the username and password, but you get back a short-lived token that you can use to authenticate to ArcGIS services. See if you can implement an OAuth 2.0 user login for the routing. It isn't fully supported yet in Beta, but look for full support in ArcGIS Runtime Quartz final release.
+- In fact, you can do even better than creating your own username/password dialog. A wise user will feel nervous about typing his or her username and password into an arbitrary app. You can give the user some reassurance by implementing an OAuth 2.0 user login, in which ArcGIS Online (or ArcGIS Enterprise) generates a login page, which you display in a web control. That way, your program never directly handles the username and password, but you get back a short-lived token that you can use to authenticate to ArcGIS services. See if you can implement an OAuth 2.0 user login for the routing.
 - Allow the user to add more than two points for the route.
 - Allow the user to add barriers in addition to stops.
-- Look at the properties you can set on [`RouteParameters`](https://developers.arcgis.com/qt/quartz/qml/api-reference/qml-esri-arcgisruntime-routeparameters.html) and try a few of them to change the routing behavior.
+- Look at the properties you can set on [`RouteParameters`](https://developers.arcgis.com/qt/latest/qml/api-reference/qml-esri-arcgisruntime-routeparameters.html) and try a few of them to change the routing behavior.
 
 That concludes the exercises for this workshop. Well done!
