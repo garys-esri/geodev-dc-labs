@@ -279,12 +279,6 @@ ApplicationWindow {
             var operationalLayers = threeD ? sceneView.scene.operationalLayers : mapView.map.operationalLayers;
             operationalLayers.forEach(function (layer) {
                 if (layer.selectFeaturesWithQuery) {
-                    /*
-                      Note: As of ArcGIS Runtime Quartz Beta 1, this select successfully
-                      selects features, but those features are only highlighted on the
-                      2D MapView, not on the 3D SceneView. This behavior is scheduled
-                      to be fixed in ArcGIS Runtime Quartz.
-                    */
                     layer.selectFeaturesWithQuery(query, Enums.SelectionModeNew);
                 }
             });
