@@ -5,9 +5,9 @@ This exercise walks you through the following:
 - Zoom in and out on the map and the scene
 
 Prerequisites:
-- Complete [Exercise 1](Exercise 1 Map and Scene.md), or get the Exercise 1 code solution compiling and running properly in Qt Creator.
+- Complete [Exercise 1](Exercise%201%20Map%20and%20Scene.md), or get the Exercise 1 code solution compiling and running properly in Qt Creator.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt Quick/Ex2_ZoomButtons), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex2_ZoomButtons), available in this repository.
 
 ## Add zoom in and zoom out buttons to the UI
 
@@ -84,4 +84,4 @@ If you have trouble, **refer to the solution code**, which is linked near the be
 
 If you completed the exercise, congratulations! You learned how to add buttons that programmatically zoom in and out on a 2D map and a 3D scene.
 
-Ready for more? Start on [**Exercise 3: Add a Feature Layer**](Exercise 3 Local Feature Layer.md).
+Ready for more? Start on [**Exercise 3: Add a Feature Layer**](Exercise%203%20Local%20Feature%20Layer.md).

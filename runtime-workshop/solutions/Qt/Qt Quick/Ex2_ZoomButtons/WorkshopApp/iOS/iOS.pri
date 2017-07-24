@@ -14,10 +14,7 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-OTHER_FILES += \
-    $$PWD/Info.plist \
-    $$PWD/Images.xcassets/AppIcon.appiconset/Contents.json \
-    $$PWD/Images.xcassets/LaunchImage.launchimage/Contents.json
+OTHER_FILES +=     $$PWD/Info.plist     $$PWD/Images.xcassets/AppIcon.appiconset/Contents.json     $$PWD/Images.xcassets/LaunchImage.launchimage/Contents.json
 
 QMAKE_INFO_PLIST = $$PWD/Info.plist
 

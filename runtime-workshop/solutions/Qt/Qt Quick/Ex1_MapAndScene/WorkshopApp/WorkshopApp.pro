@@ -17,10 +17,16 @@ mac {
 
 #-------------------------------------------------------------------------------
 
-CONFIG += c++11 arcgis_runtime_qml100_0_0
+# Adjust these values as needed
+OPENSSL_LIBS = D:/GitHub/openssl/out32dll
+OPENSSL_INCLUDE = D:/GitHub/openssl/inc32
 
-QT += core gui opengl xml network positioning sensors
-QT += qml quick
+CONFIG += c++11
+
+QT += core gui opengl network positioning sensors qml quick
+
+ARCGIS_RUNTIME_VERSION = 100.1
+include($$PWD/arcgisruntime.pri)
 
 TEMPLATE = app
 TARGET = WorkshopApp
@@ -40,6 +46,9 @@ RESOURCES += \
 OTHER_FILES += \
     wizard.xml \
     wizard.png
+
+LIBS += -L$$OPENSSL_LIBS
+INCLUDEPATH += $$OPENSSL_INCLUDE
 
 #-------------------------------------------------------------------------------
 

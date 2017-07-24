@@ -1,21 +1,19 @@
-/*******************************************************************************
- * Copyright 2016 Esri
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- ******************************************************************************/
-import QtQuick 2.3
-import QtQuick.Controls 1.2
-import Esri.ArcGISRuntime 100.0
+
+// Copyright 2016-2017 ESRI
+//
+// All rights reserved under the copyright laws of the United States
+// and applicable international laws, treaties, and conventions.
+//
+// You may freely redistribute and use this sample code, with or
+// without modification, provided you include the original copyright
+// notice and use restrictions.
+//
+// See the Sample code usage restrictions document for further information.
+//
+
+import QtQuick 2.6
+import QtQuick.Controls 1.4
+import Esri.ArcGISRuntime 100.1
 
 ApplicationWindow {
     id: appWindow
@@ -27,7 +25,7 @@ ApplicationWindow {
     property bool threeD: false
 
     // Exercise 3: Specify mobile map package path
-    readonly property string mmpkPath: "../../../../../data/DC_Crime_Data.mmpk"
+    readonly property url mmpkPath: workingDirectory + "/../../../../../../data/DC_Crime_Data.mmpk"
 
     // Exercise 5: Declare origin point and route parameters variables
     property var originPoint: undefined
@@ -106,7 +104,7 @@ ApplicationWindow {
           in the source code for simplicity. For security reasons, you would not
           do it this way in a real app. Instead, you would do one of the following:
           - Use an OAuth 2.0 user login
-          - Use an OAuth 2.0 app login (not directly supported in ArcGIS Runtime Quartz as of Beta 1)
+          - Use an OAuth 2.0 app login
           - Challenge the user for credentials
         */
         credential: Credential {
@@ -120,13 +118,13 @@ ApplicationWindow {
 
         onLoadStatusChanged: {
             if (Enums.LoadStatusLoaded === loadStatus) {
-                generateDefaultParameters();
+                createDefaultParameters();
             }
         }
 
-        onGenerateDefaultParametersStatusChanged: {
-            if (Enums.TaskStatusCompleted === generateDefaultParametersStatus) {
-                routeParameters = generateDefaultParametersResult;
+        onCreateDefaultParametersStatusChanged: {
+            if (Enums.TaskStatusCompleted === createDefaultParametersStatus) {
+                routeParameters = createDefaultParametersResult;
                 button_routing.visible = true;
             }
         }
@@ -148,6 +146,9 @@ ApplicationWindow {
     MapView {
         id: mapView
         anchors.fill: parent
+        wrapAroundMode: Enums.WrapAroundModeDisabled
+        // set focus to enable keyboard navigation
+        focus: true
 
         // add a map to the mapview
         Map {
@@ -386,7 +387,7 @@ ApplicationWindow {
         if (Qt.LeftButton === event.button) {
             var geoPoint = getGeoPoint(event);
             // Buffer by 1000 meters
-            var buffer = GeometryEngine.bufferGeodesic(geoPoint, 1000, Enums.LinearUnitIdMeters, 1, Enums.GeodeticCurveTypeGeodesic)
+            var buffer = GeometryEngine.bufferGeodetic(geoPoint, 1000, Enums.LinearUnitIdMeters, 1, Enums.GeodeticCurveTypeGeodesic)
 
             // Show click and buffer as graphics
             var graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).graphics;
@@ -405,12 +406,6 @@ ApplicationWindow {
             var operationalLayers = threeD ? sceneView.scene.operationalLayers : mapView.map.operationalLayers;
             operationalLayers.forEach(function (layer) {
                 if (layer.selectFeaturesWithQuery) {
-                    /*
-                      Note: As of ArcGIS Runtime Quartz Beta 1, this select successfully
-                      selects features, but those features are only highlighted on the
-                      2D MapView, not on the 3D SceneView. This behavior is scheduled
-                      to be fixed in ArcGIS Runtime Quartz.
-                    */
                     layer.selectFeaturesWithQuery(query, Enums.SelectionModeNew);
                 }
             });
