@@ -24,9 +24,7 @@
 
 #define kApplicationSourceUrl           "qrc:/qml/main.qml"
 
-#define kClientId                       ""
 //#define kLicense                        "***MyLicense***"
-
 //------------------------------------------------------------------------------
 #endif
 

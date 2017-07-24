@@ -54,11 +54,6 @@ ApplicationWindow {
         }
 
         onLoadStatusChanged: {
-            if (loadError) {
-                console.log("Error message is " + loadError.message);
-                console.log("Additional message is " + loadError.additionalMessage);
-                console.log("Let me be clear: path is " + mmpkPath)
-            }
             if (loadStatus === Enums.LoadStatusLoaded) {
                 mapView.map = mmpk.maps[0];
                 mapView.map.basemap = basemap;

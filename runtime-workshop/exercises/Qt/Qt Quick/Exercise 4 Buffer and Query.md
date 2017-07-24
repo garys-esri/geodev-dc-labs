@@ -6,7 +6,7 @@ This exercise walks you through the following:
 - Query for features within the buffer
 
 Prerequisites:
-- Complete [Exercise 3](Exercise 3 Local Feature Layer.md), or get the Exercise 3 code solution compiling and running properly in Qt Creator.
+- Complete [Exercise 3](Exercise%203%20Local%20Feature%20Layer.md), or get the Exercise 3 code solution compiling and running properly in Qt Creator.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt Quick/Ex4_BufferAndQuery), available in this repository.
 
@@ -119,7 +119,7 @@ You need to buffer the clicked point and display both the point and the buffer a
 
     ```
     var geoPoint = getGeoPoint(event);
-    var buffer = GeometryEngine.bufferGeodesic(
+    var buffer = GeometryEngine.bufferGeodetic(
             geoPoint,
             1000,
             Enums.LinearUnitIdMeters,
@@ -189,7 +189,7 @@ If you completed the exercise, congratulations! You learned how to get a user's 
 
 Ready for more? Choose from the following:
 
-- [**Exercise 5: Routing**](Exercise 5 Routing.md)
+- [**Exercise 5: Routing**](Exercise%205%20Routing.md)
 - **Bonus**
     - We selected features but didn't do anything with the selected features' attributes. The call to `selectFeaturesWithQuery` is asynchronous, and `FeatureLayer` has a `selectFeaturesStatusChanged` signal that can call your code when the select is complete, so that you can iterate through selected features. See if you can look at the feature attributes to get more information about the selected features.
     - Try setting properties on the `QueryParameters` object to change the query's behavior. For example, maybe you want to select all features that are _outside_ the buffer instead of those that are inside. How would you do that by adding just one line of code? What other interesting things can you do with `QueryParameters`?
