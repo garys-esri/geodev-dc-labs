@@ -10,7 +10,7 @@ Prerequisites:
 - Install the ArcGIS Runtime SDK 100.1.0 for Qt. Go to [the ArcGIS Runtime SDK for Qt guide](https://developers.arcgis.com/qt/latest/qml/guide/arcgis-runtime-sdk-for-qt.htm) and expand **Get started** to see links to the install instructions. On that page, there is a button in the upper right corner to go to [the downloads page](https://developers.arcgis.com/downloads/). Follow all of the applicable install instructions in order to configure Runtime with Qt Creator. (Note: there is no need to follow the Android portion of the instructions if you're not deploying to Android for this workshop.)
 - This exercise was developed for Windows. If you would like to deploy to a different platform, such as Linux, Mac, Android, or iOS, additional setup may be required.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt Quick/Ex1_MapAndScene), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex1_MapAndScene), available in this repository.
 
 ## Create a new Qt Quick app with ArcGIS Runtime
 
