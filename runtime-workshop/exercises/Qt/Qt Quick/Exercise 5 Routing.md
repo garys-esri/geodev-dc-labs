@@ -8,7 +8,7 @@ This exercise walks you through the following:
 - Display the route on the map or scene
 
 Prerequisites:
-- Complete [Exercise 4](Exercise 4 Buffer and Query.md), or get the Exercise 4 code solution compiling and running properly in Qt Creator.
+- Complete [Exercise 4](Exercise%204%20Buffer%20and%20Query.md), or get the Exercise 4 code solution compiling and running properly in Qt Creator.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt Quick/Ex5_Routing), available in this repository.
 
