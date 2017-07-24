@@ -11,8 +11,6 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
 ## Add zoom in and zoom out buttons to the UI
 
-1. Go to [the images directory](../../images) of this repository and copy all of the images to your Android Studio project's `res/drawable` directory. (Copying the images is easier if you clone this repo, or if you fork this repo and clone your fork.)
-
 1. In `res/layout/activity_main.xml`, add to the `RelativeLayout` two buttons: one for zooming in, and one for zooming out, and place them in the lower right corner of the app (note: `zoom_out` and `zoom_in` refer to images that you copied in the previous step):
 
     ```
