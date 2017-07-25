@@ -184,9 +184,9 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     });
     ```
     
-1. Compile and run your app. Verify on the 2D map that features within the clicked buffer are highlighted on the map:
+1. Compile and run your app. Verify that features within the clicked buffer are highlighted on the map or scene:
 
-    ![Selected features](11-selected-features.png)
+    ![Selected features (map)](11-selected-features.png)
     
 ## How did it go?
 

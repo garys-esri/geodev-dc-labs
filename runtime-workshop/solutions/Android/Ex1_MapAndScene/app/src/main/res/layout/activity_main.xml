@@ -38,33 +38,5 @@
         android:src="@drawable/three_d"
         android:onClick="imageButton_toggle2d3d_onClick"/>
 
-    <!-- Exercise 2: Zoom in and out buttons -->
-    <ImageButton
-        android:id="@+id/imageButton_zoomOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_above="@id/imageButton_toggle2d3d"
-        android:src="@drawable/zoom_out"
-        android:onClick="imageButton_zoomOut_onClick"/>
-    <ImageButton
-        android:id="@+id/imageButton_zoomIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@id/imageButton_zoomOut"
-        android:layout_above="@id/imageButton_zoomOut"
-        android:src="@drawable/zoom_in"
-        android:onClick="imageButton_zoomIn_onClick"/>
-
-    <!-- Exercise 4: Buffer and query button -->
-    <ImageButton
-        android:id="@+id/imageButton_bufferAndQuery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/imageButton_toggle2d3d"
-        android:layout_alignBottom="@id/imageButton_toggle2d3d"
-        android:src="@drawable/buffer_and_query_button"
-        android:onClick="imageButton_bufferAndQuery_onClick"/>
-
-    <!-- Exercise 1: Change top-level layout to RelativeLayout -->
+<!-- Exercise 1: Change top-level layout to RelativeLayout -->
 </RelativeLayout>

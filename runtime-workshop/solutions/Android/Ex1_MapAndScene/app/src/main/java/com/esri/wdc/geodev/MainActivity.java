@@ -7,19 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.esri.arcgisruntime.geometry.Geometry;
-import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
-import com.esri.arcgisruntime.mapping.Viewpoint;
-import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.SceneView;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MainActivity extends Activity {
 
@@ -105,57 +98,4 @@ public class MainActivity extends Activity {
         }
         view.setLayoutParams(params);
     }
-
-    /**
-     * Exercise 2: Listener for zoom in button.
-     * @param view The button.
-     */
-    public void imageButton_zoomIn_onClick(View view) {
-        zoom(2.0);
-    }
-
-    /**
-     * Exercise 2: Listener for zoom out button.
-     * @param view The button.
-     */
-    public void imageButton_zoomOut_onClick(View view) {
-        zoom(0.5);
-    }
-
-    /**
-     * Exercise 2: Zoom the 2D map.
-     */
-    private void zoomMap(double factor) {
-        mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
-    }
-
-    /**
-     * Exercise 2: Zoom the 3D scene.
-     */
-    private void zoomScene(double factor) {
-        Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
-        if (target instanceof Point) {
-            Camera camera = sceneView.getCurrentViewpointCamera()
-                    .zoomToward((Point) target, factor);
-            sceneView.setViewpointCameraAsync(camera, 0.5f);
-        } else {
-            // This shouldn't happen, but in case it does...
-            Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
-                    "SceneView.getCurrentViewpoint returned {0} instead of {1}",
-                    new String[] { target.getClass().getName(), Point.class.getName() });
-        }
-    }
-
-    /**
-     * Exercise 2: Zoom by a factor.
-     * @param factor The zoom factor (0 to 1 to zoom out, > 1 to zoom in).
-     */
-    private void zoom(double factor) {
-        if (threeD) {
-            zoomScene(factor);
-        } else {
-            zoomMap(factor);
-        }
-    }
-
 }

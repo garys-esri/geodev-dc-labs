@@ -4,15 +4,33 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
+import com.esri.arcgisruntime.geometry.Geometry;
+import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.ArcGISScene;
+import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.MobileMapPackage;
+import com.esri.arcgisruntime.mapping.Viewpoint;
+import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.mapping.view.SceneView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainActivity extends Activity {
+
+    // Exercise 1: Specify elevation service URL
+    private static final String ELEVATION_IMAGE_SERVICE =
+            "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
 
     // Exercise 3: Instantiate mobile map package (MMPK) path
     private static final String MMPK_PATH = Environment.getExternalStorageDirectory().getPath() + "/data/DC_Crime_Data.mmpk";
@@ -20,13 +38,17 @@ public class MainActivity extends Activity {
     // Exercise 1: Declare and instantiate fields
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
+    private SceneView sceneView = null;
+    private ArcGISScene scene = new ArcGISScene();
+    private ImageButton imageButton_toggle2d3d = null;
+    private boolean threeD = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Exercise 1: Set up the map
+        // Exercise 1: Set up the 2D map.
         mapView = (MapView) findViewById(R.id.mapView);
         map.setBasemap(Basemap.createNationalGeographic());
         mapView.setMap(map);
@@ -40,11 +62,60 @@ public class MainActivity extends Activity {
                 if (0 < maps.size()) {
                     map = maps.get(0);
                     mapView.setMap(map);
+                    map.addDoneLoadingListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            Viewpoint viewpoint = map.getInitialViewpoint();
+                            if (null != viewpoint) {
+                                mapView.setViewpointAsync(viewpoint);
+                            }
+                        }
+                    });
                 }
                 map.setBasemap(Basemap.createNationalGeographic());
             }
         });
         mmpk.loadAsync();
+
+        // Exercise 1: Set up the 3D scene.
+        sceneView = findViewById(R.id.sceneView);
+        scene.setBasemap(Basemap.createImagery());
+        sceneView.setScene(scene);
+        scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+
+        // Exercise 3: Open mobile map package and add its layers to the 3D scene.
+        scene.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                final MobileMapPackage mmpk = new MobileMapPackage(MMPK_PATH);
+                mmpk.addDoneLoadingListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<ArcGISMap> maps = mmpk.getMaps();
+                        if (0 < maps.size()) {
+                            final ArcGISMap thisMap = maps.get(0);
+                            thisMap.addDoneLoadingListener(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ArrayList<Layer> layers = new ArrayList<>();
+                                    layers.addAll(thisMap.getOperationalLayers());
+                                    thisMap.getOperationalLayers().clear();
+                                    scene.getOperationalLayers().addAll(layers);
+                                    sceneView.setViewpoint(thisMap.getInitialViewpoint());
+                                    Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                                    Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                                    Camera camera = sceneView.getCurrentViewpointCamera()
+                                            .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                                    sceneView.setViewpointCameraAsync(camera);
+                                }
+                            });
+                            thisMap.loadAsync();
+                        }
+                    }
+                });
+                mmpk.loadAsync();
+            }
+        });
     }
 
     /**
@@ -53,6 +124,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         mapView.resume();
+        sceneView.resume();
         super.onResume();
     }
 
@@ -62,6 +134,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         mapView.pause();
+        sceneView.pause();
         super.onPause();
     }
 
@@ -71,15 +144,32 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         mapView.dispose();
+        sceneView.dispose();
         super.onDestroy();
     }
 
     /**
-     * Exercise 2: Listener for zoom out button.
-     * @param view The button.
+     * Exercise 1: Toggle between 2D map and 3D scene.
      */
-    public void imageButton_zoomOut_onClick(View view) {
-        zoom(0.5);
+    public void imageButton_toggle2d3d_onClick(View view) {
+        threeD = !threeD;
+        setWeight(mapView, threeD ? 1f : 0f);
+        setWeight(sceneView, threeD ? 0f : 1f);
+        if (null == imageButton_toggle2d3d) {
+            imageButton_toggle2d3d = findViewById(R.id.imageButton_toggle2d3d);
+        }
+        imageButton_toggle2d3d.setImageResource(threeD ? R.drawable.two_d : R.drawable.three_d);
+    }
+
+    /**
+     * Exercise 1: Set the weight of a View, e.g. to show or hide it.
+     */
+    private void setWeight(View view, float weight) {
+        final ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params instanceof LinearLayout.LayoutParams) {
+            ((LinearLayout.LayoutParams) params).weight = weight;
+        }
+        view.setLayoutParams(params);
     }
 
     /**
@@ -91,11 +181,47 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Exercise 2: Listener for zoom out button.
+     * @param view The button.
+     */
+    public void imageButton_zoomOut_onClick(View view) {
+        zoom(0.5);
+    }
+
+    /**
+     * Exercise 2: Zoom the 2D map.
+     */
+    private void zoomMap(double factor) {
+        mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
+    }
+
+    /**
+     * Exercise 2: Zoom the 3D scene.
+     */
+    private void zoomScene(double factor) {
+        Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+        if (target instanceof Point) {
+            Camera camera = sceneView.getCurrentViewpointCamera()
+                    .zoomToward((Point) target, factor);
+            sceneView.setViewpointCameraAsync(camera, 0.5f);
+        } else {
+            // This shouldn't happen, but in case it does...
+            Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
+                    "SceneView.getCurrentViewpoint returned {0} instead of {1}",
+                    new String[] { target.getClass().getName(), Point.class.getName() });
+        }
+    }
+
+    /**
      * Exercise 2: Zoom by a factor.
      * @param factor The zoom factor (0 to 1 to zoom out, > 1 to zoom in).
      */
     private void zoom(double factor) {
-        mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
+        if (threeD) {
+            zoomScene(factor);
+        } else {
+            zoomMap(factor);
+        }
     }
 
 }
