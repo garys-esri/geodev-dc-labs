@@ -51,7 +51,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     private ImageButton imageButton_bufferAndQuery = null;
     ```
     
-1. In `onCreate(Bundle)`, after `setContentView`, set `imageButton_bufferAndQuery` to the `ImageButton` you created in XML, using `findViewById` and a cast:
+1. In `onCreate(Bundle)`, after `setContentView`, set `imageButton_bufferAndQuery` to the `ImageButton` you created in XML, using `findViewById`:
 
     ```
     imageButton_bufferAndQuery = (ImageButton) findViewById(R.id.imageButton_bufferAndQuery);
@@ -76,22 +76,26 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
     
-1. In the code you just added, if the button is selected, give the `MapView` an `OnTouchListener` to get a user's tap. Use a new `DefaultMapViewOnTouchListener` so that you only have to implement one method, `onSingleTapConfirmed(MotionEvent)`. In `onSingleTapConfirmed`, call `bufferAndQuery` with the `MotionEvent` parameter. Return `true` to indicate that your method consumes the single tap:
+1. In the code you just added, if the button is selected, give the `MapView` and `SceneView` an `OnTouchListener` to get a user's tap. Use a new `DefaultMapViewOnTouchListener` so that you only have to implement one method, `onSingleTapConfirmed(MotionEvent)`. In `onSingleTapConfirmed`, call `bufferAndQuery` with the `MotionEvent` parameter. Return `true` to indicate that your method consumes the single tap:
 
     ```
-    mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
+    final DefaultMapViewOnTouchListener listener = new DefaultMapViewOnTouchListener(this, mapView) {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
             bufferAndQuery(event);
             return true;
         }
-    });
+    };
+    mapView.setOnTouchListener(listener);
+    sceneView.setOnTouchListener(listener);
     ```
     
 1. In that same method, if the button is not selected, give the `MapView` a `DefaultMapViewOnTouchListener` with no overridden methods, in order to reset to the default touch behavior:
 
     ```
-    mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView));
+    final DefaultMapViewOnTouchListener listener = new DefaultMapViewOnTouchListener(this, mapView);
+    mapView.setOnTouchListener(listener);
+    sceneView.setOnTouchListener(listener);
     ```
     
 1. Run your app. Verify that when you select the buffer and query button and tap the map, the `Toast` appears:
@@ -112,27 +116,32 @@ You need to buffer the tapped point and display both the point and the buffer as
                     new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
     ```
     
-1. Instantiate a `GraphicsOverlay` field:
+1. Instantiate two `GraphicsOverlay` fields, one for the map and one for the scene:
 
     ```
-    private final GraphicsOverlay bufferAndQueryGraphics = new GraphicsOverlay();
+    private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
+    private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
     ```
     
-1. In `onCreate(Bundle)`, add the `GraphicsOverlay` to the `MapView`:
+1. In `onCreate(Bundle)`, add the map `GraphicsOverlay` to the `MapView` and the scene `GraphicsOverlay` to the `SceneView`:
 
     ```
-    mapView.getGraphicsOverlays().add(bufferAndQueryGraphics);
+    mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
+    sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
     ```
-    
-1. Create a `private Point getGeoPoint(MotionEvent)` method to convert a `MotionEvent` to a `Point`. This method should use the `MapView` to convert a screen point to a geographic point. You're only going to call `getGeoPoint(MotionEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. _Note: `MapView.screenToLocation` takes a `android.graphics.Point` and returns a `com.esri.arcgisruntime.geometry.Point`. You can import one or the other but not both, so here we imported the ArcGIS `Point` class and used the fully qualified Android `Point` class name inline, since this is the only place in the exercises that we will need the Android `Point` class. You can do it the other way around if you prefer._ Here is the `getGeoPoint` code:
+
+1. Create a `private Point getGeoPoint(MotionEvent)` method to convert a `MotionEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MotionEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. _Note: `MapView.screenToLocation` takes a `android.graphics.Point` and returns a `com.esri.arcgisruntime.geometry.Point`. You can import one or the other but not both, so here we imported the ArcGIS `Point` class and used the fully qualified Android `Point` class name inline, since this is the only place in the exercises that we will need the Android `Point` class. You can do it the other way around if you prefer._ Here is the `getGeoPoint` code:
 
     ```
     private Point getGeoPoint(MotionEvent singleTapEvent) {
         android.graphics.Point screenPoint = new android.graphics.Point(
                 Math.round(singleTapEvent.getX()),
                 Math.round(singleTapEvent.getY()));
-        return mapView.screenToLocation(screenPoint);
+        return threeD ?
+                sceneView.screenToBaseSurface(screenPoint) :
+                mapView.screenToLocation(screenPoint);
     }
+
     ```
 
 1. In `bufferAndQuery(MotionEvent)`, you need to replace your `Toast` with code to create a buffer and display the point and buffer as graphics. First, use `getGeoPoint(MotionEvent)` to convert the `MotionEvent` to a geographic point. Next, create a 1000-meter buffer, which is pretty simple with ArcGIS Runtime's `GeometryEngine` class. _Note: ArcGIS Runtime Quartz Beta 3 cannot create geodesic buffers, so here you must project the point to a projected coordinate system (PCS), such as Web Mercator (3857), before creating the buffer. Using a PCS specific to the geographic area in question would produce a more accurate buffer. However, it is anticipated that ArcGIS Runtime Quartz will provide support for geodesic buffers, so writing code to find a better PCS will not be necessary with the Quartz release. Therefore, we did not write that code for this tutorial._
@@ -146,19 +155,21 @@ You need to buffer the tapped point and display both the point and the buffer as
 1. In `bufferAndQuery(MotionEvent)`, clear the graphics and then add the point and buffer as new `Graphic` objects:
 
     ```
-    ListenableList<Graphic> graphics = bufferAndQueryGraphics.getGraphics();
+    ListenableList<Graphic> graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).getGraphics();
     graphics.clear();
     graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
     graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
     ```
 
-1. Compile and run your app. Verify that if you toggle the buffer and select button and then tap the map, the point you tapped and a 1000-meter buffer around it appear on the map:
+1. Compile and run your app. Verify that if you toggle the buffer and select button and then tap the map, the point you tapped and a 1000-meter buffer around it appear on the map or scene:
 
-    ![Tap and buffer graphics](09-tap-and-buffer-graphics.png)
+    ![Tap and buffer graphics (map)](09-tap-and-buffer-graphics-map.png)
+
+    ![Tap and buffer graphics (scene)](10-tap-and-buffer-graphics-scene.jpg)
     
 ## Query for features within the buffer
 
-There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `FeatureLayer.selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`, which both highlights selected features on the map and provides a list of the selected features.
+There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `FeatureLayer.selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`, which both highlights selected features on the map or scene and provides a list of the selected features.
 
 1. In `bufferAndQuery(MotionEvent)`, after creating the buffer and adding graphics, instantiate a `QueryParameters` object with the buffer geometry:
 
@@ -167,7 +178,7 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     query.setGeometry(buffer);
     ```
     
-1. For each of the `FeatureLayer` objects in the operational layers of the `MapView`'s map, call `selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`. Use `FeatureLayer.SelectionMode.NEW` to do a new selection, as opposed to adding to or removing from the current selection. Add this code after instantiating the query object and setting its geometry:
+1. For each of the `FeatureLayer` objects in the operational layers of the `SceneView`'s scene or the `MapView`'s map, call `selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`. Use `FeatureLayer.SelectionMode.NEW` to do a new selection, as opposed to adding to or removing from the current selection. Add this code after instantiating the query object and setting its geometry:
 
     ```
     LayerList operationalLayers = mapView.getMap().getOperationalLayers();
@@ -178,9 +189,11 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     };
     ```
     
-1. Compile and run your app. Verify on the 2D map that features within the tapped buffer are highlighted on the map:
+1. Compile and run your app. Verify that features within the tapped buffer are highlighted on the map or scene:
 
-    ![Selected features](11-selected-features.png)
+    ![Selected features (map)](11-selected-features-map.png)
+    
+    ![Selected features (scene)](11-selected-features-scene.jpg)
     
 ## How did it go?
 
