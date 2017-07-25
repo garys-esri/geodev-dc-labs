@@ -13,7 +13,7 @@ Prerequisites:
 
 For more details on these prerequisites, see the [ArcGIS Runtime SDK for Android system requirements](https://developers.arcgis.com/android/latest/guide/system-requirements.htm).
 
-If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex1_Map), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex1_MapAndScene), available in this repository.
 
 ## Create a new Android app
 1. Open Android Studio and start a new Android Studio project. Specify a minimum API level of 16 or higher, as required by ArcGIS Runtime Quartz. On the **Add an Activity to Mobile** screen, choose **Empty Activity** (not **Blank Activity** or **Add No Activity**). Call your activity `MainActivity`, ensure the **Generate Layout File** box is checked, and name the layout `activity_main`. For these exercises, it may be easier if you uncheck **Backwards Compatibility (AppCompat)**, but you should be able to complete the exercises either way. Click Finish, and an Android Studio project is created and opened.
