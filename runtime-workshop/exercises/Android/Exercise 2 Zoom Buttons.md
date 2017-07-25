@@ -2,7 +2,7 @@
 
 This exercise walks you through the following:
 - Add zoom in and zoom out buttons to the UI
-- Zoom in and out on the map
+- Zoom in and out on the map and the scene
 
 Prerequisites:
 - Complete [Exercise 1](Exercise%201%20Map.md), or get the Exercise 1 code solution compiling and running properly, preferably in an IDE.
