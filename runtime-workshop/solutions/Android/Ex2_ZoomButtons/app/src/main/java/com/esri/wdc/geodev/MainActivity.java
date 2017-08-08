@@ -145,6 +145,10 @@ public class MainActivity extends Activity {
         mapView.setViewpointScaleAsync(mapView.getMapScale() / factor);
     }
 
+    private Geometry getSceneTarget() {
+        return sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+    }
+
     /**
      * Exercise 2: Get the SceneView viewpoint target.
      *
