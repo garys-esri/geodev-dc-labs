@@ -198,7 +198,7 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
     }
     ```
 
-1. If the current camera point is not null, use [`GeometryEngine.distanceGeodetic(Point, Point, LinearUnit, AngularUnit, GeodeticCurveType)`](https://developers.arcgis.com/android/latest/api-reference/reference/com/esri/arcgisruntime/geometry/GeometryEngine.html#distanceGeodetic(com.esri.arcgisruntime.geometry.Point, com.esri.arcgisruntime.geometry.Point, com.esri.arcgisruntime.geometry.LinearUnit, com.esri.arcgisruntime.geometry.AngularUnit, com.esri.arcgisruntime.geometry.GeodeticCurveType)) to calculate the ground distance between the target point and the x/y part of the current camera location. Then use the Pythagorean theorem to calculate the distance from the target point and the current camera:
+1. If the current camera point is not null, use [`GeometryEngine.distanceGeodetic(Point, Point, LinearUnit, AngularUnit, GeodeticCurveType)`](https://developers.arcgis.com/android/latest/api-reference/reference/com/esri/arcgisruntime/geometry/GeometryEngine.html#distanceGeodetic(com.esri.arcgisruntime.geometry.Point%2C%20com.esri.arcgisruntime.geometry.Point%2C%20com.esri.arcgisruntime.geometry.LinearUnit%2C%20com.esri.arcgisruntime.geometry.AngularUnit%2C%20com.esri.arcgisruntime.geometry.GeodeticCurveType)) to calculate the ground distance between the target point and the x/y part of the current camera location. Then use the Pythagorean theorem to calculate the distance from the target point and the current camera:
 
     ```
     final double xyDistance = GeometryEngine.distanceGeodetic(targetPoint, currentCameraPoint,
