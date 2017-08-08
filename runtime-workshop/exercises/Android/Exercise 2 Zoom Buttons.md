@@ -123,15 +123,15 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
     </selector>
     ```
 
-1. Open `activity_main.xml`. Add to the `RelativeLayout` an `ImageButton` for locking the 3D scene's focus point. Set the button's `android:src` to be the `lock_focus_button` drawable resource you created in the previous step. Give the `ImageButton` an `onClick` event handler (here we call it `imageButton_lockFocus_onClick`). Place the button to the left of the 2D/3D toggle button:
+1. Open `activity_main.xml`. Add to the `RelativeLayout` an `ImageButton` for locking the 3D scene's focus point. Set the button's `android:src` to be the `lock_focus_button` drawable resource you created in the previous step. Give the `ImageButton` an `onClick` event handler (here we call it `imageButton_lockFocus_onClick`). Place the button to the left of the zoom in button:
 
     ```
     <ImageButton
         android:id="@+id/imageButton_lockFocus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/imageButton_toggle2d3d"
-        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/imageButton_zoomIn"
+        android:layout_alignBottom="@id/imageButton_zoomIn"
         android:src="@drawable/lock_focus_button"
         android:onClick="imageButton_lockFocus_onClick"/>
     ```
