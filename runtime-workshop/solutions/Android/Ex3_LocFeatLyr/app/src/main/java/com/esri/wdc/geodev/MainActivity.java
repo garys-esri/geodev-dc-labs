@@ -91,11 +91,11 @@ public class MainActivity extends Activity {
         // Exercise 1: Set up the 3D scene.
         sceneView = findViewById(R.id.sceneView);
         scene.setBasemap(Basemap.createImagery());
-        sceneView.setScene(scene);
         scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+        sceneView.setScene(scene);
 
         // Exercise 2: Get the lock focus button.
-        imageButton_lockFocus = (ImageButton) findViewById(R.id.imageButton_lockFocus);
+        imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
 
         // Exercise 3: Open mobile map package and add its layers to the 3D scene.
         scene.addDoneLoadingListener(new Runnable() {
