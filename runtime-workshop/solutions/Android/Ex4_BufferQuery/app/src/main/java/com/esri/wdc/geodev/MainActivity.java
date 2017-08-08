@@ -10,8 +10,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.esri.arcgisruntime.data.QueryParameters;
+import com.esri.arcgisruntime.geometry.AngularUnit;
+import com.esri.arcgisruntime.geometry.AngularUnitId;
+import com.esri.arcgisruntime.geometry.GeodeticCurveType;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.LinearUnit;
+import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReference;
@@ -26,9 +31,11 @@ import com.esri.arcgisruntime.mapping.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
+import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
@@ -63,6 +70,9 @@ public class MainActivity extends Activity {
     private ArcGISScene scene = new ArcGISScene();
     private ImageButton imageButton_toggle2d3d = null;
     private boolean threeD = false;
+
+    // Exercise 2: Declare field for lock focus button.
+    private ImageButton imageButton_lockFocus = null;
 
     // Exercise 4: Declare fields
     private ImageButton imageButton_bufferAndQuery = null;
@@ -108,6 +118,9 @@ public class MainActivity extends Activity {
         scene.setBasemap(Basemap.createImagery());
         scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
         sceneView.setScene(scene);
+
+        // Exercise 2: Get the lock focus button.
+        imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
 
         // Exercise 3: Open mobile map package and add its layers to the 3D scene.
         scene.addDoneLoadingListener(new Runnable() {
@@ -207,6 +220,7 @@ public class MainActivity extends Activity {
 
     /**
      * Exercise 2: Listener for zoom in button.
+     *
      * @param view The button.
      */
     public void imageButton_zoomIn_onClick(View view) {
@@ -215,6 +229,7 @@ public class MainActivity extends Activity {
 
     /**
      * Exercise 2: Listener for zoom out button.
+     *
      * @param view The button.
      */
     public void imageButton_zoomOut_onClick(View view) {
@@ -229,10 +244,19 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Exercise 2: Get the SceneView viewpoint target.
+     *
+     * @return the SceneView viewpoint target.
+     */
+    private Geometry getSceneTarget() {
+        return sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+    }
+
+    /**
      * Exercise 2: Zoom the 3D scene.
      */
     private void zoomScene(double factor) {
-        Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+        Geometry target = getSceneTarget();
         if (target instanceof Point) {
             Camera camera = sceneView.getCurrentViewpointCamera()
                     .zoomToward((Point) target, factor);
@@ -241,12 +265,13 @@ public class MainActivity extends Activity {
             // This shouldn't happen, but in case it does...
             Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
                     "SceneView.getCurrentViewpoint returned {0} instead of {1}",
-                    new String[] { target.getClass().getName(), Point.class.getName() });
+                    new String[]{target.getClass().getName(), Point.class.getName()});
         }
     }
 
     /**
      * Exercise 2: Zoom by a factor.
+     *
      * @param factor The zoom factor (0 to 1 to zoom out, > 1 to zoom in).
      */
     private void zoom(double factor) {
@@ -258,7 +283,48 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Exercise 2: Listener for the lock focus button.
+     */
+    public void imageButton_lockFocus_onClick(View view) {
+        imageButton_lockFocus.setSelected(!imageButton_lockFocus.isSelected());
+        if (imageButton_lockFocus.isSelected()) {
+            Geometry target = getSceneTarget();
+            if (target instanceof Point) {
+                final Point targetPoint = (Point) target;
+                final Camera currentCamera = sceneView.getCurrentViewpointCamera();
+                Point currentCameraPoint = currentCamera.getLocation();
+                if (null != currentCameraPoint) {
+                    // Calculate distance to current target (Pythagorean theorem)
+                    final double xyDistance = GeometryEngine.distanceGeodetic(targetPoint, currentCameraPoint,
+                            new LinearUnit(LinearUnitId.METERS),
+                            new AngularUnit(AngularUnitId.DEGREES),
+                            GeodeticCurveType.GEODESIC
+                    ).getDistance();
+                    final double zDistance = currentCameraPoint.getZ();
+                    final double distanceToTarget = Math.sqrt(Math.pow(xyDistance, 2.0) + Math.pow(zDistance, 2.0));
+
+                    // Create and set camera controller
+                    final OrbitLocationCameraController cameraController = new OrbitLocationCameraController(
+                            (Point) target, distanceToTarget
+                    );
+                    cameraController.setCameraHeadingOffset(currentCamera.getHeading());
+                    cameraController.setCameraPitchOffset(currentCamera.getPitch());
+                    sceneView.setCameraController(cameraController);
+                }
+            } else {
+                // This shouldn't happen, but in case it does...
+                Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
+                        "SceneView.getCurrentViewpoint() returned {0} instead of {1}",
+                        new String[]{target.getClass().getName(), Point.class.getName()});
+            }
+        } else {
+            sceneView.setCameraController(new GlobeCameraController());
+        }
+    }
+
+    /**
      * Exercise 4: Listener for buffer and query button.
+     *
      * @param view The button.
      */
     public void imageButton_bufferAndQuery_onClick(View view) {
@@ -282,6 +348,7 @@ public class MainActivity extends Activity {
 
     /**
      * Exercise 4: Buffer the tapped point and select features within that buffer.
+     *
      * @param singleTapEvent The single tap event.
      * @return true if the event was consumed and false if it was not.
      */
@@ -302,7 +369,8 @@ public class MainActivity extends Activity {
             if (layer instanceof FeatureLayer) {
                 ((FeatureLayer) layer).selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
             }
-        };
+        }
+        ;
     }
 
     /**

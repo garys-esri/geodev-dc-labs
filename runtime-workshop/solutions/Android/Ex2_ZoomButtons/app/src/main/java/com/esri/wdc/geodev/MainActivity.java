@@ -150,6 +150,15 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Exercise 2: Get the SceneView viewpoint target.
+     *
+     * @return the SceneView viewpoint target.
+     */
+    private Geometry getSceneTarget() {
+        return sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+    }
+
+    /**
      * Exercise 2: Zoom the 3D scene.
      */
     private void zoomScene(double factor) {
