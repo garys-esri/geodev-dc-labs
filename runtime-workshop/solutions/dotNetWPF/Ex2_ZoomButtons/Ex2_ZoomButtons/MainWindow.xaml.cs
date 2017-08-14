@@ -2,7 +2,6 @@
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Data;
-using Esri.ArcGISRuntime.Tasks.NetworkAnalyst;
 using Esri.ArcGISRuntime.Portal;
 using Esri.ArcGISRuntime.Security;
 
@@ -102,7 +101,7 @@ namespace Ex1_MapAndScene
         //Exercise 2
         private void zoomMap(double factor)
         {
-            mapView.SetViewpointScaleAsync(mapView.GetCurrentViewpoint(ViewpointType.CenterAndScale).Scale / factor);
+            mapView.SetViewpointScaleAsync(mapView.GetCurrentViewpoint(ViewpointType.CenterAndScale).TargetScale / factor);
         }
     }
 }

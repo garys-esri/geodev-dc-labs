@@ -2,7 +2,6 @@
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Data;
-using Esri.ArcGISRuntime.Tasks.NetworkAnalyst;
 using Esri.ArcGISRuntime.Portal;
 using Esri.ArcGISRuntime.Security;
 
@@ -31,7 +30,8 @@ namespace Ex1_MapAndScene
         private void Initialize()
         {
             //Exercise 1: Create new Map with basemap and initial location
-            myMap = new Map(Basemap.CreateNationalGeographic());
+            myMap = new Map(Basemap.CreateStreetsVector());
+
             //Exercise 1: Assign the map to the MapView
             mapView.Map = myMap;
         }
@@ -46,13 +46,16 @@ namespace Ex1_MapAndScene
                 if (myScene == null)
                 {
                     //Create a new scene
-                    myScene = new Scene(Basemap.CreateNationalGeographic());
+                    myScene = new Scene(Basemap.CreateStreets());
                     sceneView.Scene = myScene;
+                    
                     // create an elevation source
                     var elevationSource = new ArcGISTiledElevationSource(new System.Uri(ELEVATION_IMAGE_SERVICE));
+                    
                     // create a surface and add the elevation surface
                     var sceneSurface = new Surface();
                     sceneSurface.ElevationSources.Add(elevationSource);
+                    
                     // apply the surface to the scene
                     sceneView.Scene.BaseSurface = sceneSurface;
                 }

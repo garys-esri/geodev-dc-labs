@@ -3,7 +3,7 @@ using Esri.ArcGISRuntime.Mapping;
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Data;
-using Esri.ArcGISRuntime.Tasks.NetworkAnalyst;
+using Esri.ArcGISRuntime.Tasks.NetworkAnalysis;
 using Esri.ArcGISRuntime.Portal;
 using Esri.ArcGISRuntime.Security;
 
@@ -36,6 +36,11 @@ namespace Ex1_MapAndScene
         private MapPoint originPoint = null;
         private RouteTask routeTask;
         private RouteParameters routeParameters;
+        private Uri routeServiceUri = new Uri("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
+        private TokenCredential credentials;
+
+        // List of stops on the route ('from' and 'to')
+        private List<Stop> _routeStops;
 
         public MainWindow()
         {
@@ -65,17 +70,8 @@ namespace Ex1_MapAndScene
             mapView.GraphicsOverlays.Add(bufferAndQueryMapGraphics);
             mapView.GraphicsOverlays.Add(mapRouteGraphics);
 
-            Uri routeServiceUri = new Uri("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
-            TokenCredential credentials = await AuthenticationManager.Current.GenerateCredentialAsync(routeServiceUri, "username", "password");
-            routeTask = await RouteTask.CreateAsync(routeServiceUri, credentials);
-            try
-            {
-                routeParameters = await routeTask.GenerateDefaultParametersAsync();
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine(error.Message);
-            }
+            credentials = await AuthenticationManager.Current.GenerateCredentialAsync(routeServiceUri, "jfraley_ndirt", "Mur9hy#1");
+
         }
 
         private async void ViewButton_Click(object sender, RoutedEventArgs e)
@@ -112,7 +108,7 @@ namespace Ex1_MapAndScene
                             var thelayer = layerCollection[i];
                             myMap.OperationalLayers.Clear();
                             myScene.OperationalLayers.Add(thelayer);
-                            sceneView.SetViewpoint(myMap.InitialViewpoint);
+                            await sceneView.SetViewpointAsync(myMap.InitialViewpoint);
                             //Rotate the camera
                             Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
                             Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
@@ -174,7 +170,7 @@ namespace Ex1_MapAndScene
         //Exercise 2
         private void zoomMap(double factor)
         {
-            mapView.SetViewpointScaleAsync(mapView.GetCurrentViewpoint(ViewpointType.CenterAndScale).Scale / factor);
+            mapView.SetViewpointScaleAsync(mapView.GetCurrentViewpoint(ViewpointType.CenterAndScale).TargetScale / factor);
         }
 
         private void QueryandBufferButton_Click(object sender, RoutedEventArgs e)
@@ -208,7 +204,7 @@ namespace Ex1_MapAndScene
             }
         }
 
-        private async void OnView_Tapped(object sender, Esri.ArcGISRuntime.UI.GeoViewInputEventArgs e)
+        private async void OnView_Tapped(object sender, Esri.ArcGISRuntime.UI.Controls.GeoViewInputEventArgs e)
         {
             MapPoint geoPoint = getGeoPoint(e);
             geoPoint = (MapPoint)GeometryEngine.Project(geoPoint, SpatialReference.Create(3857));
@@ -249,15 +245,24 @@ namespace Ex1_MapAndScene
                     {
                         routeParameters.ReturnDirections = false;
                         routeParameters.ReturnRoutes = true;
-                        routeParameters.ReturnStops = false;
+                        routeParameters.ReturnStops = true;
                     }
-                    else
-                        RoutingButton_Click(null, null);
-
+                    
                     var stop1 = new Stop(originPoint);
                     var stop2 = new Stop(geoPoint);
-                    var stopPoints = new List<Stop> { stop1, stop2 };
-                    routeParameters.SetStops(stopPoints);
+                    _routeStops = new List<Stop> { stop1, stop2 };
+
+                    routeTask = await RouteTask.CreateAsync(routeServiceUri, credentials);
+
+                    try
+                    {
+                        routeParameters = await routeTask.CreateDefaultParametersAsync();
+                    }
+                    catch (Exception error)
+                    {
+                        Console.WriteLine(error.Message);
+                    }
+                    routeParameters.SetStops(_routeStops);
 
                     var routeResult = await routeTask.SolveRouteAsync(routeParameters);
                     // get the route from the results
@@ -272,7 +277,7 @@ namespace Ex1_MapAndScene
                 }
             }
         }
-        private MapPoint getGeoPoint(GeoViewInputEventArgs point)
+        private MapPoint getGeoPoint(Esri.ArcGISRuntime.UI.Controls.GeoViewInputEventArgs point)
         {
             MapPoint geoPoint = null;
             Point screenPoint = new Point(point.Position.X, point.Position.Y);
