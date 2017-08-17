@@ -105,7 +105,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 1. In `onCreate(Bundle)`, after the call to `setContentView(int)`, get the `MapView`, set the `ArcGISMap`'s basemap, and set the `MapView`'s map:
 
     ```
-    mapView = (MapView) findViewById(R.id.mapView);
+    mapView = findViewById(R.id.mapView);
     map.setBasemap(Basemap.createNationalGeographic());
     mapView.setMap(map);
     ```
@@ -115,19 +115,25 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     ```
     @Override
     protected void onResume() {
-        mapView.resume();
+        if (null != mapView) {
+            mapView.resume();
+        }
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        mapView.pause();
+        if (null != mapView) {
+            mapView.pause();
+        }
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        mapView.dispose();
+        if (null != mapView) {
+            mapView.dispose();
+        }
         super.onDestroy();
     }
     ```
@@ -176,13 +182,18 @@ Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app
     private boolean threeD = false;
     ```
     
-1. In your constructor, get the `MapView`, set the `Scene`'s basemap, set the `SceneView`'s `Scene`, and set the `Scene`'s elevation source:
+1. In your constructor, after the `Map` has loaded, get the `SceneView`, set the `Scene`'s basemap, set the `SceneView`'s `Scene`, and set the `Scene`'s elevation source:
 
     ```
     sceneView = findViewById(R.id.sceneView);
-    scene.setBasemap(Basemap.createImagery());
-    sceneView.setScene(scene);
-    scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+    map.addDoneLoadingListener(new Runnable() {
+        @Override
+        public void run() {
+            scene.setBasemap(Basemap.createImagery());
+            sceneView.setScene(scene);
+            scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+        }
+    });
     ```
     
 1. In `MainActivity`, in `onResume()`, `onPause()`, and `onDestroy()`, call `resume()`, `pause()`, and `dispose()` respectively on the `SceneView`, just as you did on the `MapView` already.

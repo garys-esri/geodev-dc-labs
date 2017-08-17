@@ -150,10 +150,10 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
     private ImageButton imageButton_lockFocus = null;
     ```
 
-1. In `onCreate(Bundle)`, after `setContentView`, set `imageButton_lockFocus` to the `ImageButton` you created in XML, using `findViewById` and a cast:
+1. In `onCreate(Bundle)`, after `setContentView`, set `imageButton_lockFocus` to the `ImageButton` you created in XML, using `findViewById`:
 
     ```
-    imageButton_lockFocus = (ImageButton) findViewById(R.id.imageButton_lockFocus);
+    imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
     ```
 
 1. In `imageButton_lockFocus_onClick(View)`, invert the button's `selected` property, and then add an `if-else` statement for whether or not the button is selected. _Note: we could have used a ToggleButton instead of an ImageButton._ Here is the code to add to the listener method:
@@ -221,7 +221,9 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
     sceneView.setCameraController(cameraController);
     ```
     
-1. Run your app. Switch to 3D mode, navigate to a point where you want to lock, and tap the lock button. Verify that navigation now focuses on the target point. Tap the lock button again and verify that normal navigation is restored.
+1. Run your app. Switch to 3D mode, navigate to a point where you want to lock, and tap the lock button. Verify that navigation now focuses on the target point. Tap the lock button again and verify that normal navigation is restored:
+
+    ![Lock focus button](04a-lock-focus-button.jpg)
 
 ## How did it go?
 

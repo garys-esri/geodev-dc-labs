@@ -76,26 +76,30 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
     
-1. In the code you just added, if the button is selected, give the `MapView` and `SceneView` an `OnTouchListener` to get a user's tap. Use a new `DefaultMapViewOnTouchListener` so that you only have to implement one method, `onSingleTapConfirmed(MotionEvent)`. In `onSingleTapConfirmed`, call `bufferAndQuery` with the `MotionEvent` parameter. Return `true` to indicate that your method consumes the single tap:
+1. In the code you just added, if the button is selected, give the `MapView` and `SceneView` an `OnTouchListener` to get a user's tap. Use a new `DefaultMapViewOnTouchListener` and a new `DefaultSceneViewOnTouchListener` so that you only have to implement one method, `onSingleTapConfirmed(MotionEvent)`. In `onSingleTapConfirmed`, call `bufferAndQuery` with the `MotionEvent` parameter. Return `true` to indicate that your method consumes the single tap:
 
     ```
-    final DefaultMapViewOnTouchListener listener = new DefaultMapViewOnTouchListener(this, mapView) {
+    mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
             bufferAndQuery(event);
             return true;
         }
-    };
-    mapView.setOnTouchListener(listener);
-    sceneView.setOnTouchListener(listener);
+    });
+    sceneView.setOnTouchListener(new DefaultSceneViewOnTouchListener(sceneView) {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent event) {
+            bufferAndQuery(event);
+            return true;
+        }
+    });
     ```
     
-1. In that same method, if the button is not selected, give the `MapView` a `DefaultMapViewOnTouchListener` with no overridden methods, in order to reset to the default touch behavior:
+1. In that same method, if the button is not selected, give the `MapView` a `DefaultMapViewOnTouchListener` and the `SceneView` a `DefaultSceneViewOnTouchListener` with no overridden methods, in order to reset to the default touch behavior:
 
     ```
-    final DefaultMapViewOnTouchListener listener = new DefaultMapViewOnTouchListener(this, mapView);
-    mapView.setOnTouchListener(listener);
-    sceneView.setOnTouchListener(listener);
+    mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView));
+    sceneView.setOnTouchListener(new DefaultSceneViewOnTouchListener(sceneView));
     ```
     
 1. Run your app. Verify that when you select the buffer and query button and tap the map, the `Toast` appears:
@@ -123,10 +127,15 @@ You need to buffer the tapped point and display both the point and the buffer as
     private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
     ```
     
-1. In `onCreate(Bundle)`, add the map `GraphicsOverlay` to the `MapView` and the scene `GraphicsOverlay` to the `SceneView`:
+1. In `onCreate(Bundle)`, add the map `GraphicsOverlay` to the `MapView`:
 
     ```
     mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
+    ```
+
+1. In `onCreate(Bundle)`, inside the `addDoneLoadingListener` where you set up the `Scene` and `SceneView`, add the scene `GraphicsOverlay` to the `SceneView`:
+
+    ```
     sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
     ```
 

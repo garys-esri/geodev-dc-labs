@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // Exercise 1: Set up the 2D map.
-        mapView = (MapView) findViewById(R.id.mapView);
+        mapView = findViewById(R.id.mapView);
         map.setBasemap(Basemap.createNationalGeographic());
         mapView.setMap(map);
 
@@ -90,9 +90,14 @@ public class MainActivity extends Activity {
 
         // Exercise 1: Set up the 3D scene.
         sceneView = findViewById(R.id.sceneView);
-        scene.setBasemap(Basemap.createImagery());
-        scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
-        sceneView.setScene(scene);
+        map.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                scene.setBasemap(Basemap.createImagery());
+                sceneView.setScene(scene);
+                scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+            }
+        });
 
         // Exercise 2: Get the lock focus button.
         imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
@@ -137,8 +142,12 @@ public class MainActivity extends Activity {
      */
     @Override
     protected void onResume() {
-        mapView.resume();
-        sceneView.resume();
+        if (null != mapView) {
+            mapView.resume();
+        }
+        if (null != sceneView) {
+            sceneView.resume();
+        }
         super.onResume();
     }
 
@@ -147,8 +156,12 @@ public class MainActivity extends Activity {
      */
     @Override
     protected void onPause() {
-        mapView.pause();
-        sceneView.pause();
+        if (null != mapView) {
+            mapView.pause();
+        }
+        if (null != sceneView) {
+            sceneView.pause();
+        }
         super.onPause();
     }
 
@@ -157,8 +170,12 @@ public class MainActivity extends Activity {
      */
     @Override
     protected void onDestroy() {
-        mapView.dispose();
-        sceneView.dispose();
+        if (null != mapView) {
+            mapView.dispose();
+        }
+        if (null != sceneView) {
+            sceneView.dispose();
+        }
         super.onDestroy();
     }
 

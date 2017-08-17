@@ -135,13 +135,21 @@ After doing Exercise 4, this should seem familiar to you.
     originPoint = null;
     ```
     
-1. Fill in the body of `imageButton_routing_onClick(View)`. If the routing toggle button has been un-selected, set the `MapView` and `SceneView`'s `onTouchListener` to a `DefaultMapViewOnTouchListener` with no overridden methods. If the routing toggle button has been selected, un-select `imageButton_bufferAndQuery` and set the `onTouchListener` to a `DefaultMapViewOnTouchListener` with an overridden `onSingleTapConfirmed(MotionEvent)` method. In `onSingleTapConfirmed`, call `addStopToRoute` with the motion event, and return `true` to indicate that the event has been consumed:
+1. Fill in the body of `imageButton_routing_onClick(View)`. If the routing toggle button has been un-selected, set the `MapView` and `SceneView`'s `onTouchListener` to an `OnTouchListener` with no overridden methods. If the routing toggle button has been selected, un-select `imageButton_bufferAndQuery` and set the `onTouchListener` to an `OnTouchListener` with an overridden `onSingleTapConfirmed(MotionEvent)` method. In `onSingleTapConfirmed`, call `addStopToRoute` with the motion event, and return `true` to indicate that the event has been consumed:
 
     ```
     imageButton_routing.setSelected(!imageButton_routing.isSelected());
-    DefaultMapViewOnTouchListener listener = null;
+    final DefaultMapViewOnTouchListener mapListener;
+    final DefaultSceneViewOnTouchListener sceneListener;
     if (imageButton_routing.isSelected()) {
-        listener = new DefaultMapViewOnTouchListener(this, mapView) {
+        mapListener = new DefaultMapViewOnTouchListener(this, mapView) {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent event) {
+                addStopToRoute(event);
+                return true;
+            }
+        };
+        sceneListener = new DefaultSceneViewOnTouchListener(sceneView) {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent event) {
                 addStopToRoute(event);
@@ -150,10 +158,11 @@ After doing Exercise 4, this should seem familiar to you.
         };
         imageButton_bufferAndQuery.setSelected(false);
     } else {
-        listener = new DefaultMapViewOnTouchListener(this, mapView);
+        mapListener = new DefaultMapViewOnTouchListener(this, mapView);
+        sceneListener = new DefaultSceneViewOnTouchListener(sceneView);
     }
-    mapView.setOnTouchListener(listener);
-    sceneView.setOnTouchListener(listener);
+    mapView.setOnTouchListener(mapListener);
+    sceneView.setOnTouchListener(sceneListener);
     ```
 
 1. Run your app. Verify that you can toggle on the routing button, click an origin point, click a destination point, and see both points displayed:
