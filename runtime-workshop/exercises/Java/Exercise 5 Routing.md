@@ -188,7 +188,7 @@ After doing Exercise 4, this should seem familiar to you.
     theRouteTask.setCredential(new UserCredential("theUsername", "thePassword"));
     RouteParameters theRouteParameters = null;
     try {
-        theRouteParameters = theRouteTask.createDefaultParametersAsync().get();
+        theRouteParameters = (RouteParameters) theRouteTask.createDefaultParametersAsync().get();
     } catch (InterruptedException | ExecutionException ex) {
         Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, ex);
         theRouteTask = null;
@@ -224,7 +224,7 @@ After doing Exercise 4, this should seem familiar to you.
     ListenableFuture<RouteResult> solveFuture = routeTask.solveRouteAsync(routeParameters);
     solveFuture.addDoneListener(() -> {
         try {
-            RouteResult routeResult = solveFuture.get();
+            RouteResult routeResult = (RouteResult) solveFuture.get();
             if (0 < routeResult.getRoutes().size()) {
                 graphics.add(new Graphic(routeResult.getRoutes().get(0).getRouteGeometry(), ROUTE_LINE_SYMBOL));
             }

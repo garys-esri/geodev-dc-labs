@@ -178,6 +178,8 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
     1. The target point on Earth's surface. You can use the current camera's target point by calling your `getSceneTarget()` method.
     1. The distance (in meters) from the target at which the camera should be placed. ArcGIS Runtime's `GeometryEngine` lets you calculate the x/y distance in meters between two points, but the constructor needs an x/y/z distance, which you can calculate using the [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem) (did we mention that this workshop would require junior high school math?).
 
+    The following steps will help you set up this camera controller.
+
 1. In your empty `if` block, get the scene target, verify that it is of type `Point`, and cast it to `Point`:
 
     ```
