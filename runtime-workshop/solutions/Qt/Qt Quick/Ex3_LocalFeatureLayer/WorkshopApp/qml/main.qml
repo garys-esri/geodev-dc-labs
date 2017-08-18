@@ -69,6 +69,11 @@ ApplicationWindow {
 
         Scene {
             BasemapImagery {}
+            Surface {
+                ArcGISTiledElevationSource {
+                    url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+                }
+            }
         }
     }
 
@@ -150,6 +155,49 @@ ApplicationWindow {
 
         onClicked: {
             zoom(2)
+        }
+    }
+
+    // Exercise 2: Create a default GlobeCameraController
+    GlobeCameraController {
+        id: globeCameraController_default
+    }
+
+    // Exercise 2: Add a lock focus button
+    Button {
+        id: button_lockFocus
+        iconSource: "qrc:///Resources/lock.png"
+        anchors.right: mapView.right
+        anchors.rightMargin: 20
+        anchors.bottom: button_zoomIn.top
+        anchors.bottomMargin: 10
+        checkable: true
+
+        onClicked: {
+            if (button_lockFocus.checked) {
+                var currentCamera = sceneView.currentViewpointCamera;
+                var currentCameraPoint = currentCamera.location;
+                if (currentCameraPoint) {
+                    var xyDistance = GeometryEngine.distanceGeodetic(
+                                sceneView.currentViewpointCenter.center,
+                                currentCameraPoint,
+                                Enums.LinearUnitIdMeters,
+                                Enums.AngularUnitIdDegrees,
+                                Enums.GeodeticCurveTypeGeodesic
+                    ).distance;
+                    var zDistance = currentCameraPoint.z;
+                    var distanceToTarget = Math.sqrt(Math.pow(xyDistance, 2.0) + Math.pow(zDistance, 2.0));
+                    var cameraController = ArcGISRuntimeEnvironment.createObject("OrbitLocationCameraController", {
+                        targetLocation: sceneView.currentViewpointCenter.center,
+                        cameraDistance: distanceToTarget
+                    });
+                    cameraController.cameraHeadingOffset = currentCamera.heading;
+                    cameraController.cameraPitchOffset = currentCamera.pitch;
+                    sceneView.cameraController = cameraController;
+                }
+            } else {
+                sceneView.cameraController = globeCameraController_default;
+            }
         }
     }
 

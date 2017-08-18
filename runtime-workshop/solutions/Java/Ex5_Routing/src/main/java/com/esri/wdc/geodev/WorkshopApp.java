@@ -452,7 +452,7 @@ public class WorkshopApp extends Application {
      * zoom out)
      */
     private void zoomScene(double factor) {
-        Geometry target = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+        Geometry target = getSceneTarget();
         if (target instanceof Point) {
             Camera camera = sceneView.getCurrentViewpointCamera()
                 .zoomToward((Point) target, factor);
