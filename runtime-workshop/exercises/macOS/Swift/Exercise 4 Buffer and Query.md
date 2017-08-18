@@ -174,5 +174,5 @@ Ready for more? Choose from the following:
 
 - [**Exercise 5: Routing**](Exercise 5 Routing.md)
 - **Bonus**
-    - We selected features but didn't do anything with the selected features' attributes. The call to [`selectFeaturesWithQuery`](https://developers.arcgis.com/os-x/quartz/api-reference//interface_a_g_s_feature_layer.html#a0964636d94f96c0df8391e4ff58d57d7) allows you to specify a completion, where you can iterate through selected features. See if you can look at the feature attributes to get more information about the selected features.
+    - We selected features but didn't do anything with the selected features' attributes. The call to [`selectFeaturesWithQuery`](https://developers.arcgis.com/macos/latest/api-reference/interface_a_g_s_feature_layer.html#ae655af6edce13c49c841f0556dc6d561) allows you to specify a completion, where you can iterate through selected features. See if you can look at the feature attributes to get more information about the selected features.
     - Try setting properties on the `AGSQueryParameters` object to change the query's behavior. For example, maybe you want to select all features that are _outside_ the buffer instead of those that are inside. How would you do that by adding just one line of code? What other interesting things can you do with `AGSQueryParameters`?

@@ -233,6 +233,6 @@ Ready for more? Choose from the following bonus challenges:
 - In fact, you can do even better than creating your own username/password dialog. A wise user will feel nervous about typing his or her username and password into an arbitrary app. You can give the user some reassurance by implementing an OAuth 2.0 user login, in which ArcGIS Online (or ArcGIS Enterprise) generates a login page, which you display in a web control. That way, your program never directly handles the username and password, but you get back a short-lived token that you can use to authenticate to ArcGIS services. See if you can implement an OAuth 2.0 user login for the routing.
 - Allow the user to add more than two points for the route.
 - Allow the user to add barriers in addition to stops.
-- Look at the properties you can set on [`AGSRouteParameters`](https://developers.arcgis.com/os-x/quartz/api-reference//interface_a_g_s_route_parameters.html) and try a few of them to change the routing behavior.
+- Look at the properties you can set on [`AGSRouteParameters`](https://developers.arcgis.com/macos/latest/api-reference/interface_a_g_s_route_parameters.html) and try a few of them to change the routing behavior.
 
 That concludes the exercises for this workshop. Well done!
