@@ -19,64 +19,68 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag the button to create an **Action** connection in `ViewController`, then close the Assistant Editor:
 
     ```
-    @IBAction func button_bufferAndQuery_onAction(sender: NSButton) {
+    @IBAction func button_bufferAndQuery_onAction(_ button_bufferAndQuery: NSButton) {
     }
     ```
 
 1. ArcGIS Runtime Quartz for macOS uses **touch delegates** to capture user actions on the map. In `ViewController.swift`, after the `import` statements but before the `ViewController` class declaration, declare a new touch delegate class. In this exercise, we call this class `BufferAndQueryTouchDelegate`. In a production app, you might put this class in its own Swift file. For this exercise, it’s fine to put this class in `ViewController.swift`. Here is the class declaration to add:
 
     ```
-    class BufferAndQueryTouchDelegate: NSObject, AGSMapViewTouchDelegate {
+    class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     }
     ```
 
-1. In your new delegate class, add a `mapView` method to get a user’s tap on the screen. You will write most of the code for this method later, but for now, just do a `println`:
+1. In your new delegate class, add a `geoView` method to get a user’s tap on the screen. You will write most of the code for this method later, but for now, just do a `println`:
 
     ```
-    func mapView(mapView: AGSMapView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        print("Clicked on map!")
+    func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        print("Clicked on map or scene!")
     }
     ```
 
 1. This delegate class will use an `AGSGraphicsOverlay` to display the point that the user clicks and the buffer around it. In `BufferAndQueryTouchDelegate`, declare a field to store a graphics overlay:
 
     ```
-    private let graphicsOverlay: AGSGraphicsOverlay
+    fileprivate let graphicsOverlay: AGSGraphicsOverlay
     ```
 
 1. In your delegate class, implement an initializer that accepts an `AGSGraphicsOverlay` as a parameter:
 
     ```
-    init(mapGraphics: AGSGraphicsOverlay) {
-        self.graphicsOverlay = mapGraphics
+    init(graphics: AGSGraphicsOverlay) {
+        self.graphicsOverlay = graphics
     }
     ```
 
-1. In `ViewController`, declare a field of the type of your new delegate class:
+1. In `ViewController`, declare two fields of the type of your new delegate class, one for the map and one for the scene:
 
     ```
-    private let bufferAndQueryTouchDelegate: BufferAndQueryTouchDelegate
+    fileprivate let bufferAndQueryTouchDelegateMap: BufferAndQueryTouchDelegate
+    fileprivate let bufferAndQueryTouchDelegateScene: BufferAndQueryTouchDelegate
     ```
 
-1. In `ViewController`, declare and instantiate a field of type `AGSGraphicOverlay`. This is the graphics overlay you will use to display the point that the user clicks and the buffer around it. Later, you will add this overlay to the map. For now, just declare and instantiate it:
+1. In `ViewController`, declare and instantiate two fields of type `AGSGraphicOverlay`, one for the map and one for the scene. These are the graphics overlays you will use to display the point that the user clicks and the buffer around it. Later, you will add these overlays to the map and scene. For now, just declare and instantiate them:
 
     ```
-    private let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
+    fileprivate let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
+    fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
     ```
 
-1. Implement an initializer for your `ViewController` class. In this initializer, instantiate the delegate you declared above, and don’t forget to call `super.init`:
+1. Implement an initializer for your `ViewController` class. In this initializer, instantiate the delegates you declared above, and don’t forget to call `super.init`:
 
     ```
     required init?(coder: NSCoder) {
-        self.bufferAndQueryTouchDelegate = BufferAndQueryTouchDelegate(mapGraphics: bufferAndQueryMapGraphics)
+        self.bufferAndQueryTouchDelegateMap = BufferAndQueryTouchDelegate(graphics: bufferAndQueryMapGraphics)
+        self.bufferAndQueryTouchDelegateScene = BufferAndQueryTouchDelegate(graphics: bufferAndQuerySceneGraphics)
         super.init(coder: coder)
     }
     ```
     
-1. Go back to your action method for the buffer and query toggle button (we called it `button_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the mapView to use our touch delegate. If the button is toggled off, we need to tell the map view to do nothing in particular when the user clicks the map by setting its touch delegate to `nil`:
+1. Go back to your action method for the buffer and query toggle button (we called it `button_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the mapView and sceneView to use our touch delegates. If the button is toggled off, we need to tell the map view and scene view to do nothing in particular when the user clicks the map or scene by setting its touch delegate to `nil`:
 
     ```
-    mapView.touchDelegate = (NSOnState == sender.state) ? bufferAndQueryTouchDelegate : nil
+    mapView.touchDelegate = (NSOnState == button_bufferAndQuery.state) ? bufferAndQueryTouchDelegateMap : nil
+    sceneView.touchDelegate = (NSOnState == button_bufferAndQuery.state) ? bufferAndQueryTouchDelegateScene : nil
     ```
     
 1. In Xcode, open the Debug area, and then run your app. Verify that a new toggle button appears and that your `print` prints text when and only when the toggle button is toggled on and you click the map:
@@ -90,50 +94,51 @@ You need to buffer the clicked point and display both the point and the buffer a
 1. In `BufferAndQueryTouchDelegate`, declare and instantiate a constant `NSColor` for drawing the click and buffer. Here we use an opaque yellow/orange color. Also declare an `AGSMarkerSymbol` and an `AGSFillSymbol`:
 
     ```
-    private let CLICK_AND_BUFFER_COLOR = NSColor(red: 1.0, green: 0.647, blue: 0.0, alpha: 1.0)
-    private let CLICK_SYMBOL: AGSMarkerSymbol
-    private let BUFFER_SYMBOL: AGSFillSymbol
+    fileprivate let CLICK_AND_BUFFER_COLOR = NSColor(red: 1.0, green: 0.647, blue: 0.0, alpha: 1.0)
+    fileprivate let CLICK_SYMBOL: AGSMarkerSymbol
+    fileprivate let BUFFER_SYMBOL: AGSFillSymbol
     ```
 
 1. In the `BufferAndQueryTouchDelegate` initializer (i.e. the `init` method), instantiate the symbols you just declared, using the color you just instantiated:
 
     ```
     CLICK_SYMBOL = AGSSimpleMarkerSymbol(
-        style: AGSSimpleMarkerSymbolStyle.Circle,
+        style: AGSSimpleMarkerSymbolStyle.circle,
         color: CLICK_AND_BUFFER_COLOR,
         size: 10)
     BUFFER_SYMBOL = AGSSimpleFillSymbol(
-        style: AGSSimpleFillSymbolStyle.Null,
+        style: AGSSimpleFillSymbolStyle.null,
         color: NSColor(deviceWhite: 1, alpha: 0),
         outline: AGSSimpleLineSymbol(
-            style: AGSSimpleLineSymbolStyle.Solid,
+            style: AGSSimpleLineSymbolStyle.solid,
             color: CLICK_AND_BUFFER_COLOR,
             width: 3))
     ```
 
-1. In `ViewController.viewDidLoad`, add the graphics overlay to the map view`:
+1. In `ViewController.viewDidLoad`, add the graphics overlays to the map view and the scene view`:
 
     ```
-    mapView.graphicsOverlays.addObject(bufferAndQueryMapGraphics)
+    mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
+    sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
     ```
     
-1. In `BufferAndQueryTouchDelegate.mapView`, you need to replace your `print` with code to create a buffer and display the point and buffer as graphics. First, create a 1000-meter buffer using `AGSGeometryEngine`:
+1. In `BufferAndQueryTouchDelegate.geoView`, you need to replace your `print` with code to create a buffer and display the point and buffer as graphics. First, create a 1000-meter buffer using `AGSGeometryEngine`:
 
     ```
-    let buffer = AGSGeometryEngine.geodesicBufferGeometry(
+    let buffer = AGSGeometryEngine.geodeticBufferGeometry(
             mapPoint,
             distance: 1000.0,
             distanceUnit: AGSLinearUnit.meters(),
             maxDeviation: 1,
-            curveType: AGSGeodeticCurveType.Geodesic)
+            curveType: AGSGeodeticCurveType.geodesic)
     ```
 
 1. After creating the buffer, add the point and buffer as graphics. Clear the graphics first and then add the point and buffer as new `AGSGraphic` objects:
 
     ```
     graphicsOverlay.graphics.removeAllObjects()
-    graphicsOverlay.graphics.addObject(AGSGraphic(geometry: buffer, symbol: BUFFER_SYMBOL))
-    graphicsOverlay.graphics.addObject(AGSGraphic(geometry: mapPoint, symbol: CLICK_SYMBOL))
+    graphicsOverlay.graphics.add(AGSGraphic(geometry: buffer, symbol: BUFFER_SYMBOL))
+    graphicsOverlay.graphics.add(AGSGraphic(geometry: mapPoint, symbol: CLICK_SYMBOL))
     ```
 
 1. Run your app. Verify that if you toggle the buffer and select button and then click the map, the point you clicked and a 1000-meter buffer around it appear on the map:
@@ -144,19 +149,26 @@ You need to buffer the clicked point and display both the point and the buffer a
 
 There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `AGSFeatureLayer.selectFeaturesWithQuery`, which both highlights selected features on the map and provides a list of the selected features.
 
-1. In `BufferAndQueryTouchDelegate.mapView`, after creating the buffer and adding graphics, instantiate an `AGSQueryParameters` object with the buffer geometry:
+1. In `BufferAndQueryTouchDelegate.geoView`, after creating the buffer and adding graphics, instantiate an `AGSQueryParameters` object with the buffer geometry:
 
     ```
     let query = AGSQueryParameters()
     query.geometry = buffer
     ```
     
-1. For each of the `AGSFeatureLayer` objects in the operational layers of the map, call `AGSFeatureLayer.selectFeaturesWithQuery`. Use `AGSSelectionMode.New` to do a new selection, as opposed to adding to or removing from the current selection. Add this code after instantiating the query object and setting its geometry:
+1. For each of the `AGSFeatureLayer` objects in the operational layers of the map, call `AGSFeatureLayer.selectFeaturesWithQuery`. Use `AGSSelectionMode.New` to do a new selection, as opposed to adding to or removing from the current selection. You must cast `geoView` depending on whether it is a `AGSMapView` or a `AGSSceneView`. Add this code after instantiating the query object and setting its geometry:
 
     ```
-    let operationalLayers = mapView.map?.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-    for layer in operationalLayers! {
-        layer.selectFeaturesWithQuery(query, mode: AGSSelectionMode.New, completion: nil)
+    let operationalLayers : [AGSFeatureLayer]
+    if geoView is AGSMapView {
+        let mapView = geoView as? AGSMapView
+        operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
+    } else {
+        let sceneView = geoView as? AGSSceneView
+        operationalLayers = sceneView!.scene!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
+    }
+    for layer in operationalLayers {
+        layer.selectFeatures(withQuery: query, mode: AGSSelectionMode.new, completion: nil)
     }
     ```
     

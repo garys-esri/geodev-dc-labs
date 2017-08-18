@@ -26,7 +26,7 @@
 		4E0287E31DCB6FCB00D1F08D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4E0287E61DCB6FCB00D1F08D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4E0287E81DCB6FCB00D1F08D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-OSX/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = SOURCE_ROOT; };
+		4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-macOS/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = SOURCE_ROOT; };
 		4EDC67701DCBE1B2004392EC /* DC_Crime_Data.mmpk */ = {isa = PBXFileReference; lastKnownFileType = file; name = DC_Crime_Data.mmpk; path = ../../../../data/DC_Crime_Data.mmpk; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +126,7 @@
 				TargetAttributes = {
 					4E0287DB1DCB6FCB00D1F08D = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -168,13 +169,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WorkshopApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9205C8124EE44DCC6FEC8B0E /* [CP] Copy Pods Resources */ = {
@@ -183,9 +187,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp-resources.sh",
+				"${PODS_ROOT}/ArcGIS-Runtime-SDK-macOS/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -325,6 +332,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.esri.wdc.geodev201611.WorkshopApp;
 				PRODUCT_NAME = WorkshopApp;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -338,6 +346,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.esri.wdc.geodev201611.WorkshopApp;
 				PRODUCT_NAME = WorkshopApp;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
