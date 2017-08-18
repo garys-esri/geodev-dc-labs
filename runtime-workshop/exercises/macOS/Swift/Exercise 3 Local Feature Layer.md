@@ -1,4 +1,4 @@
-# Exercise 3: Add a Local Feature Layer (Mac OS S/Swift)
+# Exercise 3: Add a Local Feature Layer (macOS/Swift)
 
 This exercise walks you through the following:
 - Add a layer from a mobile map package to the 2D map
@@ -7,7 +7,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 2](Exercise 2 Zoom Buttons.md), or get the Exercise 2 code solution compiling and running properly in Xcode.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/OS X/Swift/Ex3_LocalFeatureLayer), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex3_LocalFeatureLayer), available in this repository.
 
 ## Add a layer from a mobile map package to the 2D map
 

@@ -1,4 +1,4 @@
-# Exercise 5: Routing (Mac OS X/Swift)
+# Exercise 5: Routing (macOS/Swift)
 
 ArcGIS Runtime Quartz will feature the ability to run ArcGIS geoprocessing for analysis and data management. Quartz Beta 1 offers a taste of geoprocessing by supporting network routing using Network Analyst services and using local network datasets. By learning how to use routing in this exercise, you will learn key skills that will help you use other geoprocessing capabilities coming in Quartz.
 
@@ -7,9 +7,9 @@ This exercise walks you through the following:
 - Calculate a driving route and display it on the map
 
 Prerequisites:
-- Complete [Exercise 4](Exercise 4 Buffer and Query.md), or get the Exercise 4 code solution compiling and running properly in Xcode.
+- Complete [Exercise 4](Exercise%204%20Buffer%20and%20Query.md), or get the Exercise 4 code solution compiling and running properly in Xcode.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/OS X/Swift/Ex5_Routing), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex5_Routing), available in this repository.
 
 ## Get the user to click an origin point and a destination point
 
@@ -229,8 +229,8 @@ If you have trouble, **refer to the solution code**, which is linked near the be
 If you completed the exercise, congratulations! You learned how to calculate a driving route using a web service and display the route on the map.
 
 Ready for more? Choose from the following bonus challenges:
-- Instead of hard-coding your ArcGIS Online username and password, challenge the user for a username and password. Runtime for OS X will do this automatically, but it would be very handy for the user if you wrote code to put up your own username/password dialog and store the resulting login token.
-- In fact, you can do even better than creating your own username/password dialog. A wise user will feel nervous about typing his or her username and password into an arbitrary app. You can give the user some reassurance by implementing an OAuth 2.0 user login, in which ArcGIS Online (or ArcGIS Enterprise) generates a login page, which you display in a web control. That way, your program never directly handles the username and password, but you get back a short-lived token that you can use to authenticate to ArcGIS services. See if you can implement an OAuth 2.0 user login for the routing. _Note: OAuth will be much better implemented in future releases than it is in ArcGIS Runtime Quartz Beta 1 for OS X. This bonus challenge would be quite difficult with Beta 1._
+- Instead of hard-coding your ArcGIS Online username and password, challenge the user for a username and password. Runtime for macOS will do this automatically, but it would be very handy for the user if you wrote code to put up your own username/password dialog and store the resulting login token.
+- In fact, you can do even better than creating your own username/password dialog. A wise user will feel nervous about typing his or her username and password into an arbitrary app. You can give the user some reassurance by implementing an OAuth 2.0 user login, in which ArcGIS Online (or ArcGIS Enterprise) generates a login page, which you display in a web control. That way, your program never directly handles the username and password, but you get back a short-lived token that you can use to authenticate to ArcGIS services. See if you can implement an OAuth 2.0 user login for the routing.
 - Allow the user to add more than two points for the route.
 - Allow the user to add barriers in addition to stops.
 - Look at the properties you can set on [`AGSRouteParameters`](https://developers.arcgis.com/os-x/quartz/api-reference//interface_a_g_s_route_parameters.html) and try a few of them to change the routing behavior.

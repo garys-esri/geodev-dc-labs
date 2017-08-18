@@ -1,4 +1,4 @@
-# Exercise 2: Add Zoom In and Zoom Out Buttons (Mac OS X/Swift)
+# Exercise 2: Add Zoom In and Zoom Out Buttons (macOS/Swift)
 
 This exercise walks you through the following:
 - Add zoom in and zoom out buttons to the UI
@@ -7,7 +7,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 1](Exercise 1 Map and Scene.md), or get the Exercise 1 code solution compiling and running properly in Xcode.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/OS X/Swift/Ex2_ZoomButtons), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex2_ZoomButtons), available in this repository.
 
 ## Add zoom in and zoom out buttons to the UI
 

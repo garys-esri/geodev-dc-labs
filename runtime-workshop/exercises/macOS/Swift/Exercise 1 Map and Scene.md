@@ -1,21 +1,21 @@
-# Exercise 1: Map and Scene (Mac OS X/Swift)
+# Exercise 1: Map and Scene (macOS/Swift)
 
 This exercise walks you through the following:
-- Create a new OS X app
+- Create a new macOS app
 - Add ArcGIS Runtime to the app
 - Add a 2D map to the app
 - Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 Prerequisites:
-- Use a Mac with OS X 10.10 or 10.11.
-- Install OS X SDK 10.10 or higher.
-- Install Xcode 7.
+- Use a Mac with macOS 10.11 or 10.12.
+- Install macOS SDK 10.12.
+- Install Xcode 8.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/OS X/Swift/Ex1_MapAndScene), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex1_MapAndScene), available in this repository.
 
-## Create a new OS X app
+## Create a new macOS app
 
-1. Create a new Xcode project for an OS X Cocoa application. For **Language**, choose **Swift**. Make sure that **Use Storyboards** is checked.
+1. Create a new Xcode project for an macOS Cocoa application. For **Language**, choose **Swift**. Make sure that **Use Storyboards** is checked.
 
 1. At any point during the exercises, you can run the app from Xcode. If you run the app now, you should see a blank app window.
 
@@ -38,11 +38,11 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. In your project directory, create a text file named `Podfile` with the following contents, replacing `WorkshopApp` with the name of your project:
 
     ```
-    platform :osx, '10.11'
+    platform :osx, '10.12’
     use_frameworks!
 
     target ‘WorkshopApp' do
-        pod 'ArcGIS-Runtime-SDK-OSX', '100.0-beta1'
+        pod 'ArcGIS-Runtime-SDK-OSX', '100.1.0’
     end
     ```
 
@@ -162,5 +162,5 @@ If you completed the exercise, congratulations! You learned how to add a 2D map 
 
 Ready for more? Choose from the following:
 
-- [**Exercise 2: Add Zoom In and Zoom Out Buttons**](Exercise 2 Zoom Buttons.md)
+- [**Exercise 2: Add Zoom In and Zoom Out Buttons**](Exercise%202%20Zoom%20Buttons.md)
 - **Bonus**: the map and scene we added operate independently. When you pan the map, the scene does not move, and when you pan the scene, the map does not move. Can you figure out how to link the viewpoints of the map and the scene so that when you pan one, the other automatically pans? 2D and 3D use different mechanisms for panning and zooming, so watch out! Send us a pull request if you figure it out.
