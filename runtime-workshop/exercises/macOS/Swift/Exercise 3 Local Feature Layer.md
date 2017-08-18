@@ -18,14 +18,14 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 1. In `ViewController.swift`, declare a constant for the MMPK path. Use `NSBundle.mainBundle().pathForResource` to construct the path:
 
     ```
-    private let MMPK_PATH = NSBundle.mainBundle().pathForResource("DC_Crime_Data", ofType:"mmpk")
+    fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
     ```
 
 1. At the end of `viewDidLoad()`, instantiate an `AGSMobileMapPackage` with the mobile map package constant. Then load the mobile map package with a completion to run when the mobile map package is done loading:
 
     ```
-    let mmpk = AGSMobileMapPackage(path: MMPK_PATH!)
-    mmpk.loadWithCompletion { [weak self] (error: NSError?) in
+    let mmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
+    mmpk.load {(error) in
         
     }
     ```
@@ -34,9 +34,9 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
     ```
     if 0 < mmpk.maps.count {
-        self!.mapView.map = mmpk.maps[0]
+        self.mapView.map = mmpk.maps[0]
     }
-    self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
+    self.mapView.map!.basemap = AGSBasemap.nationalGeographic()
     ```
     
 1. Run your app. Verify that the map zooms to Washington, D.C., and that a layer of crime incidents appears on top of the basemap. The incidents appear as red triangles, which is the symbology specified in the mobile map package:
@@ -50,8 +50,8 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
 1. At the end of `viewDidLoad()`, instantiate an `AGSMobileMapPackage` with the mobile map package constant. Then load the mobile map package with a completion to run when the mobile map package is done loading. (This should seem familiar.)
 
     ```
-    let sceneMmpk = AGSMobileMapPackage(path: MMPK_PATH!)
-    sceneMmpk.loadWithCompletion { [weak self] (error: NSError?) in
+    let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
+    sceneMmpk.load {(error) in
 
     }
     ```
@@ -73,7 +73,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
 1. After adding the layers to the scene (inside the `if` block from the previous step), zoom the scene to Washington, D.C.:
 
     ```
-    self!.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
+    self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
     ```
     
 1. Run your app. Verify that when you switch to 3D, the scene displays Washington, D.C., with the red triangles representing crime incidents:
@@ -83,11 +83,11 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
 1. Remember in [Exercise 2](Exercise 2 Zoom Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a camera to zoom in and out? Here we will also use a camera, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `AGSCamera.rotateAroundTargetPoint` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAroundTargetPoint`, we will give the rotated camera to the scene view. Here is the code to insert immediately after the previous step (still inside the `if` block):
 
     ```
-    let viewpoint = self!.sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)
+    let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
     let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-    let camera = self!.sceneView.currentViewpointCamera()
+    let camera = self.sceneView.currentViewpointCamera()
             .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-    self!.sceneView.setViewpointCamera(camera)
+    self.sceneView.setViewpointCamera(camera)
     ```
 
 1. Run your app. Verify that when you switch to 3D, the crime incidents display and the view is rotated and pitched. Also try the built-in 3D navigation by holding the alt key and mouse button and moving the mouse:

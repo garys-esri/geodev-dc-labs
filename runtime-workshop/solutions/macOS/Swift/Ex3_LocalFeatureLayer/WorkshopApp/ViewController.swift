@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Esri
+ * Copyright 2016-2017 Esri
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class ViewController: NSViewController {
     let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
     
     // Exercise 3: Specify mobile map package path
-    private let MMPK_PATH = NSBundle.mainBundle().pathForResource("DC_Crime_Data", ofType:"mmpk")
+    fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
 
     // Exercise 1: Outlets from storyboard
     @IBOutlet var parentView: NSView!
@@ -32,38 +32,38 @@ class ViewController: NSViewController {
     @IBOutlet weak var button_toggle2d3d: NSButton!
     
     // Exercise 1: Declare threeD boolean
-    private var threeD = false
+    fileprivate var threeD = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Exercise 1: Set 2D map's basemap
-        mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographicBasemap())
+        mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographic())
         
         // Exercise 1: Set up 3D scene's basemap and elevation
-        sceneView.scene = AGSScene(basemapType: AGSBasemapType.Imagery)
+        sceneView.scene = AGSScene(basemapType: AGSBasemapType.imagery)
         let surface = AGSSurface()
-        surface.elevationSources.append(AGSArcGISTiledElevationSource(URL: NSURL(string: ELEVATION_IMAGE_SERVICE)!));
+        surface.elevationSources.append(AGSArcGISTiledElevationSource(url: URL(string: ELEVATION_IMAGE_SERVICE)!));
         sceneView.scene!.baseSurface = surface;
         
         /**
          Exercise 3: Open a mobile map package (.mmpk) and
          add its operational layers to the map
          */
-        let mmpk = AGSMobileMapPackage(path: MMPK_PATH!)
-        mmpk.loadWithCompletion { [weak self] (error: NSError?) in
+        let mmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
+        mmpk.load {(error) in
             if 0 < mmpk.maps.count {
-                self!.mapView.map = mmpk.maps[0]
+                self.mapView.map = mmpk.maps[0]
             }
-            self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
+            self.mapView.map!.basemap = AGSBasemap.nationalGeographic()
         }
         
         /**
          Exercise 3: Open a mobile map package (.mmpk) and
          add its operational layers to the scene
          */
-        let sceneMmpk = AGSMobileMapPackage(path: MMPK_PATH!)
-        sceneMmpk.loadWithCompletion { [weak self] (error: NSError?) in
+        let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
+        sceneMmpk.load {(error) in
             if 0 < sceneMmpk.maps.count {
                 let thisMap = sceneMmpk.maps[0]
                 var layers = [AGSLayer]()
@@ -71,60 +71,59 @@ class ViewController: NSViewController {
                     layers.append(layer as! AGSLayer)
                 }
                 thisMap.operationalLayers.removeAllObjects()
-                self!.sceneView.scene?.operationalLayers.addObjectsFromArray(layers)
+                self.sceneView.scene?.operationalLayers.addObjects(from: layers)
                 
                 // Here is the intended way of getting the layers' viewpoint:
-                // self!.sceneView.setViewpoint(thisMap.initialViewpoint!)
-                // However, AGSMap.initialViewpoint is not working in ArcGIS Runtime
-                // Quartz Beta 1, and the Runtime development team is researching the
-                // issue. Therefore, let's hard-code the coordinates for Washington, D.C.
-                self!.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
+                // self.sceneView.setViewpoint(thisMap.initialViewpoint!)
+                // However, AGSMap.initialViewpoint is returning nil in ArcGIS Runtime
+                // for macOS. Therefore, let's hard-code the coordinates for Washington, D.C.
+                self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
                 
                 // Rotate the camera
-                let viewpoint = self!.sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)
+                let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
                 let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-                let camera = self!.sceneView.currentViewpointCamera()
+                let camera = self.sceneView.currentViewpointCamera()
                         .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-                self!.sceneView.setViewpointCamera(camera)
+                self.sceneView.setViewpointCamera(camera)
             }
-            self!.mapView.map!.basemap = AGSBasemap.nationalGeographicBasemap()
+            self.mapView.map!.basemap = AGSBasemap.nationalGeographic()
         }
     }
 
-    override var representedObject: AnyObject? {
+    override var representedObject: Any? {
         didSet {
         // Update the view, if already loaded.
         }
     }
     
-    @IBAction func button_toggle2d3d_onAction(sender: NSButton) {
+    @IBAction func button_toggle2d3d_onAction(_ sender: NSButton) {
         // Exercise 1: Toggle the button
         threeD = !threeD
         button_toggle2d3d.image = NSImage(named: threeD ? "two_d" : "three_d")
         
         // Exercise 1: Toggle between the 2D map and the 3D scene
-        mapView.hidden = threeD
-        sceneView.hidden = !threeD
+        mapView.isHidden = threeD
+        sceneView.isHidden = !threeD
     }
     
     /**
      Exercise 2: zoom in
      */
-    @IBAction func button_zoomIn_onAction(sender: NSButton) {
+    @IBAction func button_zoomIn_onAction(_ sender: NSButton) {
         zoom(2)
     }
     
     /**
      Exercise 2: zoom out
      */
-    @IBAction func button_zoomOut_onAction(sender: NSButton) {
+    @IBAction func button_zoomOut_onAction(_ sender: NSButton) {
         zoom(0.5)
     }
     
     /**
      Exercise 2: determine whether to call zoomMap or zoomScene
      */
-    private func zoom(factor: Double) {
+    fileprivate func zoom(_ factor: Double) {
         if (threeD) {
             zoomScene(factor);
         } else {
@@ -138,7 +137,7 @@ class ViewController: NSViewController {
      - parameters:
         - factor: The zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
      */
-    private func zoomMap(factor: Double) {
+    fileprivate func zoomMap(_ factor: Double) {
         mapView.setViewpointScale(mapView.mapScale / factor,
                                   completion: nil);
     }
@@ -149,8 +148,8 @@ class ViewController: NSViewController {
      - parameters:
         - factor: The zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
      */
-    private func zoomScene(factor: Double) {
-        let target = sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)?.targetGeometry as! AGSPoint
+    fileprivate func zoomScene(_ factor: Double) {
+        let target = sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)?.targetGeometry as! AGSPoint
         let camera = sceneView.currentViewpointCamera().zoomTowardTargetPoint(target, factor: factor)
         sceneView.setViewpointCamera(camera, duration: 0.5, completion: nil)
     }
