@@ -12,5 +12,7 @@
         <file>two_d.png</file>
         <file>zoom_in.png</file>
         <file>zoom_out.png</file>
+        <file>lock.png</file>
+        <file>lock_selected.png</file>
     </qresource>
 </RCC>
