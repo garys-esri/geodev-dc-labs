@@ -42,7 +42,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     use_frameworks!
 
     target ‘WorkshopApp' do
-        pod 'ArcGIS-Runtime-SDK-OSX', '100.1.0’
+        pod 'ArcGIS-Runtime-SDK-macOS', '100.1'
     end
     ```
 
@@ -69,7 +69,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. In `viewDidLoad()`, give your map view a new map that contains a basemap:
 
     ```
-    mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographicBasemap())
+    mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographic())
     ```
 
 1. Open Info.plist as source code (i.e. plain text editor). You will see a series of key/string pairs. At the end of that series, add the following key/dict pair:
@@ -103,7 +103,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     
 ## Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
-The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
+Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
 
 1. Open `Main.storyboard`. Use the **Object** library to add another Custom View to your main view. Make sure it’s a child of the main view, not the map view. Give it the same dimensions and constraints as your map view. Set its class to `AGSSceneView`. In the Attributes inspector, check the **Hidden** box.
 
@@ -117,7 +117,7 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
 1. Right-click and drag the button to create another connection, but this time, change the connection from **Outlet** to **Action**. Give it a name, e.g. `button_toggle2d3d_onAction`. You can change its type to `NSButton` if desired. Click Connect, and a new method is created:
 
     ```
-    @IBAction func button_toggle2d3d_onAction(sender: NSButton) {
+    @IBAction func button_toggle2d3d_onAction(_ sender: NSButton) {
     }
     ```
 
@@ -126,7 +126,7 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
     ```
     let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
 
-    private var threeD = false
+    fileprivate var threeD = false
     ```
 
 1. In the 2D/3D toggle button action method, change the value of the `threeD` field, and change the button's image. Also toggle the visibility of the map view and scene view:
@@ -136,17 +136,17 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
         threeD = !threeD
         button_toggle2d3d.image = NSImage(named: threeD ? "two_d" : "three_d")
 
-        mapView.hidden = threeD
-        sceneView.hidden = !threeD
+        mapView.isHidden = threeD
+        sceneView.isHidden = !threeD
     }
     ```
 
 1. In `viewDidLoad()`, set up the 3D scene’s basemap and elevation. Give the scene view a scene with a basemap, and give the scene an elevation surface:
 
     ```
-    sceneView.scene = AGSScene(basemapType: AGSBasemapType.Imagery)
+    sceneView.scene = AGSScene(basemapType: AGSBasemapType.imagery)
     let surface = AGSSurface()
-    surface.elevationSources.append(AGSArcGISTiledElevationSource(URL: NSURL(string: ELEVATION_IMAGE_SERVICE)!));
+    surface.elevationSources.append(AGSArcGISTiledElevationSource(url: URL(string: ELEVATION_IMAGE_SERVICE)!));
     sceneView.scene!.baseSurface = surface;
     ```
     
