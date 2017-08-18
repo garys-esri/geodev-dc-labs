@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Esri
+ * Copyright 2016-2017 Esri
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,35 +29,35 @@ class ViewController: NSViewController {
     @IBOutlet weak var button_toggle2d3d: NSButton!
     
     // Exercise 1: Declare threeD boolean
-    private var threeD = false
+    fileprivate var threeD = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Exercise 1: Set 2D map's basemap
-        mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographicBasemap())
+        mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographic())
         
         // Exercise 1: Set up 3D scene's basemap and elevation
-        sceneView.scene = AGSScene(basemapType: AGSBasemapType.Imagery)
+        sceneView.scene = AGSScene(basemapType: AGSBasemapType.imagery)
         let surface = AGSSurface()
-        surface.elevationSources.append(AGSArcGISTiledElevationSource(URL: NSURL(string: ELEVATION_IMAGE_SERVICE)!));
+        surface.elevationSources.append(AGSArcGISTiledElevationSource(url: URL(string: ELEVATION_IMAGE_SERVICE)!));
         sceneView.scene!.baseSurface = surface;
     }
 
-    override var representedObject: AnyObject? {
+    override var representedObject: Any? {
         didSet {
         // Update the view, if already loaded.
         }
     }
     
-    @IBAction func button_toggle2d3d_onAction(sender: NSButton) {
+    @IBAction func button_toggle2d3d_onAction(_ sender: NSButton) {
         // Exercise 1: Toggle the button
         threeD = !threeD
         button_toggle2d3d.image = NSImage(named: threeD ? "two_d" : "three_d")
         
         // Exercise 1: Toggle between the 2D map and the 3D scene
-        mapView.hidden = threeD
-        sceneView.hidden = !threeD
+        mapView.isHidden = threeD
+        sceneView.isHidden = !threeD
     }
 
 }

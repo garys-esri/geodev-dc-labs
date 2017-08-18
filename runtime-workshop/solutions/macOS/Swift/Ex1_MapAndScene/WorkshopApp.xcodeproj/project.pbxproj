@@ -12,20 +12,20 @@
 		4E0287E41DCB6FCB00D1F08D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287E31DCB6FCB00D1F08D /* Assets.xcassets */; };
 		4E0287E71DCB6FCB00D1F08D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287E51DCB6FCB00D1F08D /* Main.storyboard */; };
 		4E0287EF1DCB731100D1F08D /* ArcGIS.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */; };
-		666C59DC5F551577595F0474 /* Pods_WorkshopApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */; };
+		A4C1216330D3DCF247A58496 /* Pods_WorkshopApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24C6E441F452D96916D34CA9 /* Pods_WorkshopApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0329DE676BAEF8A9BC5C6127 /* Pods-WorkshopApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorkshopApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp.debug.xcconfig"; sourceTree = "<group>"; };
 		065191A5988F4172DBC47D66 /* Pods-WorkshopApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorkshopApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp.release.xcconfig"; sourceTree = "<group>"; };
-		0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WorkshopApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		24C6E441F452D96916D34CA9 /* Pods_WorkshopApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WorkshopApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E0287DC1DCB6FCB00D1F08D /* WorkshopApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkshopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E0287DF1DCB6FCB00D1F08D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4E0287E11DCB6FCB00D1F08D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4E0287E31DCB6FCB00D1F08D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4E0287E61DCB6FCB00D1F08D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4E0287E81DCB6FCB00D1F08D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-OSX/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = SOURCE_ROOT; };
+		4E0287EE1DCB731100D1F08D /* ArcGIS.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ArcGIS.bundle; path = "Pods/ArcGIS-Runtime-SDK-macOS/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,7 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				666C59DC5F551577595F0474 /* Pods_WorkshopApp.framework in Frameworks */,
+				A4C1216330D3DCF247A58496 /* Pods_WorkshopApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +83,7 @@
 		BA39C5DE7B9A6F390C25112E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0A8C2220E9F6005EB36C0805 /* Pods_WorkshopApp.framework */,
+				24C6E441F452D96916D34CA9 /* Pods_WorkshopApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -118,11 +118,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Esri;
 				TargetAttributes = {
 					4E0287DB1DCB6FCB00D1F08D = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -164,13 +165,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WorkshopApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9205C8124EE44DCC6FEC8B0E /* [CP] Copy Pods Resources */ = {
@@ -179,9 +183,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp-resources.sh",
+				"${PODS_ROOT}/ArcGIS-Runtime-SDK-macOS/ArcGIS.framework/Versions/Current/Resources/ArcGIS.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -243,8 +250,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -266,7 +275,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -288,8 +297,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -305,9 +316,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -319,8 +331,9 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = WorkshopApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.WorkshopApp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.esri.wdc.geodev.WorkshopApp;
 				PRODUCT_NAME = WorkshopApp;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -332,8 +345,9 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = WorkshopApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.esri.wdc.geodev201611.WorkshopApp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.esri.wdc.geodev.WorkshopApp;
 				PRODUCT_NAME = WorkshopApp;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
