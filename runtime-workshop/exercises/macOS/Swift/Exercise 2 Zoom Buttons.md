@@ -16,10 +16,10 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. Open `ViewController.swift` in the Assistant Editor. Create an Action connection (not an Outlet connection) from each new button to the ViewController class:
 
     ```
-    @IBAction func button_zoomIn_onAction(sender: NSButton) {
+    @IBAction func button_zoomIn_onAction(_ sender: NSButton) {
     }
     
-    @IBAction func button_zoomOut_onAction(sender: NSButton) {
+    @IBAction func button_zoomOut_onAction(_ sender: NSButton) {
     }
     ```
     
@@ -29,12 +29,12 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 ## Zoom in and out on the map and the scene
 
-1. In ArcGIS Runtime, zooming on a map and zooming on a scene use simple but quite different mechanisms. We'll talk more about those mechanisms later, but for now, get ready to zoom by creating an empty `private func zoomMap(factor: Double)` method and a `private func zoomScene(factor: Double)` method in your class.
+1. In ArcGIS Runtime, zooming on a map and zooming on a scene use simple but quite different mechanisms. We'll talk more about those mechanisms later, but for now, get ready to zoom by creating an empty `fileprivate func zoomMap(_ factor: Double)` method and a `fileprivate func zoomScene(_ factor: Double)` method in your class.
 
 1. Rather than having your action methods call `zoomMap` and `zoomScene` directly, you can simplify your code by creating a generic `zoom(factor: Double)` method that calls `zoomMap` or `zoomScene` depending on whether you're currently in 2D mode or 3D mode:
 
     ```
-    private func zoom(factor: Double) {
+    fileprivate func zoom(_ factor: Double) {
         if (threeD) {
             zoomScene(factor);
         } else {
@@ -65,7 +65,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. 3D is awesome, but it is almost always more complicated than 2D, and zooming is no exception. ArcGIS Runtime's 3D scene view uses a _viewpoint_ with a _camera_ to change the user's view of the scene. Objects of type `Camera` are immutable and have a fluent API, so you can get a copy of the scene view’s current viewpoint camera, use a factor to move it toward or away from the camera's current target, and use it as the scene view’s new viewpoint camera. You can even animate the camera's movement and specify the duration of the animated camera movement (the code that follows uses `0.5` to animate for half a second). In this case, we will use the `Camera`'s `zoomTowardTargetPoint` method to create a new `Camera`. Add the following code to your `zoomScene(Double)` method:
 
     ```
-    let target = sceneView.currentViewpointWithType(AGSViewpointType.CenterAndScale)?.targetGeometry as! AGSPoint
+    let target = sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)?.targetGeometry as! AGSPoint
     let camera = sceneView.currentViewpointCamera().zoomTowardTargetPoint(target, factor: factor)
     sceneView.setViewpointCamera(camera, duration: 0.5, completion: nil)
     }
