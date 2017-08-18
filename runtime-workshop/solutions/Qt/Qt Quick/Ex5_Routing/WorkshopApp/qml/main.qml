@@ -204,6 +204,11 @@ ApplicationWindow {
 
         Scene {
             BasemapImagery {}
+            Surface {
+                ArcGISTiledElevationSource {
+                    url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+                }
+            }
         }
 
         // Exercise 4: Add graphics overlay

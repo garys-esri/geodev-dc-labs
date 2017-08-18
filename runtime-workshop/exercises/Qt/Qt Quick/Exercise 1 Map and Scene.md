@@ -64,6 +64,16 @@ If you need some help, you can refer to [the solution to this exercise](../../..
         }
     }
     ```
+
+1. Add to your `Scene` a `Surface` that uses an `ArcGISTiledElevationSource` to give the scene some 3D terrain:
+
+    ```
+    Surface {
+        ArcGISTiledElevationSource {
+            url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+        }
+    }
+    ```
     
 1. Download [the exercise images](../../../images) and add them to your project's `Resources.qrc` file, alongside the existing `AppIcon.png` file. In Qt Creator, right-click `Resources/Resources/Resources.qrc/Resources`, choose **Add Existing Files**, and select the files you downloaded. (Note: if you clone the repo, you can just copy the images from there instead of downloading again.)
     
