@@ -27,15 +27,15 @@ After doing Exercise 4, this should seem familiar to you.
 
     ```
     private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
-        style: AGSSimpleMarkerSymbolStyle.Triangle,
+        style: AGSSimpleMarkerSymbolStyle.triangle,
         color: NSColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
         size: 10)
     private let ROUTE_DESTINATION_SYMBOL = AGSSimpleMarkerSymbol(
-        style: AGSSimpleMarkerSymbolStyle.Square,
+        style: AGSSimpleMarkerSymbolStyle.square,
         color: NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
         size: 10)
     private let ROUTE_LINE_SYMBOL = AGSSimpleLineSymbol(
-        style: AGSSimpleLineSymbolStyle.Solid,
+        style: AGSSimpleLineSymbolStyle.solid,
         color: NSColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
         width: 5)
     ```
@@ -91,13 +91,13 @@ After doing Exercise 4, this should seem familiar to you.
     ```
     originPoint = point
     graphics.removeAllObjects()
-    graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_ORIGIN_SYMBOL))
+    graphics.add(AGSGraphic(geometry: point, symbol: ROUTE_ORIGIN_SYMBOL))
     ```
 
 1. If `originPoint` is not `nil`, this is the second point clicked. Add a new route destination graphic. This is where you will eventually write the code for calculating the route, but you will write that code later. For now, just add a graphic, and also set `originPoint` to `nil` so that the next click will be for a new origin instead of another destination:
 
     ```
-    graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
+    graphics.add(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
     ```
 
 1. Open `Main.storyboard` and add a new button to enable routing. Make it very similar to the buffer and query button, but use the `routing` image. Set constraints, size, and all else as with previous buttons. Most importantly, change the button type to **Push On Push Off**.
@@ -133,7 +133,7 @@ After doing Exercise 4, this should seem familiar to you.
 1. In `ViewController.viewDidLoad`, add the new graphics overlay to the map view:
 
     ```
-    mapView.graphicsOverlays.addObject(routingMapGraphics)
+    mapView.graphicsOverlays.add(routingMapGraphics)
     ```
 
 1. In `button_routing_onAction`, if the routing button has been selected, set the map view’s touch delegate to `routingTouchDelegate`; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
@@ -181,13 +181,13 @@ After doing Exercise 4, this should seem familiar to you.
 1. In `ViewController.init`, modify the instantiation of the `RoutingTouchDelegate` so that it takes a route task and a route parameters object. When instantiating the route task, set its ArcGIS Online username and password, and get the route parameters from the route task. But instantiate them in such a way that if getting the route parameters fails, both the route task and the route parameters are set to `nil`, as a signal to the rest of the code that routing is not available; in this case, also disable the routing button. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login (not supported in ArcGIS Runtime Quartz Beta 2, and presents a problem of its own since you shouldn't hard-code your client secret), or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password. You can omit that line of code, and then the app will automatically prompt you for a username and password...every time you run the app._ Here is the code to use in `ViewController.init` instead of the one-line instantiation of `routingTouchDelegate` that you wrote before:
 
     ```
-    let routeTask = AGSRouteTask(URL: NSURL(string: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
+    let routeTask = AGSRouteTask(url: URL(string: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
     // Don't share this code without removing plain text username and password!!!
     routeTask.credential = AGSCredential(user: "myUsername", password: "myPassword")
-    routeTask.defaultRouteParametersWithCompletion { (routeParameters, err) in
+    routeTask.defaultRouteParameters { (routeParameters, err) in
         var routingTouchDelegate: RoutingTouchDelegate? = nil
         if nil == routeParameters {
-            self.button_routing.enabled = false
+            self.button_routing.isEnabled = false
         } else {
             routingTouchDelegate = RoutingTouchDelegate(mapGraphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
         }
@@ -206,12 +206,12 @@ After doing Exercise 4, this should seem familiar to you.
     routeParameters.setStops(stops)
     ```
     
-1. After adding the stops, call `RouteTask.solveRouteWithParameters` to solve the route asynchronously. In the completion code for that call, get the first route and add it as a graphic:
+1. After adding the stops, call `RouteTask.solveRoute` to solve the route asynchronously. In the completion code for that call, get the first route and add it as a graphic:
 
     ```
-    routeTask.solveRouteWithParameters(routeParameters, completion: { (routeResult, err) in
-        if 0 < routeResult?.routes.count {
-            graphics.addObject(AGSGraphic(
+    routeTask.solveRoute(with: routeParameters, completion: { (routeResult, err) in
+        if 0 < (routeResult?.routes.count)! {
+            graphics.add(AGSGraphic(
                 geometry: routeResult!.routes[0].routeGeometry,
                 symbol: self.ROUTE_LINE_SYMBOL))
         }

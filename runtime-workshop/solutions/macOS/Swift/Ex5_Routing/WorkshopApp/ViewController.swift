@@ -87,15 +87,15 @@ class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
     
     // Exercise 5: Declare and instantiate symbols for click and buffer
     private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
-        style: AGSSimpleMarkerSymbolStyle.Triangle,
+        style: AGSSimpleMarkerSymbolStyle.triangle,
         color: NSColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
         size: 10)
     private let ROUTE_DESTINATION_SYMBOL = AGSSimpleMarkerSymbol(
-        style: AGSSimpleMarkerSymbolStyle.Square,
+        style: AGSSimpleMarkerSymbolStyle.square,
         color: NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
         size: 10)
     private let ROUTE_LINE_SYMBOL = AGSSimpleLineSymbol(
-        style: AGSSimpleLineSymbolStyle.Solid,
+        style: AGSSimpleLineSymbolStyle.solid,
         color: NSColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
         width: 5)
     
@@ -132,18 +132,18 @@ class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
         if (nil == originPoint) {
             originPoint = point
             graphics.removeAllObjects()
-            graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_ORIGIN_SYMBOL))
+            graphics.add(AGSGraphic(geometry: point, symbol: ROUTE_ORIGIN_SYMBOL))
         } else {
-            graphics.addObject(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
+            graphics.add(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
             routeParameters.clearStops()
             var stops: [AGSStop] = []
             for p in [ originPoint, point ] {
                 stops.append(AGSStop(point: p!))
             }
             routeParameters.setStops(stops)
-            routeTask.solveRouteWithParameters(routeParameters, completion: { (routeResult, err) in
-                if 0 < routeResult?.routes.count {
-                    graphics.addObject(AGSGraphic(
+            routeTask.solveRoute(with: routeParameters, completion: { (routeResult, err) in
+                if 0 < (routeResult?.routes.count)! {
+                    graphics.add(AGSGraphic(
                         geometry: routeResult!.routes[0].routeGeometry,
                         symbol: self.ROUTE_LINE_SYMBOL))
                 }
@@ -196,7 +196,7 @@ class ViewController: NSViewController {
         super.init(coder: coder)
         
         // Exercise 5: Instantiate routing objects
-        let routeTask = AGSRouteTask(URL: NSURL(string: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
+        let routeTask = AGSRouteTask(url: URL(string: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
         /**
          Note: for ArcGIS Online routing, this tutorial uses a username and password
          in the source code for simplicity. For security reasons, you would not
@@ -207,10 +207,10 @@ class ViewController: NSViewController {
          */
         // Don't share this code without removing plain text username and password!!!
         routeTask.credential = AGSCredential(user: "myUsername", password: "myPassword")
-        routeTask.defaultRouteParametersWithCompletion { (routeParameters, err) in
+        routeTask.defaultRouteParameters { (routeParameters, err) in
             var routingTouchDelegate: RoutingTouchDelegate? = nil
             if nil == routeParameters {
-                self.button_routing.enabled = false
+                self.button_routing.isEnabled = false
             } else {
                 routingTouchDelegate = RoutingTouchDelegate(mapGraphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
             }
@@ -278,7 +278,7 @@ class ViewController: NSViewController {
         sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
         
         // Exercise 5: Add a graphics overlay to the map for the routing
-        mapView.graphicsOverlays.addObject(routingMapGraphics)
+        mapView.graphicsOverlays.add(routingMapGraphics)
     }
     
     override var representedObject: Any? {
