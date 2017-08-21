@@ -83,7 +83,7 @@ class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 /**
  * Exercise 5: A touch delegate for routing.
  */
-class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
+class RoutingTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     
     // Exercise 5: Declare and instantiate symbols for click and buffer
     private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
@@ -100,16 +100,16 @@ class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
         width: 5)
     
     // Exercise 5: Declare routing fields
-    private let mapRouteGraphics: AGSGraphicsOverlay
+    private let routeGraphics: AGSGraphicsOverlay
     private let routeTask: AGSRouteTask
     private let routeParameters: AGSRouteParameters
     private var originPoint: AGSPoint? = nil
     
     init(
-        mapGraphics: AGSGraphicsOverlay,
+        graphics: AGSGraphicsOverlay,
         routeTask: AGSRouteTask,
         routeParameters: AGSRouteParameters) {
-        self.mapRouteGraphics = mapGraphics
+        self.routeGraphics = graphics
         self.routeTask = routeTask
         self.routeParameters = routeParameters
     }
@@ -117,14 +117,14 @@ class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
     // Allow a client to reset the routing process
     func reset() {
         originPoint = nil
-        mapRouteGraphics.graphics.removeAllObjects()
+        routeGraphics.graphics.removeAllObjects()
     }
     
     /**
-     Exercise 5: Method that runs when routing is active and the user clicks the map.
+     Exercise 5: Method that runs when routing is active and the user clicks the map or scene.
      */
-    func mapView(mapView: AGSMapView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        let graphics = mapRouteGraphics.graphics
+    func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        let graphics = routeGraphics.graphics
         var point = mapPoint
         if point.hasZ {
             point = AGSPoint(x: point.x, y: point.y, spatialReference: point.spatialReference)
@@ -183,10 +183,12 @@ class ViewController: NSViewController {
     fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
     
     // Exercise 5: Declare routing touch delegate
-    private var routingTouchDelegate: RoutingTouchDelegate?
+    private var routingTouchDelegateMap: RoutingTouchDelegate?
+    private var routingTouchDelegateScene: RoutingTouchDelegate?
     
-    // Exercise 5: Declare and instantiate graphics overlay for routing
+    // Exercise 5: Declare and instantiate graphics overlays for routing
     private let routingMapGraphics = AGSGraphicsOverlay()
+    private let routingSceneGraphics = AGSGraphicsOverlay()
     
     required init?(coder: NSCoder) {
         // Exercise 4: Instantiate buffer and query touch delegate
@@ -208,13 +210,16 @@ class ViewController: NSViewController {
         // Don't share this code without removing plain text username and password!!!
         routeTask.credential = AGSCredential(user: "myUsername", password: "myPassword")
         routeTask.defaultRouteParameters { (routeParameters, err) in
-            var routingTouchDelegate: RoutingTouchDelegate? = nil
+            var routingTouchDelegateMap: RoutingTouchDelegate? = nil
+            var routingTouchDelegateScene: RoutingTouchDelegate? = nil
             if nil == routeParameters {
                 self.button_routing.isEnabled = false
             } else {
-                routingTouchDelegate = RoutingTouchDelegate(mapGraphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+                routingTouchDelegateMap = RoutingTouchDelegate(graphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+                routingTouchDelegateScene = RoutingTouchDelegate(graphics: self.routingSceneGraphics, routeTask: routeTask, routeParameters: routeParameters!)
             }
-            self.routingTouchDelegate = routingTouchDelegate
+            self.routingTouchDelegateMap = routingTouchDelegateMap
+            self.routingTouchDelegateScene = routingTouchDelegateScene
         }
     }
     
@@ -277,8 +282,9 @@ class ViewController: NSViewController {
         mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
         sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
         
-        // Exercise 5: Add a graphics overlay to the map for the routing
+        // Exercise 5: Add a graphics overlay to the map and scene for the routing
         mapView.graphicsOverlays.add(routingMapGraphics)
+        sceneView.graphicsOverlays.add(routingSceneGraphics)
     }
     
     override var representedObject: Any? {
@@ -361,16 +367,20 @@ class ViewController: NSViewController {
     /**
      Exercise 5: Enable a map click for routing
      */
-    @IBAction func button_routing_onAction(button_routing: NSButton) {
-        mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegate : nil
+    @IBAction func button_routing_onAction(_ button_routing: NSButton) {
+        mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateMap : nil
+        sceneView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateScene : nil
         
         // Exercise 5: Unselect the buffer and query button
         if NSOnState == button_routing.state {
             button_bufferAndQuery.state = NSOffState
         }
         
-        if (nil != routingTouchDelegate) {
-            routingTouchDelegate!.reset()
+        if (nil != routingTouchDelegateMap) {
+            routingTouchDelegateMap!.reset()
+        }
+        if (nil != routingTouchDelegateScene) {
+            routingTouchDelegateScene!.reset()
         }
     }
     

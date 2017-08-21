@@ -18,7 +18,7 @@ After doing Exercise 4, this should seem familiar to you.
 1. Create another new touch delegate class. Call this one `RoutingTouchDelegate`:
 
     ```
-    class RoutingTouchDelegate: NSObject, AGSMapViewTouchDelegate {
+    class RoutingTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
     }
     ```
@@ -43,15 +43,15 @@ After doing Exercise 4, this should seem familiar to you.
 1. In `RoutingTouchDelegate`, declare fields for a graphics overlay and an origin point:
 
     ```
-    private let mapRouteGraphics: AGSGraphicsOverlay
+    private let routeGraphics: AGSGraphicsOverlay
     private var originPoint: AGSPoint? = nil
     ```
 
 1. In `RoutingTouchDelegate`, create an initializer that takes a graphics overlay as a parameter:
 
     ```
-    init(mapGraphics: AGSGraphicsOverlay) {
-        self.mapRouteGraphics = mapGraphics
+    init(graphics: AGSGraphicsOverlay) {
+        self.routeGraphics = graphics
     }
     ```
 
@@ -60,15 +60,15 @@ After doing Exercise 4, this should seem familiar to you.
     ```
     func reset() {
         originPoint = nil
-        mapRouteGraphics.graphics.removeAllObjects()
+        routeGraphics.graphics.removeAllObjects()
     }
     ```
 
-1. In `RoutingTouchDelegate`, implement a `mapView` method, which will get called when the user taps the map. In this method, start out by declaring a `graphics` object for convenience (so you can type `graphics` throughout the method instead of `mapRouteGraphics.graphics`). Set a `point` variable, and remove its z-value, which if present would cause the routing not to work:
+1. In `RoutingTouchDelegate`, implement a `geoView` method, which will get called when the user taps the map or scene. In this method, start out by declaring a `graphics` object for convenience (so you can type `graphics` throughout the method instead of `routeGraphics.graphics`). Set a `point` variable, and remove its z-value, which if present would cause the routing not to work:
 
     ```
-    func mapView(mapView: AGSMapView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        let graphics = mapRouteGraphics.graphics
+    func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        let graphics = routeGraphics.graphics
         var point = mapPoint
         if point.hasZ {
             point = AGSPoint(x: point.x, y: point.y, spatialReference: point.spatialReference)
@@ -116,12 +116,14 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
 
-1. In `ViewController`, declare a variable of the type of the touch delegate you just created. Also declare and instantiate a graphics overlay:
+1. In `ViewController`, declare two variables of the type of the touch delegate you just created, one for the map and one for the scene. Also declare and instantiate two graphics overlays:
 
     ```
-    private var routingTouchDelegate: RoutingTouchDelegate?
+    private var routingTouchDelegateMap: RoutingTouchDelegate?
+    private var routingTouchDelegateScene: RoutingTouchDelegate?
 
     private let routingMapGraphics = AGSGraphicsOverlay()
+    private let routingSceneGraphics = AGSGraphicsOverlay()
     ```
 
 1. In `ViewController.init`, instantiate the `RoutingTouchDelegate` that you just declared. This instantiation will change completely and become more complicated when you set up the actual routing, but for now, we’re just doing graphics, and the instantiation is only one line:
@@ -134,20 +136,25 @@ After doing Exercise 4, this should seem familiar to you.
 
     ```
     mapView.graphicsOverlays.add(routingMapGraphics)
+    sceneView.graphicsOverlays.add(routingSceneGraphics)
     ```
 
-1. In `button_routing_onAction`, if the routing button has been selected, set the map view’s touch delegate to `routingTouchDelegate`; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
+1. In `button_routing_onAction`, if the routing button has been selected, set the map view and scene view's touch delegates to the ones you created; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
 
     ```
-    @IBAction func button_routing_onAction(button_routing: NSButton) {
-        mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegate : nil
+    @IBAction func button_routing_onAction(_ button_routing: NSButton) {
+        mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateMap : nil
+        sceneView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateScene : nil
         
         if NSOnState == button_routing.state {
             button_bufferAndQuery.state = NSOffState
         }
         
-        if (nil != routingTouchDelegate) {
-            routingTouchDelegate!.reset()
+        if (nil != routingTouchDelegateMap) {
+            routingTouchDelegateMap!.reset()
+        }
+        if (nil != routingTouchDelegateScene) {
+            routingTouchDelegateScene!.reset()
         }
     }
     ```
@@ -169,29 +176,32 @@ After doing Exercise 4, this should seem familiar to you.
 
     ```
     init(
-        mapGraphics: AGSGraphicsOverlay,
+        graphics: AGSGraphicsOverlay,
         routeTask: AGSRouteTask,
         routeParameters: AGSRouteParameters) {
-        self.mapRouteGraphics = mapGraphics
+        self.routeGraphics = graphics
         self.routeTask = routeTask
         self.routeParameters = routeParameters
     }
     ```
     
-1. In `ViewController.init`, modify the instantiation of the `RoutingTouchDelegate` so that it takes a route task and a route parameters object. When instantiating the route task, set its ArcGIS Online username and password, and get the route parameters from the route task. But instantiate them in such a way that if getting the route parameters fails, both the route task and the route parameters are set to `nil`, as a signal to the rest of the code that routing is not available; in this case, also disable the routing button. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login (not supported in ArcGIS Runtime Quartz Beta 2, and presents a problem of its own since you shouldn't hard-code your client secret), or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password. You can omit that line of code, and then the app will automatically prompt you for a username and password...every time you run the app._ Here is the code to use in `ViewController.init` instead of the one-line instantiation of `routingTouchDelegate` that you wrote before:
+1. In `ViewController.init`, modify the instantiation of the `RoutingTouchDelegate` so that it takes a route task and a route parameters object. When instantiating the route task, set its ArcGIS Online username and password, and get the route parameters from the route task. But instantiate them in such a way that if getting the route parameters fails, both the route task and the route parameters are set to `nil`, as a signal to the rest of the code that routing is not available; in this case, also disable the routing button. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login (not supported in ArcGIS Runtime Quartz Beta 2, and presents a problem of its own since you shouldn't hard-code your client secret), or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password. You can omit that line of code, and then the app will automatically prompt you for a username and password...every time you run the app._ Here is the code to use in `ViewController.init` instead of the one-line instantiation of `routingTouchDelegate` objects that you wrote before:
 
     ```
     let routeTask = AGSRouteTask(url: URL(string: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
     // Don't share this code without removing plain text username and password!!!
     routeTask.credential = AGSCredential(user: "myUsername", password: "myPassword")
     routeTask.defaultRouteParameters { (routeParameters, err) in
-        var routingTouchDelegate: RoutingTouchDelegate? = nil
+    var routingTouchDelegateMap: RoutingTouchDelegate? = nil
+    var routingTouchDelegateScene: RoutingTouchDelegate? = nil
         if nil == routeParameters {
             self.button_routing.isEnabled = false
         } else {
-            routingTouchDelegate = RoutingTouchDelegate(mapGraphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+            routingTouchDelegateMap = RoutingTouchDelegate(graphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+            routingTouchDelegateScene = RoutingTouchDelegate(graphics: self.routingSceneGraphics, routeTask: routeTask, routeParameters: routeParameters!)
         }
-        self.routingTouchDelegate = routingTouchDelegate
+        self.routingTouchDelegateMap = routingTouchDelegateMap
+        self.routingTouchDelegateScene = routingTouchDelegateScene
     }
     ```
     
