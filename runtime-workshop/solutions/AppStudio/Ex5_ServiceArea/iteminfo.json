@@ -1,0 +1,52 @@
+{
+    "access": "public",
+    "accessInformation": null,
+    "appCategories": [
+    ],
+    "avgRating": 0,
+    "banner": null,
+    "commentsEnabled": true,
+    "created": 1441009321000,
+    "culture": "en-au",
+    "description": "\n<p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-family:'>This is a simple app to get you started with your own awesome creation.</span></p>",
+    "documentation": null,
+    "extent": [
+    ],
+    "guid": null,
+    "id": null,
+    "industries": [
+    ],
+    "languages": [
+    ],
+    "largeThumbnail": null,
+    "licenseInfo": "\n<p style='-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'><br /></p>",
+    "listed": false,
+    "modified": 1477032426000,
+    "name": null,
+    "numComments": 3,
+    "numRatings": 0,
+    "numViews": 3393,
+    "orgId": "2U3NfasNQ9o9LkLt",
+    "owner": null,
+    "ownerFolder": null,
+    "properties": null,
+    "screenshots": [
+    ],
+    "size": 9590,
+    "snippet": "App",
+    "spatialReference": null,
+    "tags": null,
+    "thumbnail": "thumbnail/thumbnail.png",
+    "title": "Ex5_ServiceArea",
+    "type": "Native Application",
+    "typeKeywords": [
+        "API_QML",
+        "App",
+        "Application",
+        "AppStudio",
+        "Configuration",
+        "Native",
+        "qml"
+    ],
+    "url": null
+}

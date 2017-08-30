@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/Resources">
+        <file>AppIcon.png</file>
+        <file>car.png</file>
+        <file>drivetime.png</file>
+        <file>gray_background.png</file>
+        <file>location.png</file>
+        <file>location_selected.png</file>
+        <file>routing.png</file>
+        <file>routing_selected.png</file>
+        <file>three_d.png</file>
+        <file>two_d.png</file>
+        <file>zoom_in.png</file>
+        <file>zoom_out.png</file>
+        <file>lock.png</file>
+        <file>lock_selected.png</file>
+    </qresource>
+</RCC>
