@@ -35,7 +35,7 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         
         // Exercise 1: Set 2D map's basemap
-        mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographic())
+        mapView.map = AGSMap(basemap: AGSBasemap.topographicVector())
         
         // Exercise 1: Set up 3D scene's basemap and elevation
         sceneView.scene = AGSScene(basemapType: AGSBasemapType.imagery)

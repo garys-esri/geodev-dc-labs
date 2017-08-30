@@ -38,7 +38,7 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         
         // Exercise 1: Set 2D map's basemap
-        mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographic())
+        mapView.map = AGSMap(basemap: AGSBasemap.topographicVector())
         
         // Exercise 1: Set up 3D scene's basemap and elevation
         sceneView.scene = AGSScene(basemapType: AGSBasemapType.imagery)
@@ -55,7 +55,7 @@ class ViewController: NSViewController {
             if 0 < mmpk.maps.count {
                 self.mapView.map = mmpk.maps[0]
             }
-            self.mapView.map!.basemap = AGSBasemap.nationalGeographic()
+            self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
         
         /**
@@ -86,7 +86,7 @@ class ViewController: NSViewController {
                         .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
                 self.sceneView.setViewpointCamera(camera)
             }
-            self.mapView.map!.basemap = AGSBasemap.nationalGeographic()
+            self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
     }
 
