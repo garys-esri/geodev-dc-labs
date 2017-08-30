@@ -14,7 +14,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 You can use ArcGIS Runtime to detect when and where the user interacts with the map, either with the mouse or with a touchscreen. In this exercise, you just need the user to click or tap a point. You could detect every user click, but instead, we will let the user activate and deactivate this capability with a toggle button. _Note: in Quartz Beta 1 for macOS, `AGSSceneView` does not give developers the ability to get user events on the scene. Therefore, this exercise only deals with the 2D map. This capability is expected to be present in the Quartz release._
 
-1. In `Main.storyboard`, add a **Custom Button** above your zoom buttons. Use the `location` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
+1. In `Main.storyboard`, add a **Custom Button** above your lock focus button. Use the `location` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
 
 1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag the button to create an **Action** connection in `ViewController`, then close the Assistant Editor:
 
