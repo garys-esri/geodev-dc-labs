@@ -6,7 +6,7 @@ This exercise walks you through the following:
 - Query for features within the buffer
 
 Prerequisites:
-- Complete [Exercise 3](Exercise 3 Local Feature Layer.md), or get the Exercise 3 code solution compiling and running properly in Xcode.
+- Complete [Exercise 3](Exercise%203%20Local%20Feature%20Layer.md), or get the Exercise 3 code solution compiling and running properly in Xcode.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex4_BufferAndQuery), available in this repository.
 
@@ -145,7 +145,7 @@ You need to buffer the clicked point and display both the point and the buffer a
 
     ![Click and buffer graphics](09-click-and-buffer-graphics.png)
     
-    ![Click and buffer graphics](10-click-and-buffer-graphics-scene.png)
+    ![Click and buffer graphics](10-click-and-buffer-graphics-scene.jpg)
     
 ## Query for features within the buffer
 
@@ -178,7 +178,7 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
 
     ![Selected features](11-selected-features.png)
     
-    ![Selected features](11a-selected-features-scene.png)
+    ![Selected features](11a-selected-features-scene.jpg)
     
 ## How did it go?
 
@@ -188,7 +188,7 @@ If you completed the exercise, congratulations! You learned how to get a user's 
 
 Ready for more? Choose from the following:
 
-- [**Exercise 5: Routing**](Exercise 5 Routing.md)
+- [**Exercise 5: Routing**](Exercise%205%20Routing.md)
 - **Bonus**
     - We selected features but didn't do anything with the selected features' attributes. The call to [`selectFeaturesWithQuery`](https://developers.arcgis.com/macos/latest/api-reference/interface_a_g_s_feature_layer.html#ae655af6edce13c49c841f0556dc6d561) allows you to specify a completion, where you can iterate through selected features. See if you can look at the feature attributes to get more information about the selected features.
     - Try setting properties on the `AGSQueryParameters` object to change the query's behavior. For example, maybe you want to select all features that are _outside_ the buffer instead of those that are inside. How would you do that by adding just one line of code? What other interesting things can you do with `AGSQueryParameters`?
