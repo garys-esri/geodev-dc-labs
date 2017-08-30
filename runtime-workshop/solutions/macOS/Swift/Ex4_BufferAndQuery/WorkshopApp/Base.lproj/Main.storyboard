@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -722,11 +723,19 @@
                                     <action selector="button_zoomIn_onAction:" target="XfG-lQ-9wD" id="jAJ-qz-CoL"/>
                                 </connections>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="c2U-q3-whr">
-                                <rect key="frame" x="730" y="200" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="88y-LW-zk1"/>
-                                </constraints>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z2Y-P7-DC6">
+                                <rect key="frame" x="730" y="201" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="lock" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="eru-KS-S4C">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="button_lockFocus_onAction:" target="XfG-lQ-9wD" id="lSc-DE-1ym"/>
+                                </connections>
+                            </button>
+                            <button ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c2U-q3-whr">
+                                <rect key="frame" x="730" y="261" width="50" height="50"/>
                                 <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="location" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="jAT-Ym-olX">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -749,7 +758,6 @@
                             <constraint firstItem="WYL-aZ-GA5" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="dIk-ZM-Akp"/>
                             <constraint firstAttribute="trailing" secondItem="c2U-q3-whr" secondAttribute="trailing" constant="20" id="hb9-dC-Oer"/>
                             <constraint firstItem="xDu-Xi-bak" firstAttribute="leading" secondItem="wbT-k6-CYe" secondAttribute="trailing" constant="20" id="ixi-VG-yOK"/>
-                            <constraint firstItem="j1t-0o-j6K" firstAttribute="top" secondItem="c2U-q3-whr" secondAttribute="bottom" constant="10" id="ncm-KO-LHN"/>
                             <constraint firstItem="j1t-0o-j6K" firstAttribute="leading" secondItem="WYL-aZ-GA5" secondAttribute="trailing" constant="20" id="pv3-vY-xfj"/>
                             <constraint firstAttribute="trailing" secondItem="Wc4-uA-8pE" secondAttribute="trailing" constant="20" id="rIS-Ji-JeC"/>
                             <constraint firstItem="wbT-k6-CYe" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="vMy-ic-R7r"/>
@@ -771,6 +779,7 @@
     </scenes>
     <resources>
         <image name="location" width="50" height="50"/>
+        <image name="lock" width="50" height="50"/>
         <image name="three_d" width="50" height="50"/>
         <image name="zoom_in" width="50" height="50"/>
         <image name="zoom_out" width="50" height="50"/>
