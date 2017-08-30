@@ -30,7 +30,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
             {
                 myMap = mmpk.Maps[0];
                 //Exercise 3: Mobile map package does not contain a basemap so must add one.
-                myMap.Basemap = Basemap.CreateNationalGeographic();
+                myMap.Basemap = Basemap.CreateTopographicVector();
                 mapView.Map = myMap;
             }
     ```

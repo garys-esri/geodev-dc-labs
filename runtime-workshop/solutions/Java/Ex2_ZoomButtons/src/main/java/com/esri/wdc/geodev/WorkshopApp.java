@@ -85,7 +85,7 @@ public class WorkshopApp extends Application {
         super();
 
         // Exercise 1: Set up the 2D map, since we will display that first
-        map.setBasemap(Basemap.createNationalGeographic());
+        map.setBasemap(Basemap.createTopographicVector());
         mapView.setMap(map);
 
         // Exercise 1: Set the 2D/3D toggle button's action

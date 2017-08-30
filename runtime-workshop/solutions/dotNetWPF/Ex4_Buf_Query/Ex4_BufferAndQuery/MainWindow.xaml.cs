@@ -37,7 +37,7 @@ namespace Ex1_MapAndScene
         private async void Initialize()
         {
             //Exercise 1: Create new Map with basemap and initial location
-            myMap = new Map(Basemap.CreateNationalGeographic());
+            myMap = new Map(Basemap.CreateTopographicVector());
             //Exercise 1: Assign the map to the MapView
             mapView.Map = myMap;
 
@@ -47,7 +47,7 @@ namespace Ex1_MapAndScene
             {
                 myMap = mmpk.Maps[0];
                 //Exercise 3: Mobile map package does not contain a basemap so must add one.
-                myMap.Basemap = Basemap.CreateNationalGeographic();
+                myMap.Basemap = Basemap.CreateTopographicVector();
                 mapView.Map = myMap;
             }
             mapView.GraphicsOverlays.Add(bufferAndQueryMapGraphics);

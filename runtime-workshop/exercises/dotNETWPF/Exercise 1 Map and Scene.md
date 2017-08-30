@@ -74,7 +74,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     private void Initialize()
     {
         //Exercise 1: Create new Map with basemap and initial location
-        myMap = new Map(Basemap.CreateNationalGeographic());
+        myMap = new Map(Basemap.CreateTopographicVector());
         //Exercise 1: Assign the map to the MapView
         mapView.Map = myMap;
     }

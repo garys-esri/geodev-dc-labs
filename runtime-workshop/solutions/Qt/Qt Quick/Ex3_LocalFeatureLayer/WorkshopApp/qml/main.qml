@@ -38,7 +38,7 @@ ApplicationWindow {
         // add a map to the mapview
         Map {
             // Exercise 1: Add a basemap
-            BasemapNationalGeographic {}
+            BasemapTopographicVector {}
         }
     }
 
@@ -47,7 +47,7 @@ ApplicationWindow {
         id: mmpk
         path: mmpkPath
 
-        property var basemap: BasemapNationalGeographic {}
+        property var basemap: BasemapTopographicVector {}
 
         Component.onCompleted: {
             mmpk.load();

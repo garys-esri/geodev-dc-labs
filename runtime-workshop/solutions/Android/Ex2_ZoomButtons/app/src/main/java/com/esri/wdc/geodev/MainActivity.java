@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
 
         // Exercise 1: Set up the 2D map.
         mapView = findViewById(R.id.mapView);
-        map.setBasemap(Basemap.createNationalGeographic());
+        map.setBasemap(Basemap.createTopographicVector());
         mapView.setMap(map);
 
         // Exercise 1: Set up the 3D scene.

@@ -30,7 +30,7 @@ namespace Ex1_MapAndScene
         private void Initialize()
         {
             //Exercise 1: Create new Map with basemap and initial location
-            myMap = new Map(Basemap.CreateNationalGeographic());
+            myMap = new Map(Basemap.CreateTopographicVector());
             //Exercise 1: Assign the map to the MapView
             mapView.Map = myMap;
         }

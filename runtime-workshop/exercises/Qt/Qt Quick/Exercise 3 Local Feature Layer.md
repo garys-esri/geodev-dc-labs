@@ -38,7 +38,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
         id: mmpk
         path: mmpkPath
 
-        property var basemap: BasemapNationalGeographic {}
+        property var basemap: BasemapTopographicVector {}
 
         Component.onCompleted: {
             mmpk.load();

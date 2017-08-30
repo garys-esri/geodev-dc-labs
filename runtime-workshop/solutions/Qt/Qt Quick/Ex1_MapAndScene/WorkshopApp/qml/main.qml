@@ -35,7 +35,7 @@ ApplicationWindow {
         // add a map to the mapview
         Map {
             // Exercise 1: Add a basemap
-            BasemapNationalGeographic {}
+            BasemapTopographicVector {}
         }
     }
 

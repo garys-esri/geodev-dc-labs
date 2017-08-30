@@ -39,7 +39,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
         map = maps.get(0);
         mapView.setMap(map);
     }
-    map.setBasemap(Basemap.createNationalGeographic());
+    map.setBasemap(Basemap.createTopographicVector());
     ```
     
 1. Compile and run your app. Verify that the map zooms to Washington, D.C., and that a layer of crime incidents appears on top of the basemap. The incidents appear as red triangles, which is the symbology specified in the mobile map package:
