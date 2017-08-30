@@ -145,6 +145,8 @@ You need to buffer the clicked point and display both the point and the buffer a
 
     ![Click and buffer graphics](09-click-and-buffer-graphics.png)
     
+    ![Click and buffer graphics](10-click-and-buffer-graphics-scene.png)
+    
 ## Query for features within the buffer
 
 There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `AGSFeatureLayer.selectFeaturesWithQuery`, which both highlights selected features on the map and provides a list of the selected features.
@@ -175,6 +177,8 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
 1. Run your app. Verify on the map that features within the clicked buffer are highlighted on the map:
 
     ![Selected features](11-selected-features.png)
+    
+    ![Selected features](11a-selected-features-scene.png)
     
 ## How did it go?
 
