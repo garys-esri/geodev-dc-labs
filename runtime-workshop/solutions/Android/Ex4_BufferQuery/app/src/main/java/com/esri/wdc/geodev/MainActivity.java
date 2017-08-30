@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
 
         // Exercise 1: Set up the 2D map.
         mapView = findViewById(R.id.mapView);
-        map.setBasemap(Basemap.createNationalGeographic());
+        map.setBasemap(Basemap.createTopographicVector());
         mapView.setMap(map);
 
         // Exercise 3: Instantiate and load mobile map package
@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
                         }
                     });
                 }
-                map.setBasemap(Basemap.createNationalGeographic());
+                map.setBasemap(Basemap.createTopographicVector());
             }
         });
         mmpk.loadAsync();

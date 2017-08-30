@@ -106,7 +106,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     ```
     mapView = findViewById(R.id.mapView);
-    map.setBasemap(Basemap.createNationalGeographic());
+    map.setBasemap(Basemap.createTopographicVector());
     mapView.setMap(map);
     ```
     

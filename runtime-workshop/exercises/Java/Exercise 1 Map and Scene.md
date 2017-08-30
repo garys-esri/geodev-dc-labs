@@ -154,7 +154,7 @@ You have three options for adding ArcGIS Runtime 100.1.0 to your Java applicatio
 1. In your constructor, set the `ArcGISMap`'s basemap and set the `MapView`'s map:
 
     ```
-    map.setBasemap(Basemap.createNationalGeographic());
+    map.setBasemap(Basemap.createTopographicVector());
     mapView.setMap(map);
     ```
     

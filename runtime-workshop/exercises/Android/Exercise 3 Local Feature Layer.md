@@ -51,7 +51,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
         map = maps.get(0);
         mapView.setMap(map);
     }
-    map.setBasemap(Basemap.createNationalGeographic());
+    map.setBasemap(Basemap.createTopographicVector());
     ```
 
 1. After `mapView.setMap(map)`, add a listener to run when the `Map` is done loading. In that listener, zoom the `MapView` to the `Map`'s initial viewpoint:
