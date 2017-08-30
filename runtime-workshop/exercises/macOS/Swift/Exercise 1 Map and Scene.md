@@ -69,7 +69,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. In `viewDidLoad()`, give your map view a new map that contains a basemap:
 
     ```
-    mapView.map = AGSMap(basemap: AGSBasemap.nationalGeographic())
+    mapView.map = AGSMap(basemap: AGSBasemap.topographicVector())
     ```
 
 1. Open Info.plist as source code (i.e. plain text editor). You will see a series of key/string pairs. At the end of that series, add the following key/dict pair:
