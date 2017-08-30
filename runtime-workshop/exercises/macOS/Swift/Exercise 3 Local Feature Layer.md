@@ -5,7 +5,7 @@ This exercise walks you through the following:
 - Add a layer from a mobile map package to the 3D scene
 
 Prerequisites:
-- Complete [Exercise 2](Exercise 2 Zoom Buttons.md), or get the Exercise 2 code solution compiling and running properly in Xcode.
+- Complete [Exercise 2](Exercise%202%20Zoom%20Buttons.md), or get the Exercise 2 code solution compiling and running properly in Xcode.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex3_LocalFeatureLayer), available in this repository.
 
@@ -102,5 +102,5 @@ If you completed the exercise, congratulations! You learned how to add a local f
 
 Ready for more? Choose from the following:
 
-- [**Exercise 4: Buffer a Point and Query Features**](Exercise 4 Buffer and Query.md)
+- [**Exercise 4: Buffer a Point and Query Features**](Exercise%204%20Buffer%20and%20Query.md)
 - **Bonus**: we used a mobile map package, but you can also add **feature services** to your map and scene. Go to [ArcGIS Online](http://www.arcgis.com/home/index.html), find a feature service URL (hint: a feature service URL has the term `FeatureServer` at or near the end of the URL), and use the [`AGSFeatureLayer`](https://developers.arcgis.com/macos/latest/api-reference/interface_a_g_s_feature_layer.html) and [`AGSServiceFeatureTable`](https://developers.arcgis.com/macos/latest/api-reference/interface_a_g_s_service_feature_table.html) classes to add the feature service to your map and/or globe. You can refer to a [code sample](https://github.com/Esri/arcgis-runtime-samples-macos/tree/master/arcgis-runtime-samples-macos/Features/Feature%20layer%20(feature%20service)) if you need it.

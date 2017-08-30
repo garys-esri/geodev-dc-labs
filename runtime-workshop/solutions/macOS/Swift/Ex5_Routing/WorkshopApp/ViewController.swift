@@ -318,6 +318,35 @@ class ViewController: NSViewController {
     }
     
     /**
+     Exercise 2: lock focus
+     */
+    @IBAction func button_lockFocus_onAction(_ sender: NSButton) {
+        if (NSOnState == sender.state) {
+            let target = getSceneTarget()
+            if (target is AGSPoint) {
+                let targetPoint = target as! AGSPoint
+                let currentCamera = sceneView.currentViewpointCamera()
+                let currentCameraPoint = currentCamera.location
+                let xyDistance = AGSGeometryEngine.geodeticDistanceBetweenPoint1(
+                    targetPoint,
+                    point2: currentCameraPoint,
+                    distanceUnit: AGSLinearUnit.meters(),
+                    azimuthUnit: AGSAngularUnit.degrees(),
+                    curveType: AGSGeodeticCurveType.geodesic)?.distance
+                let zDistance = currentCameraPoint.z
+                let distanceToTarget = (pow(xyDistance!, 2) + pow(zDistance, 2)).squareRoot();
+                let cameraController = AGSOrbitLocationCameraController(targetLocation: targetPoint, distance: distanceToTarget)
+                cameraController.cameraHeadingOffset = currentCamera.heading
+                cameraController.cameraPitchOffset = currentCamera.pitch
+                sceneView.cameraController = cameraController
+            }
+        } else {
+            sceneView.cameraController = AGSGlobeCameraController()
+        }
+    }
+
+    
+    /**
      Exercise 2: determine whether to call zoomMap or zoomScene
      */
     fileprivate func zoom(_ factor: Double) {
@@ -340,13 +369,20 @@ class ViewController: NSViewController {
     }
     
     /**
+     Exercise 2: Get the AGSSceneView viewpoint target.
+     */
+    fileprivate func getSceneTarget() -> AGSGeometry {
+        return (sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)?.targetGeometry)!
+    }
+    
+    /**
      Exercise 2: Utility method for zooming the 3D scene
      
      - parameters:
      - factor: The zoom factor (greater than 1 to zoom in, less than 1 to zoom out)
      */
     fileprivate func zoomScene(_ factor: Double) {
-        let target = sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)?.targetGeometry as! AGSPoint
+        let target = getSceneTarget() as! AGSPoint
         let camera = sceneView.currentViewpointCamera().zoomTowardTargetPoint(target, factor: factor)
         sceneView.setViewpointCamera(camera, duration: 0.5, completion: nil)
     }
