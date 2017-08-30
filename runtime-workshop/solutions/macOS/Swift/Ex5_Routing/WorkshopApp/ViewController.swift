@@ -204,7 +204,7 @@ class ViewController: NSViewController {
          in the source code for simplicity. For security reasons, you would not
          do it this way in a real app. Instead, you would do one of the following:
          - Use an OAuth 2.0 user login
-         - Use an OAuth 2.0 app login (not directly supported in ArcGIS Runtime Quartz as of Beta 1)
+         - Use an OAuth 2.0 app login
          - Challenge the user for credentials
          */
         // Don't share this code without removing plain text username and password!!!

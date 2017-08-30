@@ -12,7 +12,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 ## Get the user to click a point
 
-You can use ArcGIS Runtime to detect when and where the user interacts with the map, either with the mouse or with a touchscreen. In this exercise, you just need the user to click or tap a point. You could detect every user click, but instead, we will let the user activate and deactivate this capability with a toggle button. _Note: in Quartz Beta 1 for macOS, `AGSSceneView` does not give developers the ability to get user events on the scene. Therefore, this exercise only deals with the 2D map. This capability is expected to be present in the Quartz release._
+You can use ArcGIS Runtime to detect when and where the user interacts with the map, either with the mouse or with a touchscreen. In this exercise, you just need the user to click or tap a point. You could detect every user click, but instead, we will let the user activate and deactivate this capability with a toggle button.
 
 1. In `Main.storyboard`, add a **Custom Button** above your lock focus button. Use the `location` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
 
@@ -23,7 +23,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
 
-1. ArcGIS Runtime Quartz for macOS uses **touch delegates** to capture user actions on the map. In `ViewController.swift`, after the `import` statements but before the `ViewController` class declaration, declare a new touch delegate class. In this exercise, we call this class `BufferAndQueryTouchDelegate`. In a production app, you might put this class in its own Swift file. For this exercise, it’s fine to put this class in `ViewController.swift`. Here is the class declaration to add:
+1. ArcGIS Runtime for macOS uses **touch delegates** to capture user actions on the map. In `ViewController.swift`, after the `import` statements but before the `ViewController` class declaration, declare a new touch delegate class. In this exercise, we call this class `BufferAndQueryTouchDelegate`. In a production app, you might put this class in its own Swift file. For this exercise, it’s fine to put this class in `ViewController.swift`. Here is the class declaration to add:
 
     ```
     class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
