@@ -28,7 +28,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     - In the **Attributes** inspector, under **Button**, delete the **Title** text, set the **Image** to be `three_d`, and set the **Background** to be `gray_background`.
     - In the **Size** inspector, change the button’s width and height to 50x50. Under **Autoresizing**, pin the button to the lower-right corner (instead of the default upper-left corner).
 
-1. Run your app. Verify that a button appears in the lower-right corner of the app, even when you resize the window:
+1. Run your app. Verify that a button appears in the lower-right corner of the app, even when you rotate the device:
 
     ![Blank app with button](01-blank-app-with-button.png)
     
