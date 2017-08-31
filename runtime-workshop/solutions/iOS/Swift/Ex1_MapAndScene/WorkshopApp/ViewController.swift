@@ -20,7 +20,7 @@ import UIKit
 class ViewController: UIViewController {
     
     // Exercise 1: Specify elevation service URL
-    let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+    let ELEVATION_IMAGE_SERVICE = "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
 
     // Exercise 1: Outlets from storyboard
     @IBOutlet weak var mapView: AGSMapView!
@@ -38,8 +38,8 @@ class ViewController: UIViewController {
         // Exercise 1: Set up 3D scene's basemap and elevation
         sceneView.scene = AGSScene(basemapType: AGSBasemapType.imagery)
         let surface = AGSSurface()
-        surface.elevationSources.append(AGSArcGISTiledElevationSource(url: URL(string: ELEVATION_IMAGE_SERVICE)!));
-        sceneView.scene!.baseSurface = surface;
+        surface.elevationSources.append(AGSArcGISTiledElevationSource(url: URL(string: ELEVATION_IMAGE_SERVICE)!))
+        sceneView.scene!.baseSurface = surface
     }
     
     // Exercise 1: 2D/3D button action
