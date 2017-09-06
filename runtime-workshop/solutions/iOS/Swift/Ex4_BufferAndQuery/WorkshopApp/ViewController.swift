@@ -17,6 +17,58 @@
 import ArcGIS
 import UIKit
 
+// Exercise 4: A touch delegate for the buffer and query
+class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
+    
+    fileprivate let CLICK_AND_BUFFER_COLOR = UIColor(red: 1.0, green: 0.647, blue: 0.0, alpha: 1.0)
+    fileprivate let CLICK_SYMBOL: AGSMarkerSymbol
+    fileprivate let BUFFER_SYMBOL: AGSFillSymbol
+    
+    fileprivate let graphicsOverlay: AGSGraphicsOverlay
+    
+    init(graphics: AGSGraphicsOverlay) {
+        self.graphicsOverlay = graphics
+        CLICK_SYMBOL = AGSSimpleMarkerSymbol(
+            style: AGSSimpleMarkerSymbolStyle.circle,
+            color: CLICK_AND_BUFFER_COLOR,
+            size: 10)
+        BUFFER_SYMBOL = AGSSimpleFillSymbol(
+            style: AGSSimpleFillSymbolStyle.null,
+            color: UIColor(white: 1, alpha: 0),
+            outline: AGSSimpleLineSymbol(
+                style: AGSSimpleLineSymbolStyle.solid,
+                color: CLICK_AND_BUFFER_COLOR,
+                width: 3))
+    }
+    
+    func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        let buffer = AGSGeometryEngine.geodeticBufferGeometry(
+            mapPoint,
+            distance: 1000.0,
+            distanceUnit: AGSLinearUnit.meters(),
+            maxDeviation: 1,
+            curveType: AGSGeodeticCurveType.geodesic)
+        graphicsOverlay.graphics.removeAllObjects()
+        graphicsOverlay.graphics.add(AGSGraphic(geometry: buffer, symbol: BUFFER_SYMBOL))
+        graphicsOverlay.graphics.add(AGSGraphic(geometry: mapPoint, symbol: CLICK_SYMBOL))
+        
+        let query = AGSQueryParameters()
+        query.geometry = buffer
+        let operationalLayers : [AGSFeatureLayer]
+        if geoView is AGSMapView {
+            let mapView = geoView as? AGSMapView
+            operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
+        } else {
+            let sceneView = geoView as? AGSSceneView
+            operationalLayers = sceneView!.scene!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
+        }
+        for layer in operationalLayers {
+            layer.selectFeatures(withQuery: query, mode: AGSSelectionMode.new, completion: nil)
+        }
+    }
+    
+}
+
 class ViewController: UIViewController {
     
     // Exercise 1: Specify elevation service URL
@@ -31,6 +83,19 @@ class ViewController: UIViewController {
     
     // Exercise 2: Mobile map package path
     fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
+    
+    // Exercise 4: Fields for buffering and querying
+    fileprivate let bufferAndQueryTouchDelegateMap: BufferAndQueryTouchDelegate
+    fileprivate let bufferAndQueryTouchDelegateScene: BufferAndQueryTouchDelegate
+    fileprivate let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
+    fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
+    
+    // Exercise 4: Initializer to support buffer and query
+    required init?(coder: NSCoder) {
+        self.bufferAndQueryTouchDelegateMap = BufferAndQueryTouchDelegate(graphics: bufferAndQueryMapGraphics)
+        self.bufferAndQueryTouchDelegateScene = BufferAndQueryTouchDelegate(graphics: bufferAndQuerySceneGraphics)
+        super.init(coder: coder)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +140,10 @@ class ViewController: UIViewController {
                 }
             }
         }
+        
+        // Exercise 4: Add buffer and query graphics layers
+        mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
+        sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
     }
     
     // Exercise 1: 2D/3D button action
@@ -123,6 +192,13 @@ class ViewController: UIViewController {
         } else {
             sceneView.cameraController = AGSGlobeCameraController()
         }
+    }
+    
+    // Exercise 4: Buffer and query
+    @IBAction func button_bufferAndQuery_onAction(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        mapView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateMap : nil
+        sceneView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateScene : nil
     }
     
     // Exercise 2: Get the target of the current scene

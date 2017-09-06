@@ -62,8 +62,8 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C6D-N5-BXl">
                                         <rect key="frame" x="0.0" y="8" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button" image="location" backgroundImage="gray_background"/>
-                                        <state key="selected" image="location_selected" backgroundImage="gray_background"/>
+                                        <state key="normal" title="Button" image="lock" backgroundImage="gray_background"/>
+                                        <state key="selected" image="lock_selected" backgroundImage="gray_background"/>
                                         <connections>
                                             <action selector="button_lockFocus_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bJx-wB-tXC"/>
                                         </connections>
@@ -85,8 +85,8 @@
     </scenes>
     <resources>
         <image name="gray_background" width="50" height="50"/>
-        <image name="location" width="50" height="50"/>
-        <image name="location_selected" width="50" height="50"/>
+        <image name="lock" width="50" height="50"/>
+        <image name="lock_selected" width="50" height="50"/>
         <image name="three_d" width="50" height="50"/>
         <image name="zoom_in" width="50" height="50"/>
         <image name="zoom_out" width="50" height="50"/>

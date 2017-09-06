@@ -84,7 +84,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 This portion of the exercise will teach you how to use _camera controllers_ in ArcGIS Runtime.
 
-1. In `Main.storyboard`, add a **Button** to the left of the zoom in button. Use the `location` image for this button and `gray_background` for the button's background. To make it appear as a toggle button, change **State Config** to **Selected** and use `location_selected` as the image and `gray_background` as the background. Make the size 50x50.
+1. In `Main.storyboard`, add a **Button** to the left of the zoom in button. Use the `lock` image for this button and `gray_background` for the button's background. To make it appear as a toggle button, change **State Config** to **Selected** and use `lock_selected` as the image and `gray_background` as the background. Make the size 50x50.
 
 1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag the button to create an **Action** connection in `ViewController`, then close the Assistant Editor:
 

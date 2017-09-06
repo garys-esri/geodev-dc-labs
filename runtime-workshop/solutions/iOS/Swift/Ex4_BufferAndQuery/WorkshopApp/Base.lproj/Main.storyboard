@@ -68,6 +68,15 @@
                                             <action selector="button_lockFocus_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bJx-wB-tXC"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RM9-iL-MYA">
+                                        <rect key="frame" x="0.0" y="126" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button" image="location" backgroundImage="gray_background"/>
+                                        <state key="selected" image="location_selected" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_bufferAndQuery_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hGh-YC-Kq4"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </view>
                         </subviews>
@@ -85,6 +94,8 @@
     </scenes>
     <resources>
         <image name="gray_background" width="50" height="50"/>
+        <image name="location" width="50" height="50"/>
+        <image name="location_selected" width="50" height="50"/>
         <image name="lock" width="50" height="50"/>
         <image name="lock_selected" width="50" height="50"/>
         <image name="three_d" width="50" height="50"/>
