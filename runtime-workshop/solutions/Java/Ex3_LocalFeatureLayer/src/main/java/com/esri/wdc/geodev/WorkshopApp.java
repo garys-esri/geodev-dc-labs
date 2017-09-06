@@ -23,7 +23,7 @@ import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.LinearUnit;
 import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.layers.Layer;
+import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
@@ -36,7 +36,6 @@ import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,8 +57,10 @@ public class WorkshopApp extends Application {
     private static final String ELEVATION_IMAGE_SERVICE
         = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
 
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
+    private static final String SCENE_SERVICE_URL
+        = "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
 
     // Exercise 1: Declare and instantiate fields, including UI components
     private final MapView mapView = new MapView();
@@ -184,34 +185,18 @@ public class WorkshopApp extends Application {
                 scene.setBaseSurface(surface);
                 sceneView = new SceneView();
 
-                /**
-                 * Exercise 3: Open a mobile map package (.mmpk) and add its
-                 * operational layers to the scene
-                 */
-                scene.addDoneLoadingListener(() -> {
-                    final MobileMapPackage mmpk = new MobileMapPackage(MMPK_PATH);
-                    mmpk.addDoneLoadingListener(() -> {
-                        List<ArcGISMap> maps = mmpk.getMaps();
-                        if (0 < maps.size()) {
-                            final ArcGISMap thisMap = maps.get(0);
-                            thisMap.addDoneLoadingListener(() -> {
-                                ArrayList<Layer> layers = new ArrayList<>();
-                                layers.addAll(thisMap.getOperationalLayers());
-                                thisMap.getOperationalLayers().clear();
-                                scene.getOperationalLayers().addAll(layers);
-                                sceneView.setViewpoint(thisMap.getInitialViewpoint());
-                                // Rotate the camera
-                                Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
-                                Point targetPoint = (Point) viewpoint.getTargetGeometry();
-                                Camera camera = sceneView.getCurrentViewpointCamera()
-                                    .rotateAround(targetPoint, 45.0, 65.0, 0.0);
-                                sceneView.setViewpointCameraAsync(camera);
-                            });
-                            thisMap.loadAsync();
-                        }
-                    });
-                    mmpk.loadAsync();
+                // Exercise 3: Add a scene layer to the scene
+                ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
+                sceneLayer.addDoneLoadingListener(() -> {
+                    sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
+                    // Rotate the camera
+                    Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                    Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                    Camera camera = sceneView.getCurrentViewpointCamera()
+                        .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                    sceneView.setViewpointCameraAsync(camera);
                 });
+                scene.getOperationalLayers().add(sceneLayer);
 
                 sceneView.setArcGISScene(scene);
                 AnchorPane.setLeftAnchor(sceneView, 0.0);

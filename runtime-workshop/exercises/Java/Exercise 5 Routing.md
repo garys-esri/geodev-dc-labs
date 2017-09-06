@@ -20,11 +20,11 @@ After doing Exercise 4, this should seem familiar to you.
 
     ```
     private static final SimpleMarkerSymbol ROUTE_ORIGIN_SYMBOL =
-            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xC000FF00, 10);
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xFF00FF00, 10);
     private static final SimpleMarkerSymbol ROUTE_DESTINATION_SYMBOL =
-            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xC0FF0000, 10);
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xFFFF0000, 10);
     private static final SimpleLineSymbol ROUTE_LINE_SYMBOL =
-            new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xC0550055, 5);
+            new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFF550055, 5);
     ```
 
 1. Before your constructor, instantiate a toggle button to enable routing:
@@ -49,7 +49,7 @@ After doing Exercise 4, this should seem familiar to you.
     mapView.getGraphicsOverlays().add(mapRouteGraphics);
     ```    
     
-1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`:
+1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only required one line of code, while this one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface:
 
     ```
     sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
@@ -176,28 +176,30 @@ After doing Exercise 4, this should seem familiar to you.
 1. Before your constructor, declare a `RouteTask` field and a `RouteParameters` field:
 
     ```
-    private final RouteTask routeTask;
-    private final RouteParameters routeParameters;
+    private RouteTask routeTask;
+    private RouteParameters routeParameters;
     ```
     
-1. In your constructor, instantiate the `RouteTask`, set its ArcGIS Online username and password, and get the `RouteParameters` from the `RouteTask`. But instantiate them in such a way that if getting the `RouteParameters` fails, both the `RouteTask` and the `RouteParameters` are set to `null`, as a signal to the rest of the code that routing is not available. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login, or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password._ Here is the code to add to your constructor:
+1. In your constructor, create and start a new thread. In this thread, instantiate the `RouteTask`, set its ArcGIS Online username and password, and get the `RouteParameters` from the `RouteTask`. But instantiate them in such a way that if getting the `RouteParameters` fails, both the `RouteTask` and the `RouteParameters` are set to `null`, as a signal to the rest of the code that routing is not available. _Note: in this exercise, we're naïvely hard-coding our username and password. Don't do that! It is too easy for someone to decompile your code. There are at least three better options: use an OAuth 2.0 user login, use an OAuth 2.0 app login, or challenge the user for credentials. For now, since the exercise is about routing and not security, just hard-code the username and password._ Here is the code to add to your constructor:
 
     ```
-    RouteTask theRouteTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");        
-    // Don't share this code without removing plain text username and password!!!
-    theRouteTask.setCredential(new UserCredential("theUsername", "thePassword"));
-    RouteParameters theRouteParameters = null;
-    try {
-        theRouteParameters = (RouteParameters) theRouteTask.createDefaultParametersAsync().get();
-    } catch (InterruptedException | ExecutionException ex) {
-        Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, ex);
-        theRouteTask = null;
-    }
-    routeTask = theRouteTask;
-    routeParameters = theRouteParameters;
+    new Thread(() -> {
+        RouteTask theRouteTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
+        // Don't share this code without removing plain text username and password!!!
+        theRouteTask.setCredential(new UserCredential("myUsername", "myPassword"));
+        RouteParameters theRouteParameters = null;
+        try {
+            theRouteParameters = (RouteParameters) theRouteTask.createDefaultParametersAsync().get();
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, ex);
+            theRouteTask = null;
+        }
+        routeTask = theRouteTask;
+        routeParameters = theRouteParameters;
+    }).start();
     ```
     
-1. In your constructor, after setting `routeTask` and `routeParameters`, if getting the `RouteParameters` succeeded (i.e. if `routeParameters` is not `null`), set some of the parameters. We don't need route directions or stops (we already have the stops), but we do need routes. If the `RouteParameters` object is null, disable the routing toggle button because routing is not available:
+1. In your new thread, after setting `routeTask` and `routeParameters`, if getting the `RouteParameters` succeeded (i.e. if `routeParameters` is not `null`), set some of the parameters. We don't need route directions or stops (we already have the stops), but we do need routes. If the `RouteParameters` object is null, disable the routing toggle button because routing is not available:
 
     ```
     if (null != routeParameters) {

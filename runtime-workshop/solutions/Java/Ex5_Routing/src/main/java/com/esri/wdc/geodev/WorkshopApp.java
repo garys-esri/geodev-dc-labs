@@ -28,8 +28,8 @@ import com.esri.arcgisruntime.geometry.LinearUnit;
 import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
+import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
-import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
@@ -55,7 +55,6 @@ import com.esri.arcgisruntime.tasks.networkanalysis.RouteResult;
 import com.esri.arcgisruntime.tasks.networkanalysis.RouteTask;
 import com.esri.arcgisruntime.tasks.networkanalysis.Stop;
 import com.esri.arcgisruntime.util.ListenableList;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -81,8 +80,10 @@ public class WorkshopApp extends Application {
     private static final String ELEVATION_IMAGE_SERVICE
         = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
 
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
+    private static final String SCENE_SERVICE_URL
+        = "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
 
     // Exercise 4: Create symbols for click and buffer
     private static final SimpleMarkerSymbol CLICK_SYMBOL
@@ -93,11 +94,11 @@ public class WorkshopApp extends Application {
 
     // Exercise 5: Create symbols for routing
     private static final SimpleMarkerSymbol ROUTE_ORIGIN_SYMBOL
-        = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xC000FF00, 10);
+        = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xFF00FF00, 10);
     private static final SimpleMarkerSymbol ROUTE_DESTINATION_SYMBOL
-        = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xC0FF0000, 10);
+        = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xFFFF0000, 10);
     private static final SimpleLineSymbol ROUTE_LINE_SYMBOL
-        = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xC0550055, 5);
+        = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFF550055, 5);
 
     // Exercise 1: Declare and instantiate fields, including UI components
     private final MapView mapView = new MapView();
@@ -135,11 +136,10 @@ public class WorkshopApp extends Application {
 
     // Exercise 4: Declare buffer and query fields
     private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
-    private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
 
     // Exercise 5: Declare routing fields
-    private final RouteTask routeTask;
-    private final RouteParameters routeParameters;
+    private RouteTask routeTask;
+    private RouteParameters routeParameters;
     private final GraphicsOverlay mapRouteGraphics = new GraphicsOverlay();
     private final GraphicsOverlay sceneRouteGraphics = new GraphicsOverlay();
     private Point originPoint = null;
@@ -196,32 +196,34 @@ public class WorkshopApp extends Application {
          * Exercise 5: Set up routing objects
          */
         mapView.getGraphicsOverlays().add(mapRouteGraphics);
-        RouteTask theRouteTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
-        /**
-         * Note: for ArcGIS Online routing, this tutorial uses a username and
-         * password in the source code for simplicity. For security reasons, you
-         * would not do it this way in a real app. Instead, you would do one of
-         * the following: - Use an OAuth 2.0 user login - Use an OAuth 2.0 app
-         * login - Challenge the user for credentials
-         */
-        // Don't share this code without removing plain text username and password!!!
-        theRouteTask.setCredential(new UserCredential("myUsername", "myPassword"));
-        RouteParameters theRouteParameters = null;
-        try {
-            theRouteParameters = (RouteParameters) theRouteTask.createDefaultParametersAsync().get();
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, ex);
-            theRouteTask = null;
-        }
-        routeTask = theRouteTask;
-        routeParameters = theRouteParameters;
-        if (null != routeParameters) {
-            routeParameters.setReturnDirections(false);
-            routeParameters.setReturnRoutes(true);
-            routeParameters.setReturnStops(false);
-        } else {
-            toggleButton_routing.setDisable(true);
-        }
+        new Thread(() -> {
+            RouteTask theRouteTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
+            /**
+             * Note: for ArcGIS Online routing, this tutorial uses a username and
+             * password in the source code for simplicity. For security reasons, you
+             * would not do it this way in a real app. Instead, you would do one of
+             * the following: - Use an OAuth 2.0 user login - Use an OAuth 2.0 app
+             * login - Challenge the user for credentials
+             */
+            // Don't share this code without removing plain text username and password!!!
+            theRouteTask.setCredential(new UserCredential("myUsername", "myPassword"));
+            RouteParameters theRouteParameters = null;
+            try {
+                theRouteParameters = (RouteParameters) theRouteTask.createDefaultParametersAsync().get();
+            } catch (InterruptedException | ExecutionException ex) {
+                Logger.getLogger(WorkshopApp.class.getName()).log(Level.SEVERE, null, ex);
+                theRouteTask = null;
+            }
+            routeTask = theRouteTask;
+            routeParameters = theRouteParameters;
+            if (null != routeParameters) {
+                routeParameters.setReturnDirections(false);
+                routeParameters.setReturnRoutes(true);
+                routeParameters.setReturnStops(false);
+            } else {
+                toggleButton_routing.setDisable(true);
+            }
+        }).start();
     }
 
     @Override
@@ -295,50 +297,19 @@ public class WorkshopApp extends Application {
                 surface.getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
                 scene.setBaseSurface(surface);
                 sceneView = new SceneView();
-
-                /**
-                 * Exercise 3: Open a mobile map package (.mmpk) and add its
-                 * operational layers to the scene
-                 */
-                scene.addDoneLoadingListener(() -> {
-                    final MobileMapPackage mmpk = new MobileMapPackage(MMPK_PATH);
-                    mmpk.addDoneLoadingListener(() -> {
-                        List<ArcGISMap> maps = mmpk.getMaps();
-                        if (0 < maps.size()) {
-                            final ArcGISMap thisMap = maps.get(0);
-                            thisMap.addDoneLoadingListener(() -> {
-                                ArrayList<Layer> layers = new ArrayList<>();
-                                layers.addAll(thisMap.getOperationalLayers());
-                                thisMap.getOperationalLayers().clear();
-                                scene.getOperationalLayers().addAll(layers);
-                                sceneView.setViewpoint(thisMap.getInitialViewpoint());
-                                // Rotate the camera
-                                Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
-                                Point targetPoint = (Point) viewpoint.getTargetGeometry();
-                                Camera camera = sceneView.getCurrentViewpointCamera()
-                                    .rotateAround(targetPoint, 45.0, 65.0, 0.0);
-                                sceneView.setViewpointCameraAsync(camera);
-                            });
-                            thisMap.loadAsync();
-                        }
-                    });
-                    mmpk.loadAsync();
+                
+                // Exercise 3: Add a scene layer to the scene
+                ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
+                sceneLayer.addDoneLoadingListener(() -> {
+                    sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
+                    // Rotate the camera
+                    Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                    Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                    Camera camera = sceneView.getCurrentViewpointCamera()
+                        .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                    sceneView.setViewpointCameraAsync(camera);
                 });
-
-                /**
-                 * Exercise 4: Add a GraphicsOverlay to the scene for the click
-                 * and buffer.
-                 */
-                bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
-                sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
-
-                /**
-                 * Exercise 4: Set the SceneView's onMouseClicked event handler
-                 * if the buffer and query button is already selected.
-                 */
-                if (toggleButton_bufferAndQuery.isSelected()) {
-                    sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
-                }
+                scene.getOperationalLayers().add(sceneLayer);
 
                 // Exercise 5: Add a GraphicsOverlay to the scene for the routing
                 sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
@@ -470,9 +441,6 @@ public class WorkshopApp extends Application {
     private void toggleButton_bufferAndQuery_onAction() {
         if (toggleButton_bufferAndQuery.isSelected()) {
             mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            if (null != sceneView) {
-                sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            }
 
             // Exercise 5: Unselect the routing button
             toggleButton_routing.setSelected(false);
@@ -518,9 +486,7 @@ public class WorkshopApp extends Application {
             Polygon buffer = (Polygon) GeometryEngine.ellipseGeodesic(params);
 
             // Show click and buffer as graphics
-            ListenableList<Graphic> graphics
-                = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics)
-                    .getGraphics();
+            ListenableList<Graphic> graphics = bufferAndQueryMapGraphics.getGraphics();
             graphics.clear();
             graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
             graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
@@ -528,9 +494,7 @@ public class WorkshopApp extends Application {
             // Run the query
             QueryParameters query = new QueryParameters();
             query.setGeometry(buffer);
-            LayerList operationalLayers = threeD
-                ? sceneView.getArcGISScene().getOperationalLayers()
-                : mapView.getMap().getOperationalLayers();
+            LayerList operationalLayers = mapView.getMap().getOperationalLayers();
             operationalLayers.parallelStream().filter(
                 layer -> layer instanceof FeatureLayer
             ).forEach(layer -> {
@@ -538,8 +502,6 @@ public class WorkshopApp extends Application {
             });
         }
     }
-
-    ;
     
     /**
      * Exercise 5: Activate routing
