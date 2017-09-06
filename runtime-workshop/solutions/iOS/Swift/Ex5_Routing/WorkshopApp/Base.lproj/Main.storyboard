@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="WorkshopApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2KQ-eK-EIG" customClass="AGSMapView">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FAm-SI-dLa" customClass="AGSSceneView">
+                                <rect key="frame" x="0.0" y="28" width="375" height="639"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Znv-kP-WjU">
+                                <rect key="frame" x="249" y="459" width="110" height="176"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IaK-ZF-3AM">
+                                        <rect key="frame" x="60" y="66" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                        <state key="normal" title="Button" image="zoom_out" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_zoomOut_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xG0-s0-1KX"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RhA-K6-xK6">
+                                        <rect key="frame" x="60" y="126" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                        <state key="normal" title="Button" image="three_d" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_toggle2d3d_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xTH-Hb-i0N"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zQ5-z9-40t">
+                                        <rect key="frame" x="60" y="8" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                        <state key="normal" title="Button" image="zoom_in" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_zoomIn_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xGw-KY-Jfw"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C6D-N5-BXl">
+                                        <rect key="frame" x="0.0" y="8" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button" image="lock" backgroundImage="gray_background"/>
+                                        <state key="selected" image="lock_selected" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_lockFocus_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bJx-wB-tXC"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RM9-iL-MYA">
+                                        <rect key="frame" x="0.0" y="126" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button" image="location" backgroundImage="gray_background"/>
+                                        <state key="selected" image="location_selected" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_bufferAndQuery_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hGh-YC-Kq4"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jvi-9b-gjf">
+                                        <rect key="frame" x="0.0" y="66" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button" image="routing" backgroundImage="gray_background"/>
+                                        <state key="selected" image="routing_selected" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_routing_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Lez-UV-HN4"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <connections>
+                        <outlet property="button_bufferAndQuery" destination="RM9-iL-MYA" id="wZd-Nu-MTe"/>
+                        <outlet property="button_routing" destination="jvi-9b-gjf" id="g5u-Tu-P8E"/>
+                        <outlet property="mapView" destination="2KQ-eK-EIG" id="P3u-Sn-9cG"/>
+                        <outlet property="sceneView" destination="FAm-SI-dLa" id="ISG-qu-VD5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="129.98500749625188"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="gray_background" width="50" height="50"/>
+        <image name="location" width="50" height="50"/>
+        <image name="location_selected" width="50" height="50"/>
+        <image name="lock" width="50" height="50"/>
+        <image name="lock_selected" width="50" height="50"/>
+        <image name="routing" width="50" height="50"/>
+        <image name="routing_selected" width="50" height="50"/>
+        <image name="three_d" width="50" height="50"/>
+        <image name="zoom_in" width="50" height="50"/>
+        <image name="zoom_out" width="50" height="50"/>
+    </resources>
+</document>
