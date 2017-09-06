@@ -77,12 +77,23 @@
                                             <action selector="button_bufferAndQuery_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hGh-YC-Kq4"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jvi-9b-gjf">
+                                        <rect key="frame" x="0.0" y="66" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button" image="routing" backgroundImage="gray_background"/>
+                                        <state key="selected" image="routing_selected" backgroundImage="gray_background"/>
+                                        <connections>
+                                            <action selector="button_routing_onAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Lez-UV-HN4"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
+                        <outlet property="button_bufferAndQuery" destination="RM9-iL-MYA" id="wZd-Nu-MTe"/>
+                        <outlet property="button_routing" destination="jvi-9b-gjf" id="g5u-Tu-P8E"/>
                         <outlet property="mapView" destination="2KQ-eK-EIG" id="P3u-Sn-9cG"/>
                         <outlet property="sceneView" destination="FAm-SI-dLa" id="ISG-qu-VD5"/>
                     </connections>
@@ -98,6 +109,8 @@
         <image name="location_selected" width="50" height="50"/>
         <image name="lock" width="50" height="50"/>
         <image name="lock_selected" width="50" height="50"/>
+        <image name="routing" width="50" height="50"/>
+        <image name="routing_selected" width="50" height="50"/>
         <image name="three_d" width="50" height="50"/>
         <image name="zoom_in" width="50" height="50"/>
         <image name="zoom_out" width="50" height="50"/>

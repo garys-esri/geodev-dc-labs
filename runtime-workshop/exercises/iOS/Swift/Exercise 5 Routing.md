@@ -1,4 +1,4 @@
-# Exercise 5: Routing (macOS/Swift)
+# Exercise 5: Routing (iOS/Swift)
 
 ArcGIS Runtime features the ability to run ArcGIS geoprocessing for analysis and data management. The `AGSGeoprocessingTask` class lets you call any geoprocessing service. ArcGIS Runtime provides more specific support for certain types of geoprocessing, such as network routing using Network Analyst services or local network datasets. By learning how to use routing in this exercise, you will learn key skills that will help you use other geoprocessing capabilities that ArcGIS Runtime supports.
 
@@ -9,7 +9,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 4](Exercise%204%20Buffer%20and%20Query.md), or get the Exercise 4 code solution compiling and running properly in Xcode.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/macOS/Swift/Ex5_Routing), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/iOS/Swift/Ex5_Routing), available in this repository.
 
 ## Get the user to click an origin point and a destination point
 
@@ -28,15 +28,15 @@ After doing Exercise 4, this should seem familiar to you.
     ```
     private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
         style: AGSSimpleMarkerSymbolStyle.triangle,
-        color: NSColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
+        color: UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
         size: 10)
     private let ROUTE_DESTINATION_SYMBOL = AGSSimpleMarkerSymbol(
         style: AGSSimpleMarkerSymbolStyle.square,
-        color: NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
+        color: UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
         size: 10)
     private let ROUTE_LINE_SYMBOL = AGSSimpleLineSymbol(
         style: AGSSimpleLineSymbolStyle.solid,
-        color: NSColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
+        color: UIColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
         width: 5)
     ```
 
@@ -101,13 +101,13 @@ After doing Exercise 4, this should seem familiar to you.
     originPoint = nil
     ```
 
-1. Open `Main.storyboard` and add a new button to enable routing. Make it very similar to the buffer and query button, but use the `routing` image. Set constraints, size, and all else as with previous buttons. Most importantly, change the button type to **Push On Push Off**.
+1. Open `Main.storyboard` and add a **Button** above the buffer and query button. Use the `routing` image for this button and `gray_background` for the button's background. To make it appear as a toggle button, change **State Config** to **Selected** and use `routing_selected` as the image and `gray_background` as the background. Make the size 50x50.
 
-1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag both the buffer and query button and the routing button, one at a time, to create an Outlet connection for each in the `ViewController` class:
+1. Open `ViewController.swift` in the Assistant Editor. Control-click and drag both the buffer and query button and the routing button, one at a time, to create an Outlet connection for each in the `ViewController` class:
 
     ```
-    @IBOutlet weak var button_bufferAndQuery: NSButton!
-    @IBOutlet weak var button_routing: NSButton!
+    @IBOutlet weak var button_bufferAndQuery: UIButton!
+    @IBOutlet weak var button_routing: UIButton!
     ```
 
 1. Right-click and drag the routing button to create an Action connection in the `ViewController` class:
@@ -141,24 +141,32 @@ After doing Exercise 4, this should seem familiar to you.
     sceneView.graphicsOverlays.add(routingSceneGraphics)
     ```
 
-1. In `button_routing_onAction`, first toggle the state of the button. Then if the routing button has been selected, set the map view and scene view's touch delegates to the ones you created; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
+1. In `button_routing_onAction`, if the routing button has been selected, set the map view and scene view's touch delegates to the ones you created; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
 
     ```
-    @IBAction func button_routing_onAction(_ sender: UIButton) {
+    @IBAction func button_routing_onAction(_ button_routing: UIButton) {
         sender.isSelected = !sender.isSelected
-        mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateMap : nil
-        sceneView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateScene : nil
-
-        if NSOnState == button_routing.state {
-            button_bufferAndQuery.state = NSOffState
+        mapView.touchDelegate = sender.isSelected ? routingTouchDelegateMap : nil
+        sceneView.touchDelegate = sender.isSelected ? routingTouchDelegateScene : nil
+        
+        if (sender.isSelected) {
+            button_bufferAndQuery.isSelected = false
         }
-
+        
         if (nil != routingTouchDelegateMap) {
             routingTouchDelegateMap!.reset()
         }
         if (nil != routingTouchDelegateScene) {
             routingTouchDelegateScene!.reset()
         }
+    }
+    ```
+
+1. In `button_bufferAndQuery_onAction`, if the buffer and query button has been selected, unselect the routing button:
+
+    ```
+    if (sender.isSelected) {
+        button_routing.isSelected = false
     }
     ```
 
@@ -242,10 +250,10 @@ If you have trouble, **refer to the solution code**, which is linked near the be
 If you completed the exercise, congratulations! You learned how to calculate a driving route using a web service and display the route on the map.
 
 Ready for more? Choose from the following bonus challenges:
-- Instead of hard-coding your ArcGIS Online username and password, challenge the user for a username and password. Runtime for macOS will do this automatically, but it would be very handy for the user if you wrote code to put up your own username/password dialog and store the resulting login token.
+- Instead of hard-coding your ArcGIS Online username and password, challenge the user for a username and password.
 - In fact, you can do even better than creating your own username/password dialog. A wise user will feel nervous about typing his or her username and password into an arbitrary app. You can give the user some reassurance by implementing an OAuth 2.0 user login, in which ArcGIS Online (or ArcGIS Enterprise) generates a login page, which you display in a web control. That way, your program never directly handles the username and password, but you get back a short-lived token that you can use to authenticate to ArcGIS services. See if you can implement an OAuth 2.0 user login for the routing.
 - Allow the user to add more than two points for the route.
 - Allow the user to add barriers in addition to stops.
-- Look at the properties you can set on [`AGSRouteParameters`](https://developers.arcgis.com/macos/latest/api-reference/interface_a_g_s_route_parameters.html) and try a few of them to change the routing behavior.
+- Look at the properties you can set on [`AGSRouteParameters`](https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_route_parameters.html) and try a few of them to change the routing behavior.
 
 That concludes the exercises for this workshop. Well done!

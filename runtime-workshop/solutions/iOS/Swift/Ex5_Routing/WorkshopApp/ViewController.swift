@@ -69,6 +69,72 @@ class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     
 }
 
+// Exercise 5: A touch delegate for routing
+class RoutingTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
+    
+    private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
+        style: AGSSimpleMarkerSymbolStyle.triangle,
+        color: UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
+        size: 10)
+    private let ROUTE_DESTINATION_SYMBOL = AGSSimpleMarkerSymbol(
+        style: AGSSimpleMarkerSymbolStyle.square,
+        color: UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
+        size: 10)
+    private let ROUTE_LINE_SYMBOL = AGSSimpleLineSymbol(
+        style: AGSSimpleLineSymbolStyle.solid,
+        color: UIColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
+        width: 5)
+    
+    private let routeGraphics: AGSGraphicsOverlay
+    private var originPoint: AGSPoint? = nil
+    private let routeTask: AGSRouteTask
+    private let routeParameters: AGSRouteParameters
+    
+    init(
+        graphics: AGSGraphicsOverlay,
+        routeTask: AGSRouteTask,
+        routeParameters: AGSRouteParameters) {
+        self.routeGraphics = graphics
+        self.routeTask = routeTask
+        self.routeParameters = routeParameters
+    }
+    
+    func reset() {
+        originPoint = nil
+        routeGraphics.graphics.removeAllObjects()
+    }
+    
+    func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        let graphics = routeGraphics.graphics
+        var point = mapPoint
+        if point.hasZ {
+            point = AGSPoint(x: point.x, y: point.y, spatialReference: point.spatialReference)
+        }
+        if (nil == originPoint) {
+            originPoint = point
+            graphics.removeAllObjects()
+            graphics.add(AGSGraphic(geometry: point, symbol: ROUTE_ORIGIN_SYMBOL))
+        } else {
+            graphics.add(AGSGraphic(geometry: point, symbol: ROUTE_DESTINATION_SYMBOL))
+            routeParameters.clearStops()
+            var stops: [AGSStop] = []
+            for p in [ originPoint, point ] {
+                stops.append(AGSStop(point: p!))
+            }
+            routeParameters.setStops(stops)
+            routeTask.solveRoute(with: routeParameters, completion: { (routeResult, err) in
+                if 0 < (routeResult?.routes.count)! {
+                    graphics.add(AGSGraphic(
+                        geometry: routeResult!.routes[0].routeGeometry,
+                        symbol: self.ROUTE_LINE_SYMBOL))
+                }
+            })
+            originPoint = nil
+        }
+    }
+    
+}
+
 class ViewController: UIViewController {
     
     // Exercise 1: Specify elevation service URL
@@ -77,6 +143,10 @@ class ViewController: UIViewController {
     // Exercise 1: Outlets from storyboard
     @IBOutlet weak var mapView: AGSMapView!
     @IBOutlet weak var sceneView: AGSSceneView!
+    
+    // Exercise 5: Button outlets for toggling
+    @IBOutlet weak var button_bufferAndQuery: UIButton!
+    @IBOutlet weak var button_routing: UIButton!
     
     // Exercise 1: Declare threeD boolean
     fileprivate var threeD = false
@@ -90,11 +160,34 @@ class ViewController: UIViewController {
     fileprivate let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
     fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
     
+    // Exercise 5: Fields for routing
+    private var routingTouchDelegateMap: RoutingTouchDelegate?
+    private var routingTouchDelegateScene: RoutingTouchDelegate?
+    private let routingMapGraphics = AGSGraphicsOverlay()
+    private let routingSceneGraphics = AGSGraphicsOverlay()
+    
     // Exercise 4: Initializer to support buffer and query
     required init?(coder: NSCoder) {
         self.bufferAndQueryTouchDelegateMap = BufferAndQueryTouchDelegate(graphics: bufferAndQueryMapGraphics)
         self.bufferAndQueryTouchDelegateScene = BufferAndQueryTouchDelegate(graphics: bufferAndQuerySceneGraphics)
         super.init(coder: coder)
+        
+        // Exercise 5: Initialize routing touch delegates
+        let routeTask = AGSRouteTask(url: URL(string: "https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
+        // Don't share this code without removing plain text username and password!!!
+        routeTask.credential = AGSCredential(user: "myUsername", password: "myPassword")
+        routeTask.defaultRouteParameters { (routeParameters, err) in
+            var routingTouchDelegateMap: RoutingTouchDelegate? = nil
+            var routingTouchDelegateScene: RoutingTouchDelegate? = nil
+            if nil == routeParameters {
+                self.button_routing.isEnabled = false
+            } else {
+                routingTouchDelegateMap = RoutingTouchDelegate(graphics: self.routingMapGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+                routingTouchDelegateScene = RoutingTouchDelegate(graphics: self.routingSceneGraphics, routeTask: routeTask, routeParameters: routeParameters!)
+            }
+            self.routingTouchDelegateMap = routingTouchDelegateMap
+            self.routingTouchDelegateScene = routingTouchDelegateScene
+        }
     }
 
     override func viewDidLoad() {
@@ -144,6 +237,10 @@ class ViewController: UIViewController {
         // Exercise 4: Add buffer and query graphics layers
         mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
         sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
+        
+        // Exercise 5: Add routing graphics layers
+        mapView.graphicsOverlays.add(routingMapGraphics)
+        sceneView.graphicsOverlays.add(routingSceneGraphics)
     }
     
     // Exercise 1: 2D/3D button action
@@ -199,6 +296,29 @@ class ViewController: UIViewController {
         sender.isSelected = !sender.isSelected
         mapView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateMap : nil
         sceneView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateScene : nil
+        
+        // Exercise 5: Unselect the routing button if the buffer and query button is selected
+        if (sender.isSelected) {
+            button_routing.isSelected = false
+        }
+    }
+    
+    // Exercise 5: Routing
+    @IBAction func button_routing_onAction(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        mapView.touchDelegate = sender.isSelected ? routingTouchDelegateMap : nil
+        sceneView.touchDelegate = sender.isSelected ? routingTouchDelegateScene : nil
+        
+        if (sender.isSelected) {
+            button_bufferAndQuery.isSelected = false
+        }
+        
+        if (nil != routingTouchDelegateMap) {
+            routingTouchDelegateMap!.reset()
+        }
+        if (nil != routingTouchDelegateScene) {
+            routingTouchDelegateScene!.reset()
+        }
     }
     
     // Exercise 2: Get the target of the current scene
