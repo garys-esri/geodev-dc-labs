@@ -1,8 +1,8 @@
-# Exercise 3: Add a Local Feature Layer (Qt Quick)
+# Exercise 3: Add Operational Layers (Qt Quick)
 
 This exercise walks you through the following:
 - Add a layer from a mobile map package to the 2D map
-- Add a layer from a mobile map package to the 3D scene
+- Add a scene layer to the 3D scene
 
 Prerequisites:
 - Complete [Exercise 2](Exercise%202%20Zoom%20Buttons.md), or get the Exercise 2 code solution compiling and running properly in Qt Creator.
@@ -101,7 +101,7 @@ A layer can only reside in one map or scene at a time. Therefore, to add layers 
 
 1. Run your app. Verify that when you switch to 3D, the crime incidents display and the view is rotated and pitched. Also try the built-in 3D navigation by holding the right mouse button and moving the mouse:
 
-    ![3D scene pitched and rotated](07-mmpk-layer-scene-rotated.jpg)
+    ![3D scene pitched and rotated](07-scene-layer-rotated.jpg)
     
 ## How did it go?
 
