@@ -39,6 +39,6 @@ x64/
 .builds
 /runtime-workshop/solutions/Java/Ex1_MapAndScene/target/
 /runtime-workshop/solutions/Java/Ex2_ZoomButtons/target/
-/runtime-workshop/solutions/Java/Ex3_LocalFeatureLayer/target/
+/runtime-workshop/solutions/Java/Ex3_OperationalLayers/target/
 /runtime-workshop/solutions/Java/Ex4_BufferAndQuery/target/
 /runtime-workshop/solutions/Java/Ex5_Routing/target/
