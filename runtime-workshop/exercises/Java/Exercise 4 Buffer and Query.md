@@ -44,26 +44,23 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     toggleButton_bufferAndQuery.setOnAction(event -> toggleButton_bufferAndQuery_onAction());
     ```
     
-1. Create a `private void bufferAndQuery(MouseEvent)` method for calculating a buffer and performing a query based on the user's click on the map or scene. You will write most of the code for this method later, but for now, just detect whether or not the user clicked with the primary mouse button and do a `println` if he or she did. (Be sure to import `javafx.scene.input.MouseEvent` instead of some other `MouseEvent` class.)
+1. Create a `private void bufferAndQuery(MouseEvent)` method for calculating a buffer and performing a query based on the user's click on the map. You will write most of the code for this method later, but for now, just detect whether or not the user clicked with the primary mouse button and do a `println` if he or she did. (Be sure to import `javafx.scene.input.MouseEvent` instead of some other `MouseEvent` class.)
 
     ```
     private void bufferAndQuery(MouseEvent event) {
         if (MouseButton.PRIMARY.equals(event.getButton()) && event.isStillSincePress()) {
-            System.out.println("Clicked on map or scene!");
+            System.out.println("Clicked on map!");
         } else {
             return;
         }
     }
     ```
     
-1. Go back to your event handler method for the buffer and query toggle button (we called it `toggleButton_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the `MapView` and `SceneView` to call `bufferAndQuery(MouseEvent)` when the user clicks the map or scene. If the button is toggled off, we need to tell the `MapView` and `SceneView` to do nothing in particular when the user clicks the map or scene. Check whether the `SceneView` is `null` when setting the event handler. Add this code to your event handler method:
+1. Go back to your event handler method for the buffer and query toggle button (we called it `toggleButton_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the `MapView` to call `bufferAndQuery(MouseEvent)` when the user clicks the map. If the button is toggled off, we need to tell the `MapView` and `SceneView` to do nothing in particular when the user clicks the map. Add this code to your event handler method:
 
     ```
     if (toggleButton_bufferAndQuery.isSelected()) {
         mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-        if (null != sceneView) {
-            sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-        }
     } else {
         mapView.setOnMouseClicked(null);
         if (null != sceneView) {
@@ -72,21 +69,13 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
     
-1. In `button_toggle2d3d_onAction()`, after instantiating the `SceneView`, if `toggleButton_bufferAndQuery` is already selected, set the `SceneView`'s `onMouseClicked` event to call `bufferAndQuery(MouseEvent)`:
-
-    ```
-    if (toggleButton_bufferAndQuery.isSelected()) {
-        sceneView.setOnMouseClicked(event -> bufferAndQuery(event));
-    }
-    ```
-    
-1. Compile and run your app. Verify that a new toggle button appears and that your `println` prints text when and only when the toggle button is toggled on and you click the map or the scene:
+1. Compile and run your app. Verify that a new toggle button appears and that your `println` prints text when and only when the toggle button is toggled on and you click the map:
 
     ![Buffer and query toggle button](08-buffer-query-toggle-button.png)
     
 ## Display the clicked point and a buffer around it
 
-You need to buffer the clicked point and display both the point and the buffer as graphics on the map or scene.
+You need to buffer the clicked point and display both the point and the buffer as graphics on the map.
 
 1. Before the constructor, instantiate fields for the symbols for the clicked point and buffer. You can adjust the colors, styles, and widths if desired. In the following code, the point symbol is a 10-pixel circle with an orange (FFA500) color and no transparency (alpha = FF), and the buffer symbol is a hollow polygon with a 3-pixel orange (FFA500) solid line border with no transparency (alpha = FF):
 
@@ -98,11 +87,10 @@ You need to buffer the clicked point and display both the point and the buffer a
                     new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
     ```
     
-1. Before the constructor, instantiate two `GraphicsOverlay` fields: one for the map and one for the scene:
+1. Before the constructor, instantiate a `GraphicsOverlay` field:
 
     ```
     private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
-    private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
     ```
     
 1. In your constructor, add the map `GraphicsOverlay` to the `MapView`:
@@ -111,14 +99,7 @@ You need to buffer the clicked point and display both the point and the buffer a
     mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
     ```
     
-1. In `button_toggle2d3d_onAction()`, after the call to `scene.addDoneLoadingListener`, add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only required one line of code, while this one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface:
-
-    ```
-    bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
-    sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
-    ```
-
-1. Create a `private Point getGeoPoint(MouseEvent)` method to convert a `MouseEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MouseEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. (Be sure to import `javafx.geometry.Point2D` instead of some other `Point2D` class.)
+1. Create a `private Point getGeoPoint(MouseEvent)` method to convert a `MouseEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MouseEvent)` in one place here in Exercise 4, and you're always using the `MapView`, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. (Be sure to import `javafx.geometry.Point2D` instead of some other `Point2D` class.)
 
     ```
     private Point getGeoPoint(MouseEvent event) {
@@ -145,24 +126,22 @@ You need to buffer the clicked point and display both the point and the buffer a
     Polygon buffer = (Polygon) GeometryEngine.ellipseGeodesic(params);
     ```
 
-1. In `bufferAndQuery(MouseEvent)`, add the point and buffer as graphics. You only need to add them to the `GraphicsOverlay` for the `GeoView` currently in use--`MapView` or `SceneView`--so check the value of `threeD` and choose a `GraphicsOverlay` accordingly. Clear its graphics and then add the point and buffer as new `Graphic` objects:
+1. In `bufferAndQuery(MouseEvent)`, add the point and buffer as graphics. Clear its graphics and then add the point and buffer as new `Graphic` objects:
 
     ```
-    ListenableList<Graphic> graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).getGraphics();
+    ListenableList<Graphic> graphics = bufferAndQueryMapGraphics.getGraphics();
     graphics.clear();
     graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
     graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
     ```
 
-1. Compile and run your app. Verify that if you toggle the buffer and select button and then click the map or scene, the point you clicked and a 1000-meter buffer around it appear on the map or scene:
+1. Compile and run your app. Verify that if you toggle the buffer and select button and then click the map, the point you clicked and a 1000-meter buffer around it appear on the map:
 
     ![Click and buffer graphics (map)](09-click-and-buffer-graphics-map.png)
 
-    ![Click and buffer graphics (scene)](10-click-and-buffer-graphics-scene.jpg)
-    
 ## Query for features within the buffer
 
-There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `FeatureLayer.selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`, which both highlights selected features on the map or scene and provides a list of the selected features.
+There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `FeatureLayer.selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`, which both highlights selected features on the map and provides a list of the selected features.
 
 1. In `bufferAndQuery(MouseEvent)`, after creating the buffer and adding graphics, instantiate a `QueryParameters` object with the buffer geometry:
 
@@ -171,12 +150,10 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     query.setGeometry(buffer);
     ```
     
-1. For each of the `FeatureLayer` objects in the operational layers of the `SceneView`'s scene or the `MapView`'s map, call `selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`. Use `FeatureLayer.SelectionMode.NEW` to do a new selection, as opposed to adding to or removing from the current selection. Add this code after instantiating the query object and setting its geometry:
+1. For each of the `FeatureLayer` objects in the operational layers of the `MapView`'s map, call `selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`. Use `FeatureLayer.SelectionMode.NEW` to do a new selection, as opposed to adding to or removing from the current selection. Add this code after instantiating the query object and setting its geometry:
 
     ```
-    LayerList operationalLayers = threeD ?
-            sceneView.getArcGISScene().getOperationalLayers() :
-            mapView.getMap().getOperationalLayers();
+    LayerList operationalLayers = mapView.getMap().getOperationalLayers();
     operationalLayers.parallelStream().filter(
             layer -> layer instanceof FeatureLayer
     ).forEach(layer -> {
@@ -184,7 +161,7 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     });
     ```
     
-1. Compile and run your app. Verify that features within the clicked buffer are highlighted on the map or scene:
+1. Compile and run your app. Verify that features within the clicked buffer are highlighted on the map:
 
     ![Selected features (map)](11-selected-features.png)
     
@@ -192,7 +169,7 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
 
 If you have trouble, **refer to the solution code**, which is linked near the beginning of this exercise. You can also **submit an issue** in this repo to ask a question or report a problem. If you are participating live with Esri presenters, feel free to **ask a question** of the presenters.
 
-If you completed the exercise, congratulations! You learned how to get a user's input on the map or scene, buffer a point, display graphics on the map or scene, and select features based on a query.
+If you completed the exercise, congratulations! You learned how to get a user's input on the map, buffer a point, display graphics on the map, and select features based on a query.
 
 Ready for more? Choose from the following:
 

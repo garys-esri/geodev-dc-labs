@@ -27,8 +27,8 @@ import com.esri.arcgisruntime.geometry.LinearUnit;
 import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
+import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
-import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
@@ -41,7 +41,6 @@ import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
-import com.esri.arcgisruntime.mapping.view.LayerSceneProperties.SurfacePlacement;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
@@ -49,7 +48,6 @@ import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.util.ListenableList;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,8 +72,10 @@ public class WorkshopApp extends Application {
     private static final String ELEVATION_IMAGE_SERVICE
         = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
 
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
+    private static final String SCENE_SERVICE_URL
+        = "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
 
     // Exercise 4: Create symbols for click and buffer
     private static final SimpleMarkerSymbol CLICK_SYMBOL
@@ -115,7 +115,6 @@ public class WorkshopApp extends Application {
 
     // Exercise 4: Declare buffer and query fields
     private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
-    private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
 
     /**
      * Default constructor for class.
@@ -227,41 +226,18 @@ public class WorkshopApp extends Application {
                 scene.setBaseSurface(surface);
                 sceneView = new SceneView();
 
-                /**
-                 * Exercise 3: Open a mobile map package (.mmpk) and add its
-                 * operational layers to the scene
-                 */
-                scene.addDoneLoadingListener(() -> {
-                    final MobileMapPackage mmpk = new MobileMapPackage(MMPK_PATH);
-                    mmpk.addDoneLoadingListener(() -> {
-                        List<ArcGISMap> maps = mmpk.getMaps();
-                        if (0 < maps.size()) {
-                            final ArcGISMap thisMap = maps.get(0);
-                            thisMap.addDoneLoadingListener(() -> {
-                                ArrayList<Layer> layers = new ArrayList<>();
-                                layers.addAll(thisMap.getOperationalLayers());
-                                thisMap.getOperationalLayers().clear();
-                                scene.getOperationalLayers().addAll(layers);
-                                sceneView.setViewpoint(thisMap.getInitialViewpoint());
-                                // Rotate the camera
-                                Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
-                                Point targetPoint = (Point) viewpoint.getTargetGeometry();
-                                Camera camera = sceneView.getCurrentViewpointCamera()
-                                    .rotateAround(targetPoint, 45.0, 65.0, 0.0);
-                                sceneView.setViewpointCameraAsync(camera);
-                            });
-                            thisMap.loadAsync();
-                        }
-                    });
-                    mmpk.loadAsync();
+                // Exercise 3: Add a scene layer to the scene
+                ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
+                sceneLayer.addDoneLoadingListener(() -> {
+                    sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
+                    // Rotate the camera
+                    Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                    Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                    Camera camera = sceneView.getCurrentViewpointCamera()
+                        .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                    sceneView.setViewpointCameraAsync(camera);
                 });
-
-                /**
-                 * Exercise 4: Add a GraphicsOverlay to the scene for the click
-                 * and buffer.
-                 */
-                bufferAndQuerySceneGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
-                sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
+                scene.getOperationalLayers().add(sceneLayer);
 
                 /**
                  * Exercise 4: Set the SceneView's onMouseClicked event handler
@@ -388,9 +364,6 @@ public class WorkshopApp extends Application {
     private void toggleButton_bufferAndQuery_onAction() {
         if (toggleButton_bufferAndQuery.isSelected()) {
             mapView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            if (null != sceneView) {
-                sceneView.setOnMouseClicked(mouseEvent -> bufferAndQuery(mouseEvent));
-            }
         } else {
             mapView.setOnMouseClicked(null);
             if (null != sceneView) {
@@ -432,9 +405,7 @@ public class WorkshopApp extends Application {
             Polygon buffer = (Polygon) GeometryEngine.ellipseGeodesic(params);
 
             // Show click and buffer as graphics
-            ListenableList<Graphic> graphics
-                = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics)
-                    .getGraphics();
+            ListenableList<Graphic> graphics = bufferAndQueryMapGraphics.getGraphics();
             graphics.clear();
             graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
             graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
@@ -442,9 +413,7 @@ public class WorkshopApp extends Application {
             // Run the query
             QueryParameters query = new QueryParameters();
             query.setGeometry(buffer);
-            LayerList operationalLayers = threeD
-                ? sceneView.getArcGISScene().getOperationalLayers()
-                : mapView.getMap().getOperationalLayers();
+            LayerList operationalLayers = mapView.getMap().getOperationalLayers();
             operationalLayers.parallelStream().filter(
                 layer -> layer instanceof FeatureLayer
             ).forEach(layer -> {
