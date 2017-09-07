@@ -7,7 +7,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 2](Exercise%202%20Zoom%20Buttons.md), or get the Exercise 2 code solution compiling and running properly in Qt Creator.
 
-If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex3_LocalFeatureLayer), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex3_OperationalLayers), available in this repository.
 
 ## Add a layer from a mobile map package to the 2D map
 
