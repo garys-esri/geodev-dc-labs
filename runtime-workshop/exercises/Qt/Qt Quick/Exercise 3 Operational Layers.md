@@ -99,9 +99,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
 
 1. Compile and run your app. Verify that when you switch to 3D, the scene displays the 3D buildings from the scene layer:
 
-    ```
     ![Scene layer on a 3D scene](06-scene-layer.jpg)
-    ```
 
 1. Remember in [Exercise 2](Exercise%202%20Zoom%20Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`.
 
