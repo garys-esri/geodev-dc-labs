@@ -1,2 +1,4 @@
 build-WorkshopApp*/
 WorkshopApp/WorkshopApp.pro.user
+WorkshopApp/.qmake.stash
+WorkshopApp/Makefile*

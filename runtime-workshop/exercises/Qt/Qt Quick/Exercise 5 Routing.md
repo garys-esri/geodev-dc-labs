@@ -22,19 +22,19 @@ After doing Exercise 4, this should seem familiar to you.
     SimpleMarkerSymbol {
         id: routeOriginSymbol
         style: Enums.SimpleMarkerSymbolStyleTriangle
-        color: "#C000FF00"
+        color: "#FF00FF00"
         size: 10
     }
     SimpleMarkerSymbol {
         id: routeDestinationSymbol
         style: Enums.SimpleMarkerSymbolStyleSquare
-        color: "#C0FF0000"
+        color: "#FFFF0000"
         size: 10
     }
     SimpleLineSymbol {
         id: routeLineSymbol
         style: Enums.SimpleLineSymbolStyleSolid
-        color: "#C0550055"
+        color: "#FF550055"
         width: 5
     }
     ```
