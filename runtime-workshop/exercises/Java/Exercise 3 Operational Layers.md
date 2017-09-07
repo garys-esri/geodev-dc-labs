@@ -7,7 +7,7 @@ This exercise walks you through the following:
 Prerequisites:
 - Complete [Exercise 2](Exercise%202%20Zoom%20Buttons.md), or get the Exercise 2 code solution compiling and running properly, preferably in an IDE.
 
-If you need some help, you can refer to [the solution to this exercise](../../solutions/Java/Ex3_LocalFeatureLayer), available in this repository.
+If you need some help, you can refer to [the solution to this exercise](../../solutions/Java/Ex3_OperationalLayers), available in this repository.
 
 ## Add a layer from a mobile map package to the 2D map
 
@@ -79,11 +79,11 @@ Web scene layers are cached web layers that are optimized for displaying a large
     sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
     ```
     
-1. Compile and run your app. Verify that when you switch to 3D, the scene displays Washington, D.C., with the red triangles representing crime incidents:
+1. Compile and run your app. Verify that when you switch to 3D, the scene displays the 3D features from the scene layer:
 
     ![Scene layer on a 3D scene](06-scene-layer.jpg)
     
-1. Remember in [Exercise 2](Exercise 2 Zoom Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`. Here is the code to insert immediately after the previous step:
+1. Remember in [Exercise 2](Exercise%202%20Zoom%20Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`. Here is the code to insert immediately after the previous step:
 
     ```
     Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
@@ -93,7 +93,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
     sceneView.setViewpointCameraAsync(camera);
     ```
 
-1. Compile and run your app. Verify that when you switch to 3D, the crime incidents display and the view is rotated and pitched. Also try the built-in 3D navigation by holding the right mouse button and moving the mouse:
+1. Compile and run your app. Verify that when you switch to 3D, the 3D features display and the view is rotated and pitched. Also try the built-in 3D navigation by holding the right mouse button and moving the mouse:
 
     ![3D scene pitched and rotated](07-scene-layer-rotated.jpg)
     

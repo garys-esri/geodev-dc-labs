@@ -24,8 +24,9 @@ ApplicationWindow {
     // Exercise 1: Create a variable to track 2D vs. 3D
     property bool threeD: false
 
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     readonly property url mmpkPath: workingDirectory + "/../../../../../../data/DC_Crime_Data.mmpk"
+    readonly property url sceneServiceUrl: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0"
 
     // add a mapView component
     MapView {
@@ -74,38 +75,28 @@ ApplicationWindow {
                     url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
                 }
             }
-        }
-    }
 
-    // Exercise 3: Add a mobile map package to the 3D scene
-    MobileMapPackage {
-        id: sceneMmpk
-        path: mmpkPath
+            // Exercise 3: Add a scene layer to the scene
+            ArcGISSceneLayer {
+                id: sceneLayer
+                url: sceneServiceUrl
 
-        Component.onCompleted: {
-            sceneMmpk.load();
-        }
+                function rotate() {
+                    sceneView.setViewpointCompleted.disconnect(rotate);
+                    var camera = sceneView.currentViewpointCamera.rotateAround(
+                                sceneView.currentViewpointCenter.center, 45.0, 65.0, 0.0);
+                    sceneView.setViewpointCamera(camera);
+                }
 
-        onLoadStatusChanged: {
-            if (loadStatus === Enums.LoadStatusLoaded) {
-                var thisMap = sceneMmpk.maps[0];
-                var layers = [];
-                thisMap.operationalLayers.forEach(function (layer) {
-                    layers.push(layer);
-                });
-                thisMap.operationalLayers.clear();
-                layers.forEach(function (layer) {
-                    sceneView.scene.operationalLayers.append(layer);
-                });
-
-                // Zoom and rotate
-                var camera = ArcGISRuntimeEnvironment.createObject("Camera", {
-                    location: thisMap.initialViewpoint.extent.center,
-                    heading: 0,
-                    pitch: 0,
-                    roll: 0
-                }).elevate(20000).rotateAround(thisMap.initialViewpoint.extent.center, 45, 65, 0);
-                sceneView.setViewpointCamera(camera);
+                onLoadStatusChanged: {
+                    if (Enums.LoadStatusLoaded === loadStatus) {
+                        var viewpointExtent = ArcGISRuntimeEnvironment.createObject("ViewpointExtent", {
+                            extent: sceneLayer.fullExtent
+                        });
+                        sceneView.setViewpointCompleted.connect(rotate);
+                        sceneView.setViewpoint(viewpointExtent);
+                    }
+                }
             }
         }
     }

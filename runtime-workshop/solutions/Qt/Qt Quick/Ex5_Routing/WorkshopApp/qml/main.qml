@@ -24,8 +24,9 @@ ApplicationWindow {
     // Exercise 1: Create a variable to track 2D vs. 3D
     property bool threeD: false
 
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     readonly property url mmpkPath: workingDirectory + "/../../../../../../data/DC_Crime_Data.mmpk"
+    readonly property url sceneServiceUrl: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0"
 
     // Exercise 5: Declare origin point and route parameters variables
     property var originPoint: undefined
@@ -52,31 +53,25 @@ ApplicationWindow {
     SimpleMarkerSymbol {
         id: routeOriginSymbol
         style: Enums.SimpleMarkerSymbolStyleTriangle
-        color: "#C000FF00"
+        color: "#FF00FF00"
         size: 10
     }
     SimpleMarkerSymbol {
         id: routeDestinationSymbol
         style: Enums.SimpleMarkerSymbolStyleSquare
-        color: "#C0FF0000"
+        color: "#FFFF0000"
         size: 10
     }
     SimpleLineSymbol {
         id: routeLineSymbol
         style: Enums.SimpleLineSymbolStyleSolid
-        color: "#C0550055"
+        color: "#FF550055"
         width: 5
     }
 
-    // Exercise 4: Create graphics overlays
+    // Exercise 4: Create graphics overlay for buffer and query
     GraphicsOverlay {
         id: bufferAndQueryMapGraphics
-    }
-    GraphicsOverlay {
-        id: bufferAndQuerySceneGraphics
-        sceneProperties: LayerSceneProperties {
-            surfacePlacement: Enums.SurfacePlacementDraped
-        }
     }
 
     // Exercise 5: Create graphics overlays for routing
@@ -209,58 +204,40 @@ ApplicationWindow {
                     url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
                 }
             }
+
+            // Exercise 3: Add a scene layer to the scene
+            ArcGISSceneLayer {
+                id: sceneLayer
+                url: sceneServiceUrl
+
+                function rotate() {
+                    sceneView.setViewpointCompleted.disconnect(rotate);
+                    var camera = sceneView.currentViewpointCamera.rotateAround(
+                                sceneView.currentViewpointCenter.center, 45.0, 65.0, 0.0);
+                    sceneView.setViewpointCamera(camera);
+                }
+
+                onLoadStatusChanged: {
+                    if (Enums.LoadStatusLoaded === loadStatus) {
+                        var viewpointExtent = ArcGISRuntimeEnvironment.createObject("ViewpointExtent", {
+                            extent: sceneLayer.fullExtent
+                        });
+                        sceneView.setViewpointCompleted.connect(rotate);
+                        sceneView.setViewpoint(viewpointExtent);
+                    }
+                }
+            }
         }
 
-        // Exercise 4: Add graphics overlay
+        // Exercise 5: Add routing graphics overlay
         Component.onCompleted: {
-            graphicsOverlays.append(bufferAndQuerySceneGraphics)
-
-            // Exercise 5: Add routing graphics overlay
             graphicsOverlays.append(sceneRouteGraphics)
         }
 
-        // Exercise 4: Listen for mouse click and do buffer and query
+        // Exercise 5: Listen for mouse click and add routing stop
         onMouseClicked: function (event) {
-            if (button_bufferAndQuery.checked) {
-                bufferAndQuery(event);
-
-            // Exercise 5: If routing button is selected, add stop
-            } else if (button_routing.checked) {
+            if (button_routing.checked) {
                 addStopToRoute(event);
-
-            }
-        }
-    }
-
-    // Exercise 3: Add a mobile map package to the 3D scene
-    MobileMapPackage {
-        id: sceneMmpk
-        path: mmpkPath
-
-        Component.onCompleted: {
-            sceneMmpk.load();
-        }
-
-        onLoadStatusChanged: {
-            if (loadStatus === Enums.LoadStatusLoaded) {
-                var thisMap = sceneMmpk.maps[0];
-                var layers = [];
-                thisMap.operationalLayers.forEach(function (layer) {
-                    layers.push(layer);
-                });
-                thisMap.operationalLayers.clear();
-                layers.forEach(function (layer) {
-                    sceneView.scene.operationalLayers.append(layer);
-                });
-
-                // Zoom and rotate
-                var camera = ArcGISRuntimeEnvironment.createObject("Camera", {
-                    location: thisMap.initialViewpoint.extent.center,
-                    heading: 0,
-                    pitch: 0,
-                    roll: 0
-                }).elevate(20000).rotateAround(thisMap.initialViewpoint.extent.center, 45, 65, 0);
-                sceneView.setViewpointCamera(camera);
             }
         }
     }
@@ -438,7 +415,7 @@ ApplicationWindow {
             var buffer = GeometryEngine.bufferGeodetic(geoPoint, 1000, Enums.LinearUnitIdMeters, 1, Enums.GeodeticCurveTypeGeodesic)
 
             // Show click and buffer as graphics
-            var graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).graphics;
+            var graphics = bufferAndQueryMapGraphics.graphics;
             graphics.clear();
             graphics.append(ArcGISRuntimeEnvironment.createObject("Graphic", {
                 geometry: buffer,
