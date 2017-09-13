@@ -172,8 +172,10 @@ After doing Exercise 4, this should seem familiar to you.
 
 1. Run your app. Verify that you can toggle on the routing button, click an origin point, click a destination point, and see both points displayed:
 
-    ![Origin and destination](12-origin-and-destination.png)
-    
+    ![Origin and destination (map)](12-origin-and-destination-map.png)
+
+    ![Origin and destination (scene)](13-origin-and-destination-scene.png)
+
 ## Calculate a driving route and display it on the map
 
 1. In `RoutingTouchDelegate`, declare a `RouteTask` field and a `RouteParameters` field:
@@ -241,8 +243,10 @@ After doing Exercise 4, this should seem familiar to you.
     
 1. Compile and run your app. Verify that you can calculate and display a route:
 
-    ![Route](14-route.png)
+    ![Route (2D)](14-route-in-2d.png)
     
+    ![Route (3D)](15-route-in-3d.png)
+
 ## How did it go?
 
 If you have trouble, **refer to the solution code**, which is linked near the beginning of this exercise. You can also **submit an issue** in this repo to ask a question or report a problem. If you are participating live with Esri presenters, feel free to **ask a question** of the presenters.

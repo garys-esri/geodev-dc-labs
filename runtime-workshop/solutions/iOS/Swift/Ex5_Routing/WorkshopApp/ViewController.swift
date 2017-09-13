@@ -204,29 +204,6 @@ class ViewController: UIViewController {
             self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
         
-        // Exercise 3: Add mobile map package's layers to 3D scene
-        let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
-        sceneMmpk.load {(error) in
-            if 0 < sceneMmpk.maps.count {
-                let thisMap = sceneMmpk.maps[0]
-                var layers = [AGSLayer]()
-                for layer in thisMap.operationalLayers {
-                    layers.append(layer as! AGSLayer)
-                }
-                thisMap.operationalLayers.removeAllObjects()
-                self.sceneView.scene?.operationalLayers.addObjects(from: layers)
-                self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
-                self.sceneView.viewpointChangedHandler = {() -> Void in
-                    self.sceneView.viewpointChangedHandler = nil
-                    let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
-                    let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-                    let camera = self.sceneView.currentViewpointCamera()
-                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-                    self.sceneView.setViewpointCamera(camera)
-                }
-            }
-        }
-        
         // Exercise 3: Add a scene layer to the scene
         let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL!)
         sceneLayer.load{(error) in
