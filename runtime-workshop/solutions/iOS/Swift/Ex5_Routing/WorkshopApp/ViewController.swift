@@ -228,14 +228,14 @@ class ViewController: UIViewController {
         }
         
         // Exercise 3: Add a scene layer to the scene
-        let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL)
+        let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL!)
         sceneLayer.load{(error) in
-            sceneView.setViewpoint(AGSViewpoint(sceneLayer.fullExtent))
+            self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
             // Rotate the camera
-            let viewpoint = sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
+            let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
             let targetPoint = viewpoint?.targetGeometry
-            let camera = sceneView.currentViewpointCamera().rotateAroundTargetPoint(targetPoint: targetPoint, deltaHeading: 45.0, deltaPitch: 65.0, deltaRoll: 0.0)
-            sceneView.setViewpointCamera(camera)
+            let camera = self.sceneView.currentViewpointCamera().rotateAroundTargetPoint(targetPoint as! AGSPoint, deltaHeading: 45.0, deltaPitch: 65.0, deltaRoll: 0.0)
+            self.sceneView.setViewpointCamera(camera)
         }
         self.sceneView.scene?.operationalLayers.add(sceneLayer)
         
