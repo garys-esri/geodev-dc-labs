@@ -6,7 +6,7 @@ This exercise walks you through the following:
 - Query for features within the buffer
 
 Prerequisites:
-- Complete [Exercise 3](Exercise%203%20Local%20Feature%20Layer.md), or get the Exercise 3 code solution compiling and running properly in Xcode.
+- Complete [Exercise 3](Exercise%203%20Operational%20Layers.md), or get the Exercise 3 code solution compiling and running properly in Xcode.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/iOS/Swift/Ex4_BufferAndQuery), available in this repository.
 
