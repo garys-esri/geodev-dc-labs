@@ -55,13 +55,8 @@ class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
         let query = AGSQueryParameters()
         query.geometry = buffer
         let operationalLayers : [AGSFeatureLayer]
-        if geoView is AGSMapView {
-            let mapView = geoView as? AGSMapView
-            operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-        } else {
-            let sceneView = geoView as? AGSSceneView
-            operationalLayers = sceneView!.scene!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-        }
+        let mapView = geoView as? AGSMapView
+        operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
         for layer in operationalLayers {
             layer.selectFeatures(withQuery: query, mode: AGSSelectionMode.new, completion: nil)
         }
@@ -81,19 +76,17 @@ class ViewController: UIViewController {
     // Exercise 1: Declare threeD boolean
     fileprivate var threeD = false
     
-    // Exercise 2: Mobile map package path
+    // Exercise 3: Specify operational layer paths
     fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
+    fileprivate let SCENE_SERVICE_URL = URL(string: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0")
     
     // Exercise 4: Fields for buffering and querying
     fileprivate let bufferAndQueryTouchDelegateMap: BufferAndQueryTouchDelegate
-    fileprivate let bufferAndQueryTouchDelegateScene: BufferAndQueryTouchDelegate
     fileprivate let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
-    fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
     
     // Exercise 4: Initializer to support buffer and query
     required init?(coder: NSCoder) {
         self.bufferAndQueryTouchDelegateMap = BufferAndQueryTouchDelegate(graphics: bufferAndQueryMapGraphics)
-        self.bufferAndQueryTouchDelegateScene = BufferAndQueryTouchDelegate(graphics: bufferAndQuerySceneGraphics)
         super.init(coder: coder)
     }
 
@@ -118,32 +111,20 @@ class ViewController: UIViewController {
             self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
         
-        // Exercise 3: Add mobile map package's layers to 3D scene
-        let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
-        sceneMmpk.load {(error) in
-            if 0 < sceneMmpk.maps.count {
-                let thisMap = sceneMmpk.maps[0]
-                var layers = [AGSLayer]()
-                for layer in thisMap.operationalLayers {
-                    layers.append(layer as! AGSLayer)
-                }
-                thisMap.operationalLayers.removeAllObjects()
-                self.sceneView.scene?.operationalLayers.addObjects(from: layers)
-                self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
-                self.sceneView.viewpointChangedHandler = {() -> Void in
-                    self.sceneView.viewpointChangedHandler = nil
-                    let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
-                    let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-                    let camera = self.sceneView.currentViewpointCamera()
-                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-                    self.sceneView.setViewpointCamera(camera)
-                }
-            }
+        // Exercise 3: Add a scene layer to the scene
+        let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL!)
+        sceneLayer.load{(error) in
+            self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
+            // Rotate the camera
+            let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
+            let targetPoint = viewpoint?.targetGeometry
+            let camera = self.sceneView.currentViewpointCamera().rotateAroundTargetPoint(targetPoint as! AGSPoint, deltaHeading: 45.0, deltaPitch: 65.0, deltaRoll: 0.0)
+            self.sceneView.setViewpointCamera(camera)
         }
+        self.sceneView.scene?.operationalLayers.add(sceneLayer)
         
         // Exercise 4: Add buffer and query graphics layers
         mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
-        sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
     }
     
     // Exercise 1: 2D/3D button action
@@ -198,7 +179,6 @@ class ViewController: UIViewController {
     @IBAction func button_bufferAndQuery_onAction(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         mapView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateMap : nil
-        sceneView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateScene : nil
     }
     
     // Exercise 2: Get the target of the current scene
