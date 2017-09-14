@@ -16,7 +16,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 ## Create a new iOS app
 
-1. Create a new Xcode project for an iOS Single View Application. For **Language**, choose **Swift**.
+1. Create a new Xcode project for an iOS Single View Application. For **Language**, choose **Swift**. To make it easier to load local data in later exercises, do not use spaces in the project name.
 
 1. In the project properties, under **Signing**, choose a **Team**. You may have to create one using your Apple ID. You must choose a team for your project if you want to run your app on a physical device. You can skip this step if you will only run your app on the simulator that comes with Xcode. 
 
