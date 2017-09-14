@@ -31,7 +31,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
     }
     ```
     
-1. Inside the `loadWithCompletion` completion code, get the `MobileMapPackage`'s maps. A mobile map package can contain multiple maps. `DC_Crime_Data.mmpk` only has one map, but it's a good idea to make sure there's at least one. If so, get the first map (index 0), and use it to set the map view’s map. (That's the easy way to add the mobile map package's layers; we will need to use a different way later in this exercise to add the layers to a 3D scene.) The map in this mobile map package has no basemap, so it's a good idea to set the basemap again. Here's the code that goes inside the event handler method:
+1. Inside the `load` completion code, get the `MobileMapPackage`'s maps. A mobile map package can contain multiple maps. `DC_Crime_Data.mmpk` only has one map, but it's a good idea to make sure there's at least one. If so, get the first map (index 0), and use it to set the map view’s map. The map in this mobile map package has no basemap, so it's a good idea to set the basemap again. Here's the code that goes inside the event handler method:
 
     ```
     if 0 < mmpk.maps.count {
@@ -70,10 +70,16 @@ Web scene layers are cached web layers that are optimized for displaying a large
     }
     ```
 
-1. Inside the `loadWithCompletion` completion code, set the scene view's viewpoint to the full extent of the scene layer:
+1. Inside the `load` completion code, set the scene view's viewpoint to the full extent of the scene layer:
 
     ```
     self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
+    ```
+
+1. After the call to `load` (NOT inside the completion block), add the new layer to the scene:
+
+    ```
+    self.sceneView.scene?.operationalLayers.add(sceneLayer)
     ```
 
 1. Run your app. Verify that when you switch to 3D, the scene displays the 3D features from the scene layer:

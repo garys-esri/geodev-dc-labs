@@ -76,7 +76,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
 
-1. In `RoutingTouchDelegate.geoView`, after removing the z-value from `point` if necessary, check to see whether this is the first point clicked or the second. You will fill in the `if` and `else` blocks in the steps that follow:
+1. In `RoutingTouchDelegate.geoView`, after the `if point.hasZ` block, check to see whether this is the first point clicked or the second. You will fill in the `if` and `else` blocks in the steps that follow:
 
     ```
     if (nil == originPoint) {
@@ -127,7 +127,7 @@ After doing Exercise 4, this should seem familiar to you.
     private let routingSceneGraphics = AGSGraphicsOverlay()
     ```
 
-1. In `ViewController.init`, instantiate the `RoutingTouchDelegate`s that you just declared. This instantiation will change completely and become more complicated when you set up the actual routing, but for now, we’re just doing graphics, and the instantiation is only one line each:
+1. In `ViewController.init`, after the call to `super.init`, instantiate the `RoutingTouchDelegate`s that you just declared. This instantiation will change completely and become more complicated when you set up the actual routing, but for now, we’re just doing graphics, and the instantiation is only one line each:
 
     ```
     routingTouchDelegateMap = RoutingTouchDelegate(graphics: self.routingMapGraphics)
