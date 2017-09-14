@@ -29,8 +29,9 @@ class ViewController: UIViewController {
     // Exercise 1: Declare threeD boolean
     fileprivate var threeD = false
     
-    // Exercise 2: Mobile map package path
+    // Exercise 3: Specify operational layer paths
     fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
+    fileprivate let SCENE_SERVICE_URL = URL(string: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,28 +54,17 @@ class ViewController: UIViewController {
             self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
         
-        // Exercise 3: Add mobile map package's layers to 3D scene
-        let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
-        sceneMmpk.load {(error) in
-            if 0 < sceneMmpk.maps.count {
-                let thisMap = sceneMmpk.maps[0]
-                var layers = [AGSLayer]()
-                for layer in thisMap.operationalLayers {
-                    layers.append(layer as! AGSLayer)
-                }
-                thisMap.operationalLayers.removeAllObjects()
-                self.sceneView.scene?.operationalLayers.addObjects(from: layers)
-                self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
-                self.sceneView.viewpointChangedHandler = {() -> Void in
-                    self.sceneView.viewpointChangedHandler = nil
-                    let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
-                    let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-                    let camera = self.sceneView.currentViewpointCamera()
-                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-                    self.sceneView.setViewpointCamera(camera)
-                }
-            }
+        // Exercise 3: Add a scene layer to the scene
+        let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL!)
+        sceneLayer.load{(error) in
+            self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
+            // Rotate the camera
+            let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
+            let targetPoint = viewpoint?.targetGeometry
+            let camera = self.sceneView.currentViewpointCamera().rotateAroundTargetPoint(targetPoint as! AGSPoint, deltaHeading: 45.0, deltaPitch: 65.0, deltaRoll: 0.0)
+            self.sceneView.setViewpointCamera(camera)
         }
+        self.sceneView.scene?.operationalLayers.add(sceneLayer)
     }
     
     // Exercise 1: 2D/3D button action

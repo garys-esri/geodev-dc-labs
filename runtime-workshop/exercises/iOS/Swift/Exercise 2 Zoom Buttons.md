@@ -172,5 +172,5 @@ If you have trouble, **refer to the solution code**, which is linked near the be
 If you completed the exercise, congratulations! You learned how to add buttons that programmatically zoom in and out on a 2D map and a 3D scene, as well as how to work with camera controllers.
 
 Ready for more? Choose from the following:
-- Start on [**Exercise 3: Add a Feature Layer**](Exercise%203%20Local%20Feature%20Layer.md).
+- Start on [**Exercise 3: Operational Layers**](Exercise%203%20Operational%20Layers.md).
 - We used `AGSOrbitLocationCameraController`, which causes navigation to orbit around a fixed location. [`AGSOrbitGeoElementCameraController`](https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_orbit_geo_element_camera_controller.html) causes navigation to orbit around a [`AGSGeoElement`](https://developers.arcgis.com/ios/latest/api-reference/protocol_a_g_s_geo_element-p.html), whose location can move. See if you can figure out how to make the camera focus on a moving point.
