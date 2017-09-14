@@ -18,7 +18,8 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 1. In `ViewController.swift`, declare a constant for the MMPK path. Use `Bundle.main.path` to construct the path:
 
     ```
-    fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
+    fileprivate let MMPK_PATH = URL(
+        string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
     ```
 
 1. At the end of `viewDidLoad()`, instantiate an `AGSMobileMapPackage` with the mobile map package constant. Then load the mobile map package with a completion to run when the mobile map package is done loading:
@@ -50,13 +51,15 @@ Web scene layers are cached web layers that are optimized for displaying a large
 1. Declare a constant value to specify the URL of a scene service. You can use a `SceneServer` URL or an ArcGIS Online or Portal for ArcGIS item URL that represents a scene service. The following URL shows plain gray buildings in Washington, D.C.:
 
     ```
-    fileprivate let SCENE_SERVICE_URL = URL(string: "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a")
+    fileprivate let SCENE_SERVICE_URL = URL(string:
+        "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a")
     ```
 
     The following URL shows photo-realistic buildings in Philadelphia:
 
     ```
-    fileprivate let SCENE_SERVICE_URL = URL(string: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0")
+    fileprivate let SCENE_SERVICE_URL = URL(string:
+        "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0")
     ```
 1. At the end of `viewDidLoad()`, instantiate an `AGSArcGISSceneLayer` with the scene service URL constant. Then load the scene layer with a completion to run when the layer is done loading. (This should seem familiar.)
 
