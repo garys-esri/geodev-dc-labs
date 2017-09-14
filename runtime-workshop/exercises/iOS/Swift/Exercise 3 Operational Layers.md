@@ -70,7 +70,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
     }
     ```
 
-1. Inside the `loadWithCompletion` completion code, set the scene view's viewpoint to the full extent of the scene layer:
+1. Inside the `load` completion code, set the scene view's viewpoint to the full extent of the scene layer:
 
     ```
     self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
