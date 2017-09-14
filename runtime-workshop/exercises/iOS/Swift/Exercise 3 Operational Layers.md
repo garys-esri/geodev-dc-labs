@@ -91,7 +91,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
 
 1. Run your app. Verify that when you switch to 3D, the 3D features display and the view is rotated and pitched:
 
-    ![3D scene pitched and rotated](07-mmpk-layer-scene-rotated.jpg)
+    ![3D scene pitched and rotated](07-scene-layer-rotated.jpg)
     
 ## How did it go?
 
