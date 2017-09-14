@@ -40,7 +40,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 
     ```
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        print("Clicked on map or scene!")
+        print("Clicked on map!")
     }
     ```
 
@@ -58,35 +58,31 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
 
-1. In `ViewController`, declare two fields of the type of your new delegate class, one for the map and one for the scene:
+1. In `ViewController`, declare a field of the type of your new delegate class:
 
     ```
     fileprivate let bufferAndQueryTouchDelegateMap: BufferAndQueryTouchDelegate
-    fileprivate let bufferAndQueryTouchDelegateScene: BufferAndQueryTouchDelegate
     ```
 
-1. In `ViewController`, declare and instantiate two fields of type `AGSGraphicOverlay`, one for the map and one for the scene. These are the graphics overlays you will use to display the point that the user clicks and the buffer around it. Later, you will add these overlays to the map and scene. For now, just declare and instantiate them:
+1. In `ViewController`, declare and instantiate a field of type `AGSGraphicOverlay`. This is the graphics overlay you will use to display the point that the user clicks and the buffer around it. Later, you will add this overlay to the map. For now, just declare and instantiate it:
 
     ```
     fileprivate let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
-    fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
     ```
 
-1. Implement an initializer for your `ViewController` class. In this initializer, instantiate the delegates you declared above, and don’t forget to call `super.init`:
+1. Implement an initializer for your `ViewController` class. In this initializer, instantiate the delegate you declared above, and don’t forget to call `super.init`:
 
     ```
     required init?(coder: NSCoder) {
         self.bufferAndQueryTouchDelegateMap = BufferAndQueryTouchDelegate(graphics: bufferAndQueryMapGraphics)
-        self.bufferAndQueryTouchDelegateScene = BufferAndQueryTouchDelegate(graphics: bufferAndQuerySceneGraphics)
         super.init(coder: coder)
     }
     ```
     
-1. Go back to your action method for the buffer and query toggle button (we called it `button_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the mapView and sceneView to use our touch delegates. If the button is toggled off, we need to tell the map view and scene view to do nothing in particular when the user clicks the map or scene by setting its touch delegate to `nil`:
+1. Go back to your action method for the buffer and query toggle button (we called it `button_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the mapView to use our touch delegate. If the button is toggled off, we need to tell the map view to do nothing in particular when the user clicks the map by setting its touch delegate to `nil`:
 
     ```
     mapView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateMap : nil
-    sceneView.touchDelegate = sender.isSelected ? bufferAndQueryTouchDelegateScene : nil
     ```
     
 1. In Xcode, open the Debug area, and then run your app. Verify that a new toggle button appears and that your `print` prints text when and only when the toggle button is toggled on and you click the map:
@@ -121,11 +117,10 @@ You need to buffer the clicked point and display both the point and the buffer a
             width: 3))
     ```
 
-1. In `ViewController.viewDidLoad`, add the graphics overlays to the map view and the scene view`:
+1. In `ViewController.viewDidLoad`, add the graphics overlay to the map view`:
 
     ```
     mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
-    sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
     ```
     
 1. In `BufferAndQueryTouchDelegate.geoView`, you need to replace your `print` with code to create a buffer and display the point and buffer as graphics. First, create a 1000-meter buffer using `AGSGeometryEngine`:
@@ -151,8 +146,6 @@ You need to buffer the clicked point and display both the point and the buffer a
 
     ![Click and buffer graphics](09-click-and-buffer-graphics.png)
     
-    ![Click and buffer graphics](10-click-and-buffer-graphics-scene.jpg)
-    
 ## Query for features within the buffer
 
 There are a few different ways to query and/or select features in ArcGIS Runtime. Here we will use `AGSFeatureLayer.selectFeaturesWithQuery`, which both highlights selected features on the map and provides a list of the selected features.
@@ -164,17 +157,12 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     query.geometry = buffer
     ```
     
-1. For each of the `AGSFeatureLayer` objects in the operational layers of the map, call `AGSFeatureLayer.selectFeaturesWithQuery`. Use `AGSSelectionMode.New` to do a new selection, as opposed to adding to or removing from the current selection. You must cast `geoView` depending on whether it is a `AGSMapView` or a `AGSSceneView`. Add this code after instantiating the query object and setting its geometry:
+1. For each of the `AGSFeatureLayer` objects in the operational layers of the map, call `AGSFeatureLayer.selectFeaturesWithQuery`. Use `AGSSelectionMode.New` to do a new selection, as opposed to adding to or removing from the current selection. You must cast `geoView` as a `AGSMapView`. Add this code after instantiating the query object and setting its geometry:
 
     ```
     let operationalLayers : [AGSFeatureLayer]
-    if geoView is AGSMapView {
-        let mapView = geoView as? AGSMapView
-        operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-    } else {
-        let sceneView = geoView as? AGSSceneView
-        operationalLayers = sceneView!.scene!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-    }
+    let mapView = geoView as? AGSMapView
+    operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
     for layer in operationalLayers {
         layer.selectFeatures(withQuery: query, mode: AGSSelectionMode.new, completion: nil)
     }
@@ -183,8 +171,6 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
 1. Run your app. Verify on the map that features within the clicked buffer are highlighted on the map:
 
     ![Selected features](11-selected-features.png)
-    
-    ![Selected features](11a-selected-features-scene.jpg)
     
 ## How did it go?
 
