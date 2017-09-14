@@ -76,6 +76,12 @@ Web scene layers are cached web layers that are optimized for displaying a large
     self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
     ```
 
+1. After the call to `load` (NOT inside the completion block), add the new layer to the scene:
+
+    ```
+    self.sceneView.scene?.operationalLayers.add(sceneLayer)
+    ```
+
 1. Run your app. Verify that when you switch to 3D, the scene displays the 3D features from the scene layer:
 
     ![Scene layer on a 3D scene](06-scene-layer.jpg)
