@@ -174,7 +174,7 @@ After doing Exercise 4, this should seem familiar to you.
 
     ![Origin and destination (map)](12-origin-and-destination-map.png)
 
-    ![Origin and destination (scene)](13-origin-and-destination-scene.png)
+    ![Origin and destination (scene)](13-origin-and-destination-scene.jpg)
 
 ## Calculate a driving route and display it on the map
 
@@ -245,7 +245,7 @@ After doing Exercise 4, this should seem familiar to you.
 
     ![Route (2D)](14-route-in-2d.png)
     
-    ![Route (3D)](15-route-in-3d.png)
+    ![Route (3D)](15-route-in-3d.jpg)
 
 ## How did it go?
 
