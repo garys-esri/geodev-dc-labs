@@ -2,6 +2,7 @@
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Data;
+using Esri.ArcGISRuntime.NetworkAnalyst;
 using Esri.ArcGISRuntime.Portal;
 using Esri.ArcGISRuntime.Security;
 
