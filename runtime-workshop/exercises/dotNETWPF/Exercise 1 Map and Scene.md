@@ -138,7 +138,7 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
 13. If we're switching to 3D, and we have not been in 3D mode before during the current run of the app, we need to set up the 3D scene. If `scene` is null, do the following:
    1. Instantiate scene as a new Scene.
    2. Instantiate the SceneView and set its Scene.
-   3. Set the Scene's basemap and elevation surface.
+   3. Set the Scene's basemap (Vector Tile Basemaps are currently not supported in 3D so must use a Raster Tile Basemap and elevation surface.
 
     ```
     if (myScene == null)
