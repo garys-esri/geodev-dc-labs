@@ -9,7 +9,7 @@ This exercise walks you through the following:
 Prerequisites:
 
 - Install Visual Studio 2015 
-- [Install ArcGIS Runtime SDK for .NET (Beta 1)](https://developers.arcgis.com/net/quartz/])
+- [Install ArcGIS Runtime SDK for .NET (Version 100.1.0)](https://developers.arcgis.com/net/quartz/])
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/dotNETWPF/Ex1_MapAndScene), available in this repository.
 
@@ -62,7 +62,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
    using Esri.ArcGISRuntime.Security;
     ```
     
-6. Set global variables for the Map myMap and set to null:
+6. Set some global variables for the Map myMap and set to null:
 
     ```
      private Map myMap = null;
@@ -73,8 +73,8 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     ```
     private void Initialize()
     {
-        //Exercise 1: Create new Map with basemap and initial location
-        myMap = new Map(Basemap.CreateTopographicVector());
+        //Exercise 1: Create new Map with basemap and initial location, the basemap we will be using is a Vector Tile Basemap, there are many basemaps to choose from.
+        myMap = new Map(Basemap.CreateStreetsVector());
         //Exercise 1: Assign the map to the MapView
         mapView.Map = myMap;
     }
@@ -144,7 +144,7 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
     if (myScene == null)
     {
        //Create a new scene
-       myScene = new Scene(Basemap.CreateNationalGeographic());
+       myScene = new Scene(Basemap.CreateStreets());
        sceneView.Scene = myScene;
        // create an elevation source
        var elevationSource = new ArcGISTiledElevationSource(new System.Uri(ELEVATION_IMAGE_SERVICE));
