@@ -66,13 +66,8 @@ class BufferAndQueryTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
         let query = AGSQueryParameters()
         query.geometry = buffer
         let operationalLayers : [AGSFeatureLayer]
-        if geoView is AGSMapView {
-            let mapView = geoView as? AGSMapView
-            operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-        } else {
-            let sceneView = geoView as? AGSSceneView
-            operationalLayers = sceneView!.scene!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
-        }
+        let mapView = geoView as? AGSMapView
+        operationalLayers = mapView!.map!.operationalLayers.flatMap { $0 as? AGSFeatureLayer }
         for layer in operationalLayers {
             layer.selectFeatures(withQuery: query, mode: AGSSelectionMode.new, completion: nil)
         }
@@ -88,15 +83,15 @@ class RoutingTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     // Exercise 5: Declare and instantiate symbols for click and buffer
     private let ROUTE_ORIGIN_SYMBOL = AGSSimpleMarkerSymbol(
         style: AGSSimpleMarkerSymbolStyle.triangle,
-        color: NSColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.753),
+        color: NSColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0),
         size: 10)
     private let ROUTE_DESTINATION_SYMBOL = AGSSimpleMarkerSymbol(
         style: AGSSimpleMarkerSymbolStyle.square,
-        color: NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.753),
+        color: NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0),
         size: 10)
     private let ROUTE_LINE_SYMBOL = AGSSimpleLineSymbol(
         style: AGSSimpleLineSymbolStyle.solid,
-        color: NSColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 0.753),
+        color: NSColor(red: 0.333, green: 0.0, blue: 0.333, alpha: 1.0),
         width: 5)
     
     // Exercise 5: Declare routing fields
@@ -156,10 +151,11 @@ class RoutingTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 class ViewController: NSViewController {
     
     // Exercise 1: Specify elevation service URL
-    let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+    fileprivate let ELEVATION_IMAGE_SERVICE = "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
     
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
+    fileprivate let SCENE_SERVICE_URL = URL(string: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0")
     
     // Exercise 1: Outlets from storyboard
     @IBOutlet var parentView: NSView!
@@ -174,13 +170,11 @@ class ViewController: NSViewController {
     // Exercise 1: Declare threeD boolean
     fileprivate var threeD = false
 
-    // Exercise 4: Declare buffer and query touch delegates
+    // Exercise 4: Declare buffer and query touch delegate
     fileprivate let bufferAndQueryTouchDelegateMap: BufferAndQueryTouchDelegate
-    fileprivate let bufferAndQueryTouchDelegateScene: BufferAndQueryTouchDelegate
     
-    // Exercise 4: Declare and instantiate graphics overlays for buffer and query
+    // Exercise 4: Declare and instantiate graphics overlay for buffer and query
     fileprivate let bufferAndQueryMapGraphics = AGSGraphicsOverlay()
-    fileprivate let bufferAndQuerySceneGraphics = AGSGraphicsOverlay()
     
     // Exercise 5: Declare routing touch delegate
     private var routingTouchDelegateMap: RoutingTouchDelegate?
@@ -193,7 +187,6 @@ class ViewController: NSViewController {
     required init?(coder: NSCoder) {
         // Exercise 4: Instantiate buffer and query touch delegate
         self.bufferAndQueryTouchDelegateMap = BufferAndQueryTouchDelegate(graphics: bufferAndQueryMapGraphics)
-        self.bufferAndQueryTouchDelegateScene = BufferAndQueryTouchDelegate(graphics: bufferAndQuerySceneGraphics)
         
         super.init(coder: coder)
         
@@ -247,40 +240,20 @@ class ViewController: NSViewController {
             self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
         
-        /**
-         Exercise 3: Open a mobile map package (.mmpk) and
-         add its operational layers to the scene
-         */
-        let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
-        sceneMmpk.load {(error) in
-            if 0 < sceneMmpk.maps.count {
-                let thisMap = sceneMmpk.maps[0]
-                var layers = [AGSLayer]()
-                for layer in thisMap.operationalLayers {
-                    layers.append(layer as! AGSLayer)
-                }
-                thisMap.operationalLayers.removeAllObjects()
-                self.sceneView.scene?.operationalLayers.addObjects(from: layers)
-                
-                // Here is the intended way of getting the layers' viewpoint:
-                // self.sceneView.setViewpoint(thisMap.initialViewpoint!)
-                // However, AGSMap.initialViewpoint is returning nil in ArcGIS Runtime
-                // for macOS. Therefore, let's hard-code the coordinates for Washington, D.C.
-                self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
-                
-                // Rotate the camera
-                let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
-                let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-                let camera = self.sceneView.currentViewpointCamera()
-                    .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-                self.sceneView.setViewpointCamera(camera)
-            }
-            self.mapView.map!.basemap = AGSBasemap.topographicVector()
+        // Exercise 3: Add a scene layer to the scene
+        let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL!)
+        sceneLayer.load{(error) in
+            self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
+            // Rotate the camera
+            let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
+            let targetPoint = viewpoint?.targetGeometry
+            let camera = self.sceneView.currentViewpointCamera().rotateAroundTargetPoint(targetPoint as! AGSPoint, deltaHeading: 45.0, deltaPitch: 65.0, deltaRoll: 0.0)
+            self.sceneView.setViewpointCamera(camera)
         }
+        self.sceneView.scene?.operationalLayers.add(sceneLayer)
         
-        // Exercise 4: Add a graphics overlay to the map and scene for the click and buffer
+        // Exercise 4: Add a graphics overlay to the map for the click and buffer
         mapView.graphicsOverlays.add(bufferAndQueryMapGraphics)
-        sceneView.graphicsOverlays.add(bufferAndQuerySceneGraphics)
         
         // Exercise 5: Add a graphics overlay to the map and scene for the routing
         mapView.graphicsOverlays.add(routingMapGraphics)
@@ -392,7 +365,7 @@ class ViewController: NSViewController {
      */
     @IBAction func button_bufferAndQuery_onAction(_ button_bufferAndQuery: NSButton) {
         mapView.touchDelegate = (NSOnState == button_bufferAndQuery.state) ? bufferAndQueryTouchDelegateMap : nil
-        sceneView.touchDelegate = (NSOnState == button_bufferAndQuery.state) ? bufferAndQueryTouchDelegateScene : nil
+        sceneView.touchDelegate = nil
 
         // Exercise 5: Unselect the routing button
         if NSOnState == button_bufferAndQuery.state {

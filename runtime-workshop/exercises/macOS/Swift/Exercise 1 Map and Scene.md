@@ -15,7 +15,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 ## Create a new macOS app
 
-1. Create a new Xcode project for an macOS Cocoa application. For **Language**, choose **Swift**. Make sure that **Use Storyboards** is checked.
+1. Create a new Xcode project for an macOS Cocoa application. For **Language**, choose **Swift**.
 
 1. At any point during the exercises, you can run the app from Xcode. If you run the app now, you should see a blank app window.
 
@@ -38,10 +38,10 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. In your project directory, create a text file named `Podfile` with the following contents, replacing `WorkshopApp` with the name of your project:
 
     ```
-    platform :osx, '10.12’
+    platform :osx, '10.12'
     use_frameworks!
 
-    target ‘WorkshopApp' do
+    target 'WorkshopApp' do
         pod 'ArcGIS-Runtime-SDK-macOS', '100.1'
     end
     ```
@@ -72,32 +72,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     mapView.map = AGSMap(basemap: AGSBasemap.topographicVector())
     ```
 
-1. Open Info.plist as source code (i.e. plain text editor). You will see a series of key/string pairs. At the end of that series, add the following key/dict pair:
-
-    ```
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSExceptionDomains</key>
-        <dict>
-            <key>arcgisonline.com</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-            </dict>
-            <key>arcgis.com</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>  
-                <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>  
-                <true/>  
-            </dict>  
-        </dict>  
-    </dict>
-    ```
-
-1. Run your app. Verify that a map fills the window and that the button appears on the right:
+1. Run your app. Verify that a map fills the window and that the button appears on the right. _Note: if at any point during this exercise your map or scene fails to display, one possible fix is to open `Main.storyboard` for text editing (**Control-click > Open As > Source Code**) and find a `view` element with attribute `wantsLayer="YES"` and delete that `wantsLayer` attribute._ 
 
     ![Map and button](02-map-and-button.png)
     
@@ -124,7 +99,7 @@ Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app
 1. Close the Assistant Editor. In your `ViewController` class, instantiate a constant for the URL of an elevation service, as well as a variable to keep track of whether the app is currently displaying 3D or not:
 
     ```
-    let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+    fileprivate let ELEVATION_IMAGE_SERVICE = "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
 
     fileprivate var threeD = false
     ```

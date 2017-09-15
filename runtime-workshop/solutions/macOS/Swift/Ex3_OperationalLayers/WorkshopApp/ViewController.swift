@@ -20,10 +20,11 @@ import ArcGIS
 class ViewController: NSViewController {
     
     // Exercise 1: Specify elevation service URL
-    let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+    fileprivate let ELEVATION_IMAGE_SERVICE = "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
     
-    // Exercise 3: Specify mobile map package path
+    // Exercise 3: Specify operational layer paths
     fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)
+    fileprivate let SCENE_SERVICE_URL = URL(string: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0")
 
     // Exercise 1: Outlets from storyboard
     @IBOutlet var parentView: NSView!
@@ -58,36 +59,17 @@ class ViewController: NSViewController {
             self.mapView.map!.basemap = AGSBasemap.topographicVector()
         }
         
-        /**
-         Exercise 3: Open a mobile map package (.mmpk) and
-         add its operational layers to the scene
-         */
-        let sceneMmpk = AGSMobileMapPackage(fileURL: MMPK_PATH!)
-        sceneMmpk.load {(error) in
-            if 0 < sceneMmpk.maps.count {
-                let thisMap = sceneMmpk.maps[0]
-                var layers = [AGSLayer]()
-                for layer in thisMap.operationalLayers {
-                    layers.append(layer as! AGSLayer)
-                }
-                thisMap.operationalLayers.removeAllObjects()
-                self.sceneView.scene?.operationalLayers.addObjects(from: layers)
-                
-                // Here is the intended way of getting the layers' viewpoint:
-                // self.sceneView.setViewpoint(thisMap.initialViewpoint!)
-                // However, AGSMap.initialViewpoint is returning nil in ArcGIS Runtime
-                // for macOS. Therefore, let's hard-code the coordinates for Washington, D.C.
-                self.sceneView.setViewpoint(AGSViewpoint(latitude: 38.909, longitude: -77.016, scale: 150000))
-                
-                // Rotate the camera
-                let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
-                let targetPoint = viewpoint?.targetGeometry as! AGSPoint
-                let camera = self.sceneView.currentViewpointCamera()
-                        .rotateAroundTargetPoint(targetPoint, deltaHeading: 45, deltaPitch: 65, deltaRoll: 0)
-                self.sceneView.setViewpointCamera(camera)
-            }
-            self.mapView.map!.basemap = AGSBasemap.topographicVector()
+        // Exercise 3: Add a scene layer to the scene
+        let sceneLayer = AGSArcGISSceneLayer(url: SCENE_SERVICE_URL!)
+        sceneLayer.load{(error) in
+            self.sceneView.setViewpoint(AGSViewpoint(targetExtent: sceneLayer.fullExtent!))
+            // Rotate the camera
+            let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)
+            let targetPoint = viewpoint?.targetGeometry
+            let camera = self.sceneView.currentViewpointCamera().rotateAroundTargetPoint(targetPoint as! AGSPoint, deltaHeading: 45.0, deltaPitch: 65.0, deltaRoll: 0.0)
+            self.sceneView.setViewpointCamera(camera)
         }
+        self.sceneView.scene?.operationalLayers.add(sceneLayer)
     }
 
     override var representedObject: Any? {
