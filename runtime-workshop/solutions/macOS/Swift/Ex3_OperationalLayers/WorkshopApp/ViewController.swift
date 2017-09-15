@@ -20,7 +20,7 @@ import ArcGIS
 class ViewController: NSViewController {
     
     // Exercise 1: Specify elevation service URL
-    let ELEVATION_IMAGE_SERVICE = "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+    fileprivate let ELEVATION_IMAGE_SERVICE = "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
     
     // Exercise 3: Specify operational layer paths
     fileprivate let MMPK_PATH = URL(string: Bundle.main.path(forResource: "DC_Crime_Data", ofType:"mmpk")!)

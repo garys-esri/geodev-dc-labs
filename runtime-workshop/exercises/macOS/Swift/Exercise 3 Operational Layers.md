@@ -54,7 +54,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
     "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a")
     ```
 
-The following URL shows photo-realistic buildings in Philadelphia:
+    The following URL shows photo-realistic buildings in Philadelphia:
 
     ```
     fileprivate let SCENE_SERVICE_URL = URL(string:
@@ -86,7 +86,7 @@ The following URL shows photo-realistic buildings in Philadelphia:
 
 ![Scene layer on a 3D scene](06-scene-layer.jpg)
 
-1. Remember in [Exercise 2](Exercise%202%20Zoom%20Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a camera to zoom in and out? Here we will also use a camera, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `AGSCamera.rotateAroundTargetPoint` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAroundTargetPoint`, we will give the rotated camera to the scene view. Here is the code to insert immediately after the previous step (still inside the `if` block):
+1. Remember in [Exercise 2](Exercise%202%20Zoom%20Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a camera to zoom in and out? Here we will also use a camera, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `AGSCamera.rotateAroundTargetPoint` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAroundTargetPoint`, we will give the rotated camera to the scene view. Here is the code to insert inside the completion block immediately after the call to `setViewpoint`:
 
     ```
     let viewpoint = self.sceneView.currentViewpoint(with: AGSViewpointType.centerAndScale)

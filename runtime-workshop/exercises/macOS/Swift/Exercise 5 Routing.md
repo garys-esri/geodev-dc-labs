@@ -76,7 +76,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
 
-1. In `RoutingTouchDelegate.geoView`, after removing the z-value from `point` if necessary, check to see whether this is the first point clicked or the second. You will fill in the `if` and `else` blocks in the steps that follow:
+1. In `RoutingTouchDelegate.geoView`, after the `if point.hasZ` block, check to see whether this is the first point clicked or the second. You will fill in the `if` and `else` blocks in the steps that follow:
 
     ```
     if (nil == originPoint) {
@@ -103,14 +103,14 @@ After doing Exercise 4, this should seem familiar to you.
 
 1. Open `Main.storyboard` and add a new button to enable routing. Make it very similar to the buffer and query button, but use the `routing` image. Set constraints, size, and all else as with previous buttons. Most importantly, change the button type to **Push On Push Off**.
 
-1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag both the buffer and query button and the routing button, one at a time, to create an Outlet connection for each in the `ViewController` class:
+1. Open `ViewController.swift` in the Assistant Editor. Control-click and drag both the buffer and query button and the routing button, one at a time, to create an Outlet connection for each in the `ViewController` class:
 
     ```
     @IBOutlet weak var button_bufferAndQuery: NSButton!
     @IBOutlet weak var button_routing: NSButton!
     ```
 
-1. Right-click and drag the routing button to create an Action connection in the `ViewController` class:
+1. Control-click and drag the routing button to create an Action connection in the `ViewController` class:
 
     ```
     @IBAction func button_routing_onAction(sender: NSButton) {
@@ -141,11 +141,10 @@ After doing Exercise 4, this should seem familiar to you.
     sceneView.graphicsOverlays.add(routingSceneGraphics)
     ```
 
-1. In `button_routing_onAction`, first toggle the state of the button. Then if the routing button has been selected, set the map view and scene view's touch delegates to the ones you created; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
+1. In `button_routing_onAction`, toggle the state of the button. If the routing button has been selected, set the map view and scene view's touch delegates to the ones you created; otherwise, set it to `nil`. Unselect the buffer and query button if the routing button has been selected. Finally, reset the routing touch delegate, in order to clear any origin point and graphics that have already been saved and displayed:
 
     ```
-    @IBAction func button_routing_onAction(_ sender: UIButton) {
-        sender.isSelected = !sender.isSelected
+    @IBAction func button_routing_onAction(_ sender: NSButton) {
         mapView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateMap : nil
         sceneView.touchDelegate = (NSOnState == button_routing.state) ? routingTouchDelegateScene : nil
 
@@ -237,7 +236,7 @@ After doing Exercise 4, this should seem familiar to you.
 
     ![Route in 2D](14-route-in-2d.png)
 
-    ![Route in 3D](15-route-in-3d.png)
+    ![Route in 3D](15-route-in-3d.jpg)
 
 ## How did it go?
 

@@ -14,12 +14,12 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 You can use ArcGIS Runtime to detect when and where the user interacts with the map, either with the mouse or with a touchscreen. In this exercise, you just need the user to click or tap a point. You could detect every user click, but instead, we will let the user activate and deactivate this capability with a toggle button.
 
-1. In `Main.storyboard`, add a **Custom Button** above your lock focus button. Use the `location` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
+1. In `Main.storyboard`, add an **Image Button** above your lock focus button. Use the `location` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
 
 1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag the button to create an **Action** connection in `ViewController`, then close the Assistant Editor:
 
     ```
-    @IBAction func button_bufferAndQuery_onAction(_ button_bufferAndQuery: NSButton) {
+    @IBAction func button_bufferAndQuery_onAction(_ sender: NSButton) {
     }
     ```
 
@@ -34,7 +34,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 
     ```
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        print("Clicked on map or scene!")
+        print("Clicked on map!")
     }
     ```
 
@@ -76,7 +76,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 1. Go back to your action method for the buffer and query toggle button (we called it `button_bufferAndQuery_onAction`). This method runs when the user toggles the button on or off. If the button is toggled on, we need to tell the mapView to use our touch delegate. If the button is toggled off, we need to tell the map view and scene view to do nothing in particular when the user clicks the map or scene by setting its touch delegate to `nil`:
 
     ```
-    mapView.touchDelegate = (NSOnState == button_bufferAndQuery.state) ? bufferAndQueryTouchDelegateMap : nil
+    mapView.touchDelegate = (NSOnState == sender) ? bufferAndQueryTouchDelegateMap : nil
     sceneView.touchDelegate = nil
     ```
     

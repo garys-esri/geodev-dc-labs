@@ -37,9 +37,9 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     ```
     fileprivate func zoom(_ factor: Double) {
         if (threeD) {
-            zoomScene(factor);
+            zoomScene(factor)
         } else {
-            zoomMap(factor);
+            zoomMap(factor)
         }
     }
     ```
@@ -48,11 +48,11 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
     ```
     @IBAction func button_zoomIn_onAction(sender: NSButton) {
-        zoom(2.0);
+        zoom(2.0)
     }
     
     @IBAction func button_zoomOut_onAction(sender: NSButton) {
-        zoom(0.5);
+        zoom(0.5)
     }
     ```
     
@@ -60,7 +60,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
     ```
     mapView.setViewpointScale(mapView.mapScale / factor,
-                              completion: nil);
+                              completion: nil)
     ```
 
 1. Create a private method called `getSceneTarget()` that returns the point on Earth's surface on which the camera is currently focusing. You can use this method for zooming and also the lock focus button you will add later:
@@ -85,7 +85,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 
 This portion of the exercise will teach you how to use _camera controllers_ in ArcGIS Runtime.
 
-1. In `Main.storyboard`, add a **Custom Button** above your zoom buttons. Use the `location` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
+1. In `Main.storyboard`, add an **Image Button** above your zoom buttons. Use the `lock` image for this button, and check the **Bordered** checkbox. Change the button type to **Push On Push Off** to make it a toggle button. Make the size 50x50 and add constraints as with the other buttons.
 
 1. Open `ViewController.swift` in the Assistant Editor. Right-click and drag the button to create an **Action** connection in `ViewController`, then close the Assistant Editor:
 
@@ -144,7 +144,7 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
         azimuthUnit: AGSAngularUnit.degrees(),
         curveType: AGSGeodeticCurveType.geodesic)?.distance
     let zDistance = currentCameraPoint.z
-    let distanceToTarget = (pow(xyDistance!, 2) + pow(zDistance, 2)).squareRoot();
+    let distanceToTarget = (pow(xyDistance!, 2) + pow(zDistance, 2)).squareRoot()
     ```
 
 1. Create a new [`AGSOrbitLocationCameraController`](https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_orbit_location_camera_controller.html) with the target point and distance you calculated. Set its heading and pitch from the current camera. Then give the `AGSSceneView` the camera controller you created:
