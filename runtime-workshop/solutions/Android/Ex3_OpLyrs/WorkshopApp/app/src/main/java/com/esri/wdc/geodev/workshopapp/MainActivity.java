@@ -26,7 +26,9 @@ import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.ElevationSource;
 import com.esri.arcgisruntime.mapping.MobileMapPackage;
+import com.esri.arcgisruntime.mapping.Surface;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
@@ -34,6 +36,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +60,6 @@ public class MainActivity extends Activity {
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
     private SceneView sceneView = null;
-    private ArcGISScene scene = new ArcGISScene();
     private ImageButton imageButton_toggle2d3d = null;
     private boolean threeD = false;
 
@@ -76,29 +78,25 @@ public class MainActivity extends Activity {
 
         // Exercise 1: Set up the 3D scene.
         sceneView = findViewById(R.id.sceneView);
-        map.addDoneLoadingListener(new Runnable() {
+        ArrayList<ElevationSource> sources = new ArrayList<>();
+        sources.add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+        ArcGISScene scene = new ArcGISScene(Basemap.createImagery(), new Surface(sources));
+        sceneView.setScene(scene);
+
+        // Exercise 3: Load scene layer
+        final ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
+        sceneLayer.addDoneLoadingListener(new Runnable() {
             @Override
             public void run() {
-                scene.setBasemap(Basemap.createImagery());
-                sceneView.setScene(scene);
-                scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
-
-                // Exercise 3: Load scene layer
-                final ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
-                sceneLayer.addDoneLoadingListener(new Runnable() {
-                    @Override
-                    public void run() {
-                        sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
-                        Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
-                        Point targetPoint = (Point) viewpoint.getTargetGeometry();
-                        Camera camera = sceneView.getCurrentViewpointCamera()
-                                .rotateAround(targetPoint, 45.0, 65.0, 0.0);
-                        sceneView.setViewpointCameraAsync(camera);
-                    }
-                });
-                scene.getOperationalLayers().add(sceneLayer);
+                sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
+                Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                Camera camera = sceneView.getCurrentViewpointCamera()
+                        .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                sceneView.setViewpointCameraAsync(camera);
             }
         });
+        scene.getOperationalLayers().add(sceneLayer);
 
         // Exercise 2: Set fields.
         imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);

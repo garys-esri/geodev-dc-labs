@@ -182,18 +182,14 @@ Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app
     private boolean threeD = false;
     ```
     
-1. In your constructor, after the `Map` has loaded, get the `SceneView`, set the `Scene`'s basemap, set the `SceneView`'s `Scene`, and set the `Scene`'s elevation source:
+1. In `onCreate`, get the `SceneView`, create a new `ArcGISScene` with an elevation source and an imagery basemap, and give the `ArcGISScene` to the `SceneView`:
 
     ```
     sceneView = findViewById(R.id.sceneView);
-    map.addDoneLoadingListener(new Runnable() {
-        @Override
-        public void run() {
-            scene.setBasemap(Basemap.createImagery());
-            sceneView.setScene(scene);
-            scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
-        }
-    });
+    ArrayList<ElevationSource> sources = new ArrayList<>();
+    sources.add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+    ArcGISScene scene = new ArcGISScene(Basemap.createImagery(), new Surface(sources));
+    sceneView.setScene(scene);
     ```
     
 1. In `MainActivity`, in `onResume()`, `onPause()`, and `onDestroy()`, call `resume()`, `pause()`, and `dispose()` respectively on the `SceneView`, just as you did on the `MapView` already.

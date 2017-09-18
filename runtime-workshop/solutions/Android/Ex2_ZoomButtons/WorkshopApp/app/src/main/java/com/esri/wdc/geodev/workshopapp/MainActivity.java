@@ -19,6 +19,8 @@ import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.ElevationSource;
+import com.esri.arcgisruntime.mapping.Surface;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
@@ -26,6 +28,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +42,6 @@ public class MainActivity extends Activity {
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
     private SceneView sceneView = null;
-    private ArcGISScene scene = new ArcGISScene();
     private ImageButton imageButton_toggle2d3d = null;
     private boolean threeD = false;
 
@@ -58,14 +60,10 @@ public class MainActivity extends Activity {
 
         // Exercise 1: Set up the 3D scene.
         sceneView = findViewById(R.id.sceneView);
-        map.addDoneLoadingListener(new Runnable() {
-            @Override
-            public void run() {
-                scene.setBasemap(Basemap.createImagery());
-                sceneView.setScene(scene);
-                scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
-            }
-        });
+        ArrayList<ElevationSource> sources = new ArrayList<>();
+        sources.add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+        ArcGISScene scene = new ArcGISScene(Basemap.createImagery(), new Surface(sources));
+        sceneView.setScene(scene);
 
         // Exercise 2: Set fields.
         imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
@@ -203,7 +201,7 @@ public class MainActivity extends Activity {
             // This shouldn't happen, but in case it does...
             Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
                     "SceneView.getCurrentViewpoint returned {0} instead of {1}",
-                    new String[] { target.getClass().getName(), Point.class.getName() });
+                    new String[]{target.getClass().getName(), Point.class.getName()});
         }
     }
 
