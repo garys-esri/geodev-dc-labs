@@ -7,14 +7,27 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.esri.arcgisruntime.geometry.AngularUnit;
+import com.esri.arcgisruntime.geometry.AngularUnitId;
+import com.esri.arcgisruntime.geometry.GeodeticCurveType;
 import com.esri.arcgisruntime.geometry.Geometry;
+import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.LinearUnit;
+import com.esri.arcgisruntime.geometry.LinearUnitId;
+import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.Viewpoint;
+import com.esri.arcgisruntime.mapping.view.Camera;
+import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainActivity extends Activity {
 
@@ -29,6 +42,9 @@ public class MainActivity extends Activity {
     private ArcGISScene scene = new ArcGISScene();
     private ImageButton imageButton_toggle2d3d = null;
     private boolean threeD = false;
+
+    // Exercise 2: Declare fields
+    private ImageButton imageButton_lockFocus = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +66,9 @@ public class MainActivity extends Activity {
                 scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
             }
         });
+
+        // Exercise 2: Set fields.
+        imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
     }
 
     /**
@@ -122,6 +141,38 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Exercise 2: Listener for lock focus button.
+     */
+    public void imageButton_lockFocus_onClick(View view) {
+        imageButton_lockFocus.setSelected(!imageButton_lockFocus.isSelected());
+        if (imageButton_lockFocus.isSelected()) {
+            Geometry target = getSceneTarget();
+            if (target instanceof Point) {
+                final Point targetPoint = (Point) target;
+                final Camera currentCamera = sceneView.getCurrentViewpointCamera();
+                Point currentCameraPoint = currentCamera.getLocation();
+                if (null != currentCameraPoint) {
+                    final double xyDistance = GeometryEngine.distanceGeodetic(targetPoint, currentCameraPoint,
+                            new LinearUnit(LinearUnitId.METERS),
+                            new AngularUnit(AngularUnitId.DEGREES),
+                            GeodeticCurveType.GEODESIC
+                    ).getDistance();
+                    final double zDistance = currentCameraPoint.getZ();
+                    final double distanceToTarget = Math.sqrt(Math.pow(xyDistance, 2.0) + Math.pow(zDistance, 2.0));
+                    final OrbitLocationCameraController cameraController = new OrbitLocationCameraController(
+                            (Point) target, distanceToTarget
+                    );
+                    cameraController.setCameraHeadingOffset(currentCamera.getHeading());
+                    cameraController.setCameraPitchOffset(currentCamera.getPitch());
+                    sceneView.setCameraController(cameraController);
+                }
+            }
+        } else {
+            sceneView.setCameraController(new GlobeCameraController());
+        }
+    }
+
+    /**
      * Exercise 1: Set the weight of a View, e.g. to show or hide it.
      */
     private void setWeight(View view, float weight) {
@@ -143,7 +194,17 @@ public class MainActivity extends Activity {
      * Exercise 2: Zoom the 3D scene.
      */
     private void zoomScene(double factor) {
-
+        Geometry target = getSceneTarget();
+        if (target instanceof Point) {
+            Camera camera = sceneView.getCurrentViewpointCamera()
+                    .zoomToward((Point) target, factor);
+            sceneView.setViewpointCameraAsync(camera, 0.5f);
+        } else {
+            // This shouldn't happen, but in case it does...
+            Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
+                    "SceneView.getCurrentViewpoint returned {0} instead of {1}",
+                    new String[] { target.getClass().getName(), Point.class.getName() });
+        }
     }
 
     /**
