@@ -165,7 +165,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
         "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
     ```
 
-1. At the end of `onCreate`, create a new `final ArcGISSceneLayer` based on the scene service, give the layer an event handler for when it is done loading, and add the layer to the scene:
+1. In Exercise 1, you added code to set the scene's basemap, give the scene to the scene view, and set the scene's base service to an elevation image service. After that code, in the same block, create a new `final ArcGISSceneLayer` based on the scene service, give the layer an event handler for when it is done loading, and add the layer to the scene:
 
     ```
     final ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);

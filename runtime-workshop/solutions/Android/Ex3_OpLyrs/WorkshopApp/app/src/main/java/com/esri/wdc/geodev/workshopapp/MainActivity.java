@@ -82,6 +82,21 @@ public class MainActivity extends Activity {
                 scene.setBasemap(Basemap.createImagery());
                 sceneView.setScene(scene);
                 scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+
+                // Exercise 3: Load scene layer
+                final ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
+                sceneLayer.addDoneLoadingListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
+                        Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                        Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                        Camera camera = sceneView.getCurrentViewpointCamera()
+                                .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                        sceneView.setViewpointCameraAsync(camera);
+                    }
+                });
+                scene.getOperationalLayers().add(sceneLayer);
             }
         });
 
@@ -96,21 +111,6 @@ public class MainActivity extends Activity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERM_REQ_OPEN_MMPK);
         }
-
-        // Exercise 3: Load scene layer
-        final ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
-        sceneLayer.addDoneLoadingListener(new Runnable() {
-            @Override
-            public void run() {
-                sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
-                Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
-                Point targetPoint = (Point) viewpoint.getTargetGeometry();
-                Camera camera = sceneView.getCurrentViewpointCamera()
-                        .rotateAround(targetPoint, 45.0, 65.0, 0.0);
-                sceneView.setViewpointCameraAsync(camera);
-            }
-        });
-        scene.getOperationalLayers().add(sceneLayer);
     }
 
     /**
