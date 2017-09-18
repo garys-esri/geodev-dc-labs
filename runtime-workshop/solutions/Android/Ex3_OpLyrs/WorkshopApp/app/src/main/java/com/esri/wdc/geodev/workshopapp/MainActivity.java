@@ -1,7 +1,13 @@
 package com.esri.wdc.geodev.workshopapp;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -15,10 +21,12 @@ import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.LinearUnit;
 import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Camera;
 import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
@@ -26,6 +34,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +43,15 @@ public class MainActivity extends Activity {
     // Exercise 1: Specify elevation service URL
     private static final String ELEVATION_IMAGE_SERVICE =
             "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
+
+    // Exercise 3: Specify operational layer paths
+    private static final String MMPK_PATH =
+            Environment.getExternalStorageDirectory().getPath() + "/data/DC_Crime_Data.mmpk";
+    private static final String SCENE_SERVICE_URL =
+            "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
+
+    // Exercise 3: Permission request code for opening a mobile map package
+    private static final int PERM_REQ_OPEN_MMPK = 1;
 
     // Exercise 1: Declare and instantiate fields
     private MapView mapView = null;
@@ -69,6 +87,30 @@ public class MainActivity extends Activity {
 
         // Exercise 2: Set fields.
         imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
+
+        // Exercise 3: Check READ_EXTERNAL_STORAGE permission for mobile map package.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            loadMobileMapPackage();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERM_REQ_OPEN_MMPK);
+        }
+
+        // Exercise 3: Load scene layer
+        final ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
+        sceneLayer.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                sceneView.setViewpoint(new Viewpoint(sceneLayer.getFullExtent()));
+                Viewpoint viewpoint = sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+                Point targetPoint = (Point) viewpoint.getTargetGeometry();
+                Camera camera = sceneView.getCurrentViewpointCamera()
+                        .rotateAround(targetPoint, 45.0, 65.0, 0.0);
+                sceneView.setViewpointCameraAsync(camera);
+            }
+        });
+        scene.getOperationalLayers().add(sceneLayer);
     }
 
     /**
@@ -111,6 +153,19 @@ public class MainActivity extends Activity {
             sceneView.dispose();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (PERM_REQ_OPEN_MMPK == requestCode) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                if (Manifest.permission.READ_EXTERNAL_STORAGE.equals(permission) && PackageManager.PERMISSION_GRANTED == grantResults[i]) {
+                    loadMobileMapPackage();
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -203,7 +258,7 @@ public class MainActivity extends Activity {
             // This shouldn't happen, but in case it does...
             Logger.getLogger(MainActivity.class.getName()).log(Level.WARNING,
                     "SceneView.getCurrentViewpoint returned {0} instead of {1}",
-                    new String[] { target.getClass().getName(), Point.class.getName() });
+                    new String[]{target.getClass().getName(), Point.class.getName()});
         }
     }
 
@@ -225,5 +280,33 @@ public class MainActivity extends Activity {
      */
     private Geometry getSceneTarget() {
         return sceneView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry();
+    }
+
+    /**
+     * Exercise 3: Load the mobile map package.
+     */
+    private void loadMobileMapPackage() {
+        final MobileMapPackage mmpk = new MobileMapPackage(MMPK_PATH);
+        mmpk.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                List<ArcGISMap> maps = mmpk.getMaps();
+                if (0 < maps.size()) {
+                    map = maps.get(0);
+                    mapView.setMap(map);
+                    map.addDoneLoadingListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            Viewpoint viewpoint = map.getInitialViewpoint();
+                            if (null != viewpoint) {
+                                mapView.setViewpointAsync(viewpoint);
+                            }
+                        }
+                    });
+                }
+                map.setBasemap(Basemap.createTopographicVector());
+            }
+        });
+        mmpk.loadAsync();
     }
 }
