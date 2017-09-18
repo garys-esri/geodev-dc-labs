@@ -64,13 +64,14 @@ Web scene layers are cached web layers that are optimized for displaying a large
         = "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
     ```
 
-1. In your 2D/3D toggle button event handler method, after you instantiate your `ArcGISScene`, set its basemap and surface, and instantiate your `SceneView`, create a new `ArcGISSceneLayer` based on the scene service, and give the layer an event handler for when it is done loading:
+1. In your 2D/3D toggle button event handler method, after you instantiate your `ArcGISScene`, set its basemap and surface, and instantiate your `SceneView`, create a new `ArcGISSceneLayer` based on the scene service, give the layer an event handler for when it is done loading, and add the layer to the scene:
 
     ```
     ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
     sceneLayer.addDoneLoadingListener(() -> {
     
     });
+    scene.getOperationalLayers().add(sceneLayer);
     ```
     
 1. Inside this new event handler, set your `SceneView`'s viewpoint to a new `Viewpoint` using the scene layer's full extent:

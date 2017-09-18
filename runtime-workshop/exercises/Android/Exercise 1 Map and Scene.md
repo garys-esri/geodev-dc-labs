@@ -83,7 +83,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     ```
     <activity android:name=".MainActivity"
-            android:configChanges="orientation|screenSize">
+        android:configChanges="orientation|screenSize">
     ```
 
 1. In `res/layout/activity_main.xml`, before the 2D/3D toggle button but inside the layout, add a `MapView` that fills the layout:
@@ -95,7 +95,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         android:layout_height="fill_parent"/>
     ```
 
-1. Open your `MainActivity` class. In that class, declare a non-final `MapView` and set it to `null`. Also declare and instantiate a new `ArcGISMap`:
+1. Open your `MainActivity` class. In that class, declare a `MapView` field and set it to `null`. Also declare and instantiate a new `ArcGISMap` field:
 
     ```
     private MapView mapView = null;
@@ -170,7 +170,7 @@ Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app
 
     ```
     private static final String ELEVATION_IMAGE_SERVICE = 
-            "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
+            "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
     ```
     
 1. Before your constructor, declare a `SceneView` field and instantiate an `ArcGISScene`. Declare an `ImageButton` field for the 2D/3D toggle button. Instantiate a `boolean` field to keep track of whether the app is currently displaying 3D or not:
@@ -182,18 +182,14 @@ Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app
     private boolean threeD = false;
     ```
     
-1. In your constructor, after the `Map` has loaded, get the `SceneView`, set the `Scene`'s basemap, set the `SceneView`'s `Scene`, and set the `Scene`'s elevation source:
+1. In `onCreate`, get the `SceneView`, create a new `ArcGISScene` with an elevation source and an imagery basemap, and give the `ArcGISScene` to the `SceneView`:
 
     ```
     sceneView = findViewById(R.id.sceneView);
-    map.addDoneLoadingListener(new Runnable() {
-        @Override
-        public void run() {
-            scene.setBasemap(Basemap.createImagery());
-            sceneView.setScene(scene);
-            scene.getBaseSurface().getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
-        }
-    });
+    ArrayList<ElevationSource> sources = new ArrayList<>();
+    sources.add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
+    ArcGISScene scene = new ArcGISScene(Basemap.createImagery(), new Surface(sources));
+    sceneView.setScene(scene);
     ```
     
 1. In `MainActivity`, in `onResume()`, `onPause()`, and `onDestroy()`, call `resume()`, `pause()`, and `dispose()` respectively on the `SceneView`, just as you did on the `MapView` already.

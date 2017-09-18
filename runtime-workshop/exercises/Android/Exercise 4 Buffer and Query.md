@@ -6,7 +6,7 @@ This exercise walks you through the following:
 - Query for features within the buffer
 
 Prerequisites:
-- Complete [Exercise 3](Exercise%203%20Local%20Feature%20Layer.md), or get the Exercise 3 code solution compiling and running properly, preferably in an IDE.
+- Complete [Exercise 3](Exercise%203%20Operational%20Layers.md), or get the Exercise 3 code solution compiling and running properly, preferably in an IDE.
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Android/Ex4_BufferQuery), available in this repository.
 
@@ -54,7 +54,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 1. In `onCreate(Bundle)`, after `setContentView`, set `imageButton_bufferAndQuery` to the `ImageButton` you created in XML, using `findViewById`:
 
     ```
-    imageButton_bufferAndQuery = (ImageButton) findViewById(R.id.imageButton_bufferAndQuery);
+    imageButton_bufferAndQuery = findViewById(R.id.imageButton_bufferAndQuery);
     ```
     
 1. Create a `private void bufferAndQuery(MotionEvent)` method that will eventually create a buffer around a tapped point and query for features within that buffer. For now, just have the method display a `Toast` indicating that a single tap was received:
@@ -76,17 +76,10 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     }
     ```
     
-1. In the code you just added, if the button is selected, give the `MapView` and `SceneView` an `OnTouchListener` to get a user's tap. Use a new `DefaultMapViewOnTouchListener` and a new `DefaultSceneViewOnTouchListener` so that you only have to implement one method, `onSingleTapConfirmed(MotionEvent)`. In `onSingleTapConfirmed`, call `bufferAndQuery` with the `MotionEvent` parameter. Return `true` to indicate that your method consumes the single tap:
+1. In the code you just added, if the button is selected, give the `MapView` an `OnTouchListener` to get a user's tap. Use a new `DefaultMapViewOnTouchListener` so that you only have to implement one method, `onSingleTapConfirmed(MotionEvent)`. In `onSingleTapConfirmed`, call `bufferAndQuery` with the `MotionEvent` parameter. Return `true` to indicate that your method consumes the single tap:
 
     ```
     mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent event) {
-            bufferAndQuery(event);
-            return true;
-        }
-    });
-    sceneView.setOnTouchListener(new DefaultSceneViewOnTouchListener(sceneView) {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
             bufferAndQuery(event);
@@ -101,7 +94,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
     mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView));
     sceneView.setOnTouchListener(new DefaultSceneViewOnTouchListener(sceneView));
     ```
-    
+
 1. Run your app. Verify that when you select the buffer and query button and tap the map, the `Toast` appears:
 
     ![Buffer and query toggle button](08-buffer-query-toggle-button.png)
@@ -120,23 +113,16 @@ You need to buffer the tapped point and display both the point and the buffer as
                     new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
     ```
     
-1. Instantiate two `GraphicsOverlay` fields, one for the map and one for the scene:
+1. Instantiate a `GraphicsOverlay` field:
 
     ```
     private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
-    private final GraphicsOverlay bufferAndQuerySceneGraphics = new GraphicsOverlay();
     ```
     
 1. In `onCreate(Bundle)`, add the map `GraphicsOverlay` to the `MapView`:
 
     ```
     mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
-    ```
-
-1. In `onCreate(Bundle)`, inside the `addDoneLoadingListener` where you set up the `Scene` and `SceneView`, add the scene `GraphicsOverlay` to the `SceneView`:
-
-    ```
-    sceneView.getGraphicsOverlays().add(bufferAndQuerySceneGraphics);
     ```
 
 1. Create a `private Point getGeoPoint(MotionEvent)` method to convert a `MotionEvent` to a `Point`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(MotionEvent)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. _Note: `MapView.screenToLocation` takes a `android.graphics.Point` and returns a `com.esri.arcgisruntime.geometry.Point`. You can import one or the other but not both, so here we imported the ArcGIS `Point` class and used the fully qualified Android `Point` class name inline, since this is the only place in the exercises that we will need the Android `Point` class. You can do it the other way around if you prefer._ Here is the `getGeoPoint` code:
@@ -150,7 +136,6 @@ You need to buffer the tapped point and display both the point and the buffer as
                 sceneView.screenToBaseSurface(screenPoint) :
                 mapView.screenToLocation(screenPoint);
     }
-
     ```
 
 1. In `bufferAndQuery(MotionEvent)`, you need to replace your `Toast` with code to create a buffer and display the point and buffer as graphics. First, use `getGeoPoint(MotionEvent)` to convert the `MotionEvent` to a geographic point. Next, create a 1000-meter buffer, which is pretty simple with ArcGIS Runtime's `GeometryEngine` class. _Note: ArcGIS Runtime Quartz Beta 3 cannot create geodesic buffers, so here you must project the point to a projected coordinate system (PCS), such as Web Mercator (3857), before creating the buffer. Using a PCS specific to the geographic area in question would produce a more accurate buffer. However, it is anticipated that ArcGIS Runtime Quartz will provide support for geodesic buffers, so writing code to find a better PCS will not be necessary with the Quartz release. Therefore, we did not write that code for this tutorial._
@@ -164,17 +149,15 @@ You need to buffer the tapped point and display both the point and the buffer as
 1. In `bufferAndQuery(MotionEvent)`, clear the graphics and then add the point and buffer as new `Graphic` objects:
 
     ```
-    ListenableList<Graphic> graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).getGraphics();
+    ListenableList<Graphic> graphics = bufferAndQueryMapGraphics.getGraphics();
     graphics.clear();
     graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
     graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
     ```
 
-1. Compile and run your app. Verify that if you toggle the buffer and select button and then tap the map, the point you tapped and a 1000-meter buffer around it appear on the map or scene:
+1. Compile and run your app. Verify that if you toggle the buffer and select button and then tap the map, the point you tapped and a 1000-meter buffer around it appear on the map:
 
     ![Tap and buffer graphics (map)](09-tap-and-buffer-graphics-map.png)
-
-    ![Tap and buffer graphics (scene)](10-tap-and-buffer-graphics-scene.jpg)
     
 ## Query for features within the buffer
 
@@ -198,11 +181,9 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     };
     ```
     
-1. Compile and run your app. Verify that features within the tapped buffer are highlighted on the map or scene:
+1. Compile and run your app. Verify that features within the tapped buffer are highlighted on the map:
 
     ![Selected features (map)](11-selected-features-map.png)
-    
-    ![Selected features (scene)](11-selected-features-scene.jpg)
     
 ## How did it go?
 
