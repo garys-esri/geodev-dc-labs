@@ -8,11 +8,13 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.geometry.AngularUnit;
 import com.esri.arcgisruntime.geometry.AngularUnitId;
 import com.esri.arcgisruntime.geometry.GeodeticCurveType;
@@ -21,20 +23,33 @@ import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.LinearUnit;
 import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.Polygon;
+import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
+import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.ElevationSource;
+import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.MobileMapPackage;
 import com.esri.arcgisruntime.mapping.Surface;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Camera;
+import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
+import com.esri.arcgisruntime.mapping.view.DefaultSceneViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
+import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
+import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.util.ListenableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +71,13 @@ public class MainActivity extends Activity {
     // Exercise 3: Permission request code for opening a mobile map package
     private static final int PERM_REQ_OPEN_MMPK = 1;
 
+    // Exercise 4: Symbols for buffer and query
+    private static final SimpleMarkerSymbol CLICK_SYMBOL =
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, 0xFFffa500, 10);
+    private static final SimpleFillSymbol BUFFER_SYMBOL =
+            new SimpleFillSymbol(SimpleFillSymbol.Style.NULL, 0xFFFFFFFF,
+                    new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
+
     // Exercise 1: Declare and instantiate fields
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
@@ -65,6 +87,10 @@ public class MainActivity extends Activity {
 
     // Exercise 2: Declare fields
     private ImageButton imageButton_lockFocus = null;
+
+    // Exercise 4: Declare fields
+    private ImageButton imageButton_bufferAndQuery = null;
+    private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +135,10 @@ public class MainActivity extends Activity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERM_REQ_OPEN_MMPK);
         }
+
+        // Exercise 4: Set up buffer and query
+        imageButton_bufferAndQuery = findViewById(R.id.imageButton_bufferAndQuery);
+        mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
     }
 
     /**
@@ -226,6 +256,25 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Exercise 4: Buffer and query toggle button action
+     */
+    public void imageButton_bufferAndQuery_onClick(View view) {
+        imageButton_bufferAndQuery.setSelected(!imageButton_bufferAndQuery.isSelected());
+        if (imageButton_bufferAndQuery.isSelected()) {
+            mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent event) {
+                    bufferAndQuery(event);
+                    return true;
+                }
+            });
+        } else {
+            mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView));
+            sceneView.setOnTouchListener(new DefaultSceneViewOnTouchListener(sceneView));
+        }
+    }
+
+    /**
      * Exercise 1: Set the weight of a View, e.g. to show or hide it.
      */
     private void setWeight(View view, float weight) {
@@ -306,5 +355,40 @@ public class MainActivity extends Activity {
             }
         });
         mmpk.loadAsync();
+    }
+
+    /**
+     * Exercise 4: Do the buffer and query.
+     */
+    private void bufferAndQuery(MotionEvent singleTapEvent) {
+        Point geoPoint = getGeoPoint(singleTapEvent);
+        geoPoint = (Point) GeometryEngine.project(geoPoint, SpatialReference.create(3857));
+        Polygon buffer = GeometryEngine.buffer(geoPoint, 1000.0);
+        ListenableList<Graphic> graphics = bufferAndQueryMapGraphics.getGraphics();
+        graphics.clear();
+        graphics.add(new Graphic(buffer, BUFFER_SYMBOL));
+        graphics.add(new Graphic(geoPoint, CLICK_SYMBOL));
+
+        QueryParameters query = new QueryParameters();
+        query.setGeometry(buffer);
+        LayerList operationalLayers = mapView.getMap().getOperationalLayers();
+        for (Layer layer : operationalLayers) {
+            if (layer instanceof FeatureLayer) {
+                ((FeatureLayer) layer).selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
+            }
+        }
+        ;
+    }
+
+    /**
+     * Exercise 4: Convert screen point to map or scene point.
+     */
+    private Point getGeoPoint(MotionEvent singleTapEvent) {
+        android.graphics.Point screenPoint = new android.graphics.Point(
+                Math.round(singleTapEvent.getX()),
+                Math.round(singleTapEvent.getY()));
+        return threeD ?
+                sceneView.screenToBaseSurface(screenPoint) :
+                mapView.screenToLocation(screenPoint);
     }
 }
