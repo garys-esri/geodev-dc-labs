@@ -70,4 +70,14 @@
         android:src="@drawable/buffer_and_query_button"
         android:onClick="imageButton_bufferAndQuery_onClick"/>
 
+    <!-- Exercise 5: Routing button -->
+    <ImageButton
+        android:id="@+id/imageButton_routing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/imageButton_toggle2d3d"
+        android:layout_alignBottom="@id/imageButton_toggle2d3d"
+        android:src="@drawable/routing_button"
+        android:onClick="imageButton_routing_onClick"/>
+
 </RelativeLayout>

@@ -8,12 +8,14 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.geometry.AngularUnit;
 import com.esri.arcgisruntime.geometry.AngularUnitId;
@@ -43,20 +45,31 @@ import com.esri.arcgisruntime.mapping.view.DefaultSceneViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
+import com.esri.arcgisruntime.mapping.view.LayerSceneProperties;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
+import com.esri.arcgisruntime.security.UserCredential;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteParameters;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteResult;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteTask;
+import com.esri.arcgisruntime.tasks.networkanalysis.Stop;
 import com.esri.arcgisruntime.util.ListenableList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainActivity extends Activity {
+
+    // Exercise 5: Tag string for logging
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     // Exercise 1: Specify elevation service URL
     private static final String ELEVATION_IMAGE_SERVICE =
@@ -78,6 +91,14 @@ public class MainActivity extends Activity {
             new SimpleFillSymbol(SimpleFillSymbol.Style.NULL, 0xFFFFFFFF,
                     new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFFFFA500, 3));
 
+    // Exercise 5: Symbols for routing
+    private static final SimpleMarkerSymbol ROUTE_ORIGIN_SYMBOL =
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xFF00FF00, 10);
+    private static final SimpleMarkerSymbol ROUTE_DESTINATION_SYMBOL =
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xFFFF0000, 10);
+    private static final SimpleLineSymbol ROUTE_LINE_SYMBOL =
+            new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFF550055, 5);
+
     // Exercise 1: Declare and instantiate fields
     private MapView mapView = null;
     private ArcGISMap map = new ArcGISMap();
@@ -91,6 +112,14 @@ public class MainActivity extends Activity {
     // Exercise 4: Declare fields
     private ImageButton imageButton_bufferAndQuery = null;
     private final GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
+
+    // Exercise 5: Declare fields
+    private final GraphicsOverlay mapRouteGraphics = new GraphicsOverlay();
+    private final GraphicsOverlay sceneRouteGraphics = new GraphicsOverlay();
+    private Point originPoint = null;
+    private ImageButton imageButton_routing = null;
+    private RouteTask routeTask = null;
+    private RouteParameters routeParameters = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +168,28 @@ public class MainActivity extends Activity {
         // Exercise 4: Set up buffer and query
         imageButton_bufferAndQuery = findViewById(R.id.imageButton_bufferAndQuery);
         mapView.getGraphicsOverlays().add(bufferAndQueryMapGraphics);
+
+        // Exercise 5: Set up routing
+        mapView.getGraphicsOverlays().add(mapRouteGraphics);
+        sceneRouteGraphics.getSceneProperties().setSurfacePlacement(LayerSceneProperties.SurfacePlacement.DRAPED);
+        sceneView.getGraphicsOverlays().add(sceneRouteGraphics);
+        imageButton_routing = findViewById(R.id.imageButton_routing);
+        routeTask = new RouteTask(this, "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
+        // Don't share this code without removing plain text username and password!!!
+        routeTask.setCredential(new UserCredential("theUsername", "thePassword"));
+        try {
+            routeParameters = routeTask.createDefaultParametersAsync().get();
+            if (null != routeParameters) {
+                routeParameters.setReturnDirections(false);
+                routeParameters.setReturnRoutes(true);
+                routeParameters.setReturnStops(false);
+            } else {
+                imageButton_routing.setEnabled(false);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            routeTask = null;
+            Log.e(TAG, "Could not get route parameters", e);
+        }
     }
 
     /**
@@ -268,10 +319,44 @@ public class MainActivity extends Activity {
                     return true;
                 }
             });
+
+            // Exercise 5: Unselect routing button
+            imageButton_routing.setSelected(false);
         } else {
             mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView));
             sceneView.setOnTouchListener(new DefaultSceneViewOnTouchListener(sceneView));
         }
+    }
+
+    /**
+     * Exercise 5: Routing toggle button action
+     */
+    public void imageButton_routing_onClick(View view) {
+        imageButton_routing.setSelected(!imageButton_routing.isSelected());
+        final DefaultMapViewOnTouchListener mapListener;
+        final DefaultSceneViewOnTouchListener sceneListener;
+        if (imageButton_routing.isSelected()) {
+            mapListener = new DefaultMapViewOnTouchListener(this, mapView) {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent event) {
+                    addStopToRoute(event);
+                    return true;
+                }
+            };
+            sceneListener = new DefaultSceneViewOnTouchListener(sceneView) {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent event) {
+                    addStopToRoute(event);
+                    return true;
+                }
+            };
+            imageButton_bufferAndQuery.setSelected(false);
+        } else {
+            mapListener = new DefaultMapViewOnTouchListener(this, mapView);
+            sceneListener = new DefaultSceneViewOnTouchListener(sceneView);
+        }
+        mapView.setOnTouchListener(mapListener);
+        sceneView.setOnTouchListener(sceneListener);
     }
 
     /**
@@ -390,5 +475,41 @@ public class MainActivity extends Activity {
         return threeD ?
                 sceneView.screenToBaseSurface(screenPoint) :
                 mapView.screenToLocation(screenPoint);
+    }
+
+    /**
+     * Exercise 5: Add a stop to the route that may be calculated.
+     */
+    private void addStopToRoute(MotionEvent singleTapEvent) {
+        final ListenableList<Graphic> graphics = (threeD ? sceneRouteGraphics : mapRouteGraphics).getGraphics();
+        Point point = getGeoPoint(singleTapEvent);
+        if (point.hasZ()) {
+            point = new Point(point.getX(), point.getY(), point.getSpatialReference());
+        }
+        if (null == originPoint) {
+            originPoint = point;
+            graphics.clear();
+            graphics.add(new Graphic(originPoint, ROUTE_ORIGIN_SYMBOL));
+        } else {
+            graphics.add(new Graphic(point, ROUTE_DESTINATION_SYMBOL));
+            routeParameters.clearStops();
+            routeParameters.setStops(Arrays.asList(new Stop(originPoint), new Stop(point)));
+            final ListenableFuture<RouteResult> solveFuture = routeTask.solveRouteAsync(routeParameters);
+            solveFuture.addDoneListener(new Runnable() {
+                @Override
+                public void run() {
+                    RouteResult routeResult = null;
+                    try {
+                        routeResult = solveFuture.get();
+                        if (0 < routeResult.getRoutes().size()) {
+                            graphics.add(new Graphic(routeResult.getRoutes().get(0).getRouteGeometry(), ROUTE_LINE_SYMBOL));
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        Log.e(TAG, "Could not get solved route", e);
+                    }
+                }
+            });
+            originPoint = null;
+        }
     }
 }

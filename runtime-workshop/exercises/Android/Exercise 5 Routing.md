@@ -20,14 +20,14 @@ After doing Exercise 4, this should seem familiar to you.
 
     ```
     private static final SimpleMarkerSymbol ROUTE_ORIGIN_SYMBOL =
-            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xC000FF00, 10);
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, 0xFF00FF00, 10);
     private static final SimpleMarkerSymbol ROUTE_DESTINATION_SYMBOL =
-            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xC0FF0000, 10);
+            new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE, 0xFFFF0000, 10);
     private static final SimpleLineSymbol ROUTE_LINE_SYMBOL =
-            new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xC0550055, 5);
+            new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, 0xFF550055, 5);
     ```
 
-1. Instantiate two `GraphicsOverlay` objects for routing--one for the map and one for the scene--just as you did in a previous exercise. Also declare a non-`final` Point to store the origin point and set it to `null` for now:
+1. Instantiate two `GraphicsOverlay` objects for routing: one for the map and one for the scene. Also declare a non-`final` Point to store the origin point and set it to `null` for now:
 
     ```
     private final GraphicsOverlay mapRouteGraphics = new GraphicsOverlay();
@@ -35,11 +35,11 @@ After doing Exercise 4, this should seem familiar to you.
     private Point originPoint = null;
     ```
     
-1. In `onCreate(Bundle)`, add the `GraphicsOverlay`s to the `MapView` and `SceneView` respectively:
+1. In `onCreate(Bundle)`, add the `GraphicsOverlay`s to the `MapView` and `SceneView` respectively. Set the scene's graphics overlay to drape on the 3D surface:
 
     ```
     mapView.getGraphicsOverlays().add(mapRouteGraphics);
-    sceneRouteGraphics.getSceneProperties().setSurfacePlacement(SurfacePlacement.DRAPED);
+    sceneRouteGraphics.getSceneProperties().setSurfacePlacement(LayerSceneProperties.SurfacePlacement.DRAPED);
     sceneView.getGraphicsOverlays().add(sceneRouteGraphics);
     ```
     
@@ -60,8 +60,8 @@ After doing Exercise 4, this should seem familiar to you.
         android:id="@+id/imageButton_routing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/imageButton_zoomIn"
-        android:layout_alignBottom="@id/imageButton_zoomIn"
+        android:layout_toLeftOf="@id/imageButton_toggle2d3d"
+        android:layout_alignBottom="@id/imageButton_toggle2d3d"
         android:src="@drawable/routing_button"
         android:onClick="imageButton_routing_onClick"/>
     ```
@@ -110,7 +110,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. In `addStopToRoute(MouseEvent)`, after getting the point (and removing its z-value if necessary), create an `if-else` statement that determines whether or not `originPoint` is `null`:
+1. In `addStopToRoute(MouseEvent)`, after the `if` block, create an `if-else` statement that determines whether or not `originPoint` is `null`:
 
     ```
     if (null == originPoint) {
