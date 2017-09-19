@@ -70,7 +70,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     }
     ```
     
-1. In `zoom`, call either `zoomMap` or `zoomScene`, depending on whether we are in 2D mode or 3D mode:
+1. In `zoom`, replace the `console.log` call with a call to either `zoomMap` or `zoomScene`, depending on whether we are in 2D mode or 3D mode:
 
     ```
     var zoomFunction = threeD ? zoomScene : zoomMap;
@@ -142,7 +142,7 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
     }
     ```
 
-1. If the current camera point is not null, use [`GeometryEngine.distanceGeodetic(Point, Point, LinearUnit, AngularUnit, GeodeticCurveType)`](https://developers.arcgis.com/qt/latest/qml/api-reference/qml-esri-arcgisruntime-geometryengine.html#distanceGeodetic-method) to calculate the ground distance between the target point and the x/y part of the current camera location. Then use the Pythagorean theorem to calculate the distance from the target point and the current camera:
+1. If the current camera point is not null (i.e. in the new empty `if` block), use [`GeometryEngine.distanceGeodetic(Point, Point, LinearUnit, AngularUnit, GeodeticCurveType)`](https://developers.arcgis.com/qt/latest/qml/api-reference/qml-esri-arcgisruntime-geometryengine.html#distanceGeodetic-method) to calculate the ground distance between the target point and the x/y part of the current camera location. Then use the Pythagorean theorem to calculate the distance from the target point and the current camera:
 
     ```
     var xyDistance = GeometryEngine.distanceGeodetic(

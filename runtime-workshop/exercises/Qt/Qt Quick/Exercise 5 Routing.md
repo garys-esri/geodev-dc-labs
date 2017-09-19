@@ -53,7 +53,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. Create two `GraphicsOverlay` objects for routing--one for the map and one for the scene--just as you did in a previous exercise:
+1. Create two `GraphicsOverlay` objects for routing, one for the map and one for the scene:
 
     ```
     GraphicsOverlay {
@@ -79,10 +79,12 @@ After doing Exercise 4, this should seem familiar to you.
     graphicsOverlays.append(mapRouteGraphics)
     ```
     
-1. Repeat the previous step for your `SceneView` with your scene route graphics overlay:
+1. Add your scene route graphics overlay to your `SceneView`:
 
     ```
-    graphicsOverlays.append(sceneRouteGraphics)
+    Component.onCompleted: {
+        graphicsOverlays.append(sceneRouteGraphics)
+    }
     ```
     
 1. In the `onClicked` code in your 2D/3D toggle button, set `originPoint` to `undefined` so that we don't try to use an origin from the 2D map with a destination from the 3D scene or vice versa:
@@ -134,13 +136,13 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. After getting the point, get the list of route graphics, depending on whether or not we are in 3D mode:
+1. After getting the point (and after the `if (point.hasZ)` block), get the list of route graphics, depending on whether or not we are in 3D mode:
 
     ```
     var graphics = (threeD ? sceneRouteGraphics : mapRouteGraphics).graphics;
     ```
     
-1. Create an `if-else` statement that determines whether or not `originPoint` is `undefined`:
+1. After getting the graphics, create an `if-else` statement that determines whether or not `originPoint` is `undefined`:
 
     ```
     if (!originPoint) {
@@ -179,11 +181,13 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. Repeat the previous step for the `SceneView`:
+1. Add a similar `onMouseClicked` to the `SceneView`, except make this one only handle routing, not buffering and querying:
 
     ```
-    } else if (button_routing.checked) {
-        addStopToRoute(event);
+    onMouseClicked: function (event) {
+        if (button_routing.checked) {
+            addStopToRoute(event);
+        }
     }
     ```
 
@@ -225,22 +229,22 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. Add to your `RouteTask` an `onLoadStatusChanged` handler that generates default route parameters when the route task is loaded:
+1. Add to your `RouteTask` an `onLoadStatusChanged` handler that creates default route parameters when the route task is loaded:
 
     ```
     onLoadStatusChanged: {
         if (Enums.LoadStatusLoaded === loadStatus) {
-            generateDefaultParameters();
+            createDefaultParameters();
         }
     }
     ```
     
-1. Add to your `RouteTask` an `onGenerateDefaultParametersStatusChanged` handler that sets the route parameters when the default route parameters have been generated, as well as making the routing button visible:
+1. Add to your `RouteTask` an `onCreateDefaultParametersStatusChanged` handler that sets the route parameters when the default route parameters have been created, as well as making the routing button visible:
 
     ```
-    onGenerateDefaultParametersStatusChanged: {
-        if (Enums.TaskStatusCompleted === generateDefaultParametersStatus) {
-            routeParameters = generateDefaultParametersResult;
+    onCreateDefaultParametersStatusChanged: {
+        if (Enums.TaskStatusCompleted === createDefaultParametersStatus) {
+            routeParameters = createDefaultParametersResult;
             button_routing.visible = true;
         }
     }
