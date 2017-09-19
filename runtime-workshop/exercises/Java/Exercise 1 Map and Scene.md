@@ -13,7 +13,8 @@ Prerequisites:
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Java/Ex1_MapAndScene), available in this repository.
 
 ## Create a new JavaFX app
-1. Create a new Java application project in the IDE of your choice. (Note: if you use an IDE that supports Gradle and create a Gradle project, you will be able to use Gradle when it's time to add ArcGIS Runtime to the project.) Create a class that extends `javafx.application.Application`:
+
+1. Create a new JavaFX application project in the IDE of your choice. (Note: if you use an IDE that supports Gradle and create a Gradle project, you will be able to use Gradle when it's time to add ArcGIS Runtime to the project. The same applies with Maven.) Create a class that extends `javafx.application.Application`:
 
     ```
     package workshopapp;
@@ -139,6 +140,8 @@ You have three options for adding ArcGIS Runtime 100.1.0 to your Java applicatio
         </plugins>
     </build>
     ```
+    
+    **Note:** Maven downloads the ArcGIS Runtime install to `<user home>/.arcgis`. ArcGIS Runtime tries to find it there, but that can fail under certain conditions. If it fails, you can go inside that install directory and copy the `jniLibs` and `resources` directories to your app's working directory.
 
 3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK (version 100.1.0) for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
 
@@ -192,7 +195,7 @@ Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app
 
     ```
     private static final String ELEVATION_IMAGE_SERVICE = 
-            "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
+            "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer";
     ```
     
 1. Before your constructor, declare a `SceneView` field and an `ArcGISScene` field. Set them to `null`; we don't want to instantiate them unless the user actually switches to 3D mode. Instantiate a `boolean` field to keep track of whether the app is currently displaying 3D or not:
