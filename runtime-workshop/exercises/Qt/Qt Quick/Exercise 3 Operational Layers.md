@@ -22,6 +22,12 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
     ```
     
     _Setting this context property is unnecessary if you choose to hard-code the MMPK path in the next step._
+    
+    If you add this line of code to the .cpp file, you must also add an include at the top of the file:
+    
+    ```
+    #include <QQmlContext>
+    ```
 
 1. In your QML file, declare a constant for the location of your downloaded MMPK:
 
@@ -79,6 +85,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
 
     ```
     ArcGISSceneLayer {
+        id: sceneLayer
         url: sceneServiceUrl
         onLoadStatusChanged: {
 
@@ -117,7 +124,7 @@ Web scene layers are cached web layers that are optimized for displaying a large
     sceneView.setViewpointCompleted.connect(rotate);
     ```
 
-1. You only want your function to run the first time the viewpoint changes, so in your function, disconnect `setViewpointCompleted` from your function:
+1. You only want your `rotate` function to run the first time the viewpoint changes, so in your function, disconnect `setViewpointCompleted` from your `rotate` function:
 
     ```
     sceneView.setViewpointCompleted.disconnect(rotate);
