@@ -81,7 +81,7 @@ After doing Exercise 4, this should seem familiar to you.
     ```
     private void toggleButton_routing_onAction() {
     
-    };
+    }
     ```
     
 1. In your constructor, set the routing toggle button's onAction event to call the event handler method you just created:
@@ -115,7 +115,7 @@ After doing Exercise 4, this should seem familiar to you.
     }
     ```
     
-1. Create an `if-else` statement that determines whether or not `originPoint` is `null`:
+1. After the code you just added (i.e. after the `if (point.hasZ())` block), create an `if-else` statement that determines whether or not `originPoint` is `null`:
 
     ```
     if (null == originPoint) {
@@ -214,10 +214,8 @@ After doing Exercise 4, this should seem familiar to you.
 1. Write the rest of the code for the `addStopToRoute` method. In that method, you have an `else` block containing two lines of code: a line that adds a graphic, and a line that sets `originPoint` to `null`. Between those two lines, clear the route parameters' stops and add both `originPoint` and `point` to the route parameters` stops:
 
     ```
-    routeParameters.getStops().clear();
-    for (Point p : new Point[]{ originPoint, point }) {
-        routeParameters.getStops().add(new Stop(p));
-    }
+    routeParameters.clearStops();
+    routeParameters.setStops(Arrays.asList(new Stop(originPoint), new Stop(point)));
     ```
     
 1. After adding the stops, call `RouteTask.solveRouteAsync(RouteParameters)` to solve the route asynchronously. That call returns a `ListenableFuture`, on which you can add a done listener. In that listener, call `get()` on the `ListenableFuture`, and then call `getRoutes()`, get the first route, and add it as a graphic. The call to `get()` can throw two different types of exceptions, which you must catch (or catch all `Throwable` objects if you prefer):

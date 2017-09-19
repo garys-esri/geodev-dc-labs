@@ -55,6 +55,7 @@ import com.esri.arcgisruntime.tasks.networkanalysis.RouteResult;
 import com.esri.arcgisruntime.tasks.networkanalysis.RouteTask;
 import com.esri.arcgisruntime.tasks.networkanalysis.Stop;
 import com.esri.arcgisruntime.util.ListenableList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -199,11 +200,11 @@ public class WorkshopApp extends Application {
         new Thread(() -> {
             RouteTask theRouteTask = new RouteTask("http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
             /**
-             * Note: for ArcGIS Online routing, this tutorial uses a username and
-             * password in the source code for simplicity. For security reasons, you
-             * would not do it this way in a real app. Instead, you would do one of
-             * the following: - Use an OAuth 2.0 user login - Use an OAuth 2.0 app
-             * login - Challenge the user for credentials
+             * Note: for ArcGIS Online routing, this tutorial uses a username
+             * and password in the source code for simplicity. For security
+             * reasons, you would not do it this way in a real app. Instead, you
+             * would do one of the following: - Use an OAuth 2.0 user login -
+             * Use an OAuth 2.0 app login - Challenge the user for credentials
              */
             // Don't share this code without removing plain text username and password!!!
             theRouteTask.setCredential(new UserCredential("myUsername", "myPassword"));
@@ -297,7 +298,7 @@ public class WorkshopApp extends Application {
                 surface.getElevationSources().add(new ArcGISTiledElevationSource(ELEVATION_IMAGE_SERVICE));
                 scene.setBaseSurface(surface);
                 sceneView = new SceneView();
-                
+
                 // Exercise 3: Add a scene layer to the scene
                 ArcGISSceneLayer sceneLayer = new ArcGISSceneLayer(SCENE_SERVICE_URL);
                 sceneLayer.addDoneLoadingListener(() -> {
@@ -502,7 +503,7 @@ public class WorkshopApp extends Application {
             });
         }
     }
-    
+
     /**
      * Exercise 5: Activate routing
      */
@@ -539,10 +540,8 @@ public class WorkshopApp extends Application {
                 graphics.add(new Graphic(originPoint, ROUTE_ORIGIN_SYMBOL));
             } else {
                 graphics.add(new Graphic(point, ROUTE_DESTINATION_SYMBOL));
-                routeParameters.getStops().clear();
-                for (Point p : new Point[]{originPoint, point}) {
-                    routeParameters.getStops().add(new Stop(p));
-                }
+                routeParameters.clearStops();
+                routeParameters.setStops(Arrays.asList(new Stop(originPoint), new Stop(point)));
                 ListenableFuture<RouteResult> solveFuture = routeTask.solveRouteAsync(routeParameters);
                 solveFuture.addDoneListener(() -> {
                     try {
