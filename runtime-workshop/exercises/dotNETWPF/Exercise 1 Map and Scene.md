@@ -28,6 +28,8 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         <Image x:Key="2D" Source="images/two_d.png" Height="50" Width="50"/>
         <Image x:Key="ZoomIn" Source="images/zoom_in.png" Stretch="Fill"/>
         <Image x:Key="ZoomOut" Source="images/zoom_out.png" Stretch="Fill"/>
+	<Image x:Key="LockFocus" Source="images/lock.png" Stretch="Fill"/>
+        <Image x:Key="LockFocusSelected" Source="images/lock_selected.png" Stretch="Fill"/>
         <Image x:Key="Location" Source="images/location.png" Stretch="Fill"/>
         <Image x:Key="LocationSelected" Source="images/location_selected.png" Stretch="Fill"/>
         <Image x:Key="Routing" Source="images/routing.png" Stretch="Fill"/>
@@ -85,7 +87,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     
 ## Add a 3D scene to the app, and use a button to switch between 2D and 3D
 
-The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
+ArcGIS Runtime also supports 3D visualization. Everyone loves 3D! To conclude this exercise, you will add a 3D scene to the app, as well as a button that lets the user toggle between seeing the 2D map and seeing the 3D scene.
 
 8. Before your constructor, instantiate a constant for the URL of an elevation service:
 
@@ -100,11 +102,10 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
     <esri:SceneView x:Name="sceneView" Visibility="Hidden" Margin="0,0,0.4,-0.2"/>
     ```
     
-10. Before your constructor in MainWindow.xaml.cs, instantiate a variable for the Scene as well as a constant for the URL of an elevation service. Also add a boolean to know when you are in 3D vs. 2D.
+10. Before your constructor in MainWindow.xaml.cs, instantiate a variable for the Scene.
 
     ```
     private Scene myScene = null;
-    private bool threeD = false;
     ```
     
 11. In MainWindow.xaml we need to add a click event to the button to toggle to a 3D view.  Visual Studio will create the for you when start typeing the Click= and you can tab to have the event handler created automatically. 
@@ -126,11 +127,11 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
         ViewButton.Content = FindResource(ViewButton.Content == FindResource("3D") ? "2D" : "3D");
 	if (ViewButton.Content == FindResource("2D"))
         {
-            threeD = true;
+            
         }
         else
         {
-            threeD = false;
+            
         }
     }
     ```
@@ -144,7 +145,7 @@ The Quartz release brings 3D visualization to ArcGIS Runtime. Everyone loves 3D!
     if (myScene == null)
     {
        //Create a new scene
-       myScene = new Scene(Basemap.CreateStreets());
+       myScene = new Scene(Basemap.CreateImageryWithLabels());
        sceneView.Scene = myScene;
        // create an elevation source
        var elevationSource = new ArcGISTiledElevationSource(new System.Uri(ELEVATION_IMAGE_SERVICE));
