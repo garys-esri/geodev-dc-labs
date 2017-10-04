@@ -3,6 +3,7 @@
 This exercise walks you through the following:
 - Add zoom in and zoom out buttons to the UI
 - Zoom in and out on the map and the scene
+- Adding lock focus to a 3D scene
 
 Prerequisites:
 - Complete [Exercise 1](Exercise 1 Map and Scene.md), or get the Exercise 1 code solution compiling and running properly, preferably in an IDE.
@@ -94,7 +95,110 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     ```
     
 1. Compile and run your app. Verify that the zoom in and out buttons work in both 2D mode and 3D mode.
+
+## Add a button for locking the scene's focus point
+
+This portion of the exercise will teach you how to use _camera controllers_ in ArcGIS Runtime.
+
+1. First let's make sure that you have the images added to your MainWindow.xml that will be used on the new button that will be added. The images goes in the <Window.Resources> area of the xml.
+
+    ```
+        <Image x:Key="LockFocus" Source="images/lock.png" Stretch="Fill"/>
+        <Image x:Key="LockFocusSelected" Source="images/lock_selected.png" Stretch="Fill"/>
+    ```
+
+1. Next we need to creat a new button and put it on the UI.  So in MainWindow.xml, in the <Grid></Grid> add a new area to put the next set of buttons in on the UI.  We will want a border, stackpanel, and a new button using the images we added above.:
+
+    ```
+    <Border VerticalAlignment="Bottom"
+            Margin="0,0,65,0" Width="67" Height="180" HorizontalAlignment="Right">
+            <StackPanel Margin="0" Width="72" VerticalAlignment="Top">
+                <Button x:Name="LockButton" Click="LockButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5"   HorizontalAlignment="Right" RenderTransformOrigin="4.054,-0.693" Content="{DynamicResource LockFocus}"/>
+            </StackPanel>
+        </Border>
+    ```
+
+1. Add a click event to the button called LockButton_Click and in the MainWindow.cs it looks like this:
+
+    ```
+    private void LockButton_Click(object sender, RoutedEventArgs e)
+    {
     
+    }
+    ```
+
+1. If the button is clicked, we want to change the image of button.  You will add this to the click event on the button:
+
+    ```
+    private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Change button to lock or lock_selected when button is clicked
+            LockButton.Content = FindResource(LockButton.Content == FindResource("LockFocusSelected") ? "LockFocus" : "LockFocusSelected");
+            if (LockButton.Content == FindResource("LockFocusSelected"))
+            {
+            }
+            else 
+            {
+            }
+    }
+    ```
+
+1. If the button is NOT selected, it's only one line of code to set the `SceneView`'s camera controller to a default `GlobeCameraController`. Insert this line in your new `else` block:
+
+    ```
+    sceneView.CameraController = new GlobeCameraController();
+    ```
+
+1. If the button IS selected, you need to give the `SceneView` a new `OrbitLocationCameraController`, which locks the camera's focus on a given point. `OrbitLocationCameraController`'s constructor takes two arguments:
+
+    1. The target point on Earth's surface. You can use the current camera's target point by calling your `getSceneTarget()` method.
+    1. The distance (in meters) from the target at which the camera should be placed. ArcGIS Runtime's `GeometryEngine` lets you calculate the x/y distance in meters between two points, but the constructor needs an x/y/z distance, which you can calculate using the [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem) (did we mention that this workshop would require junior high school math?).
+
+    The following steps will help you set up this camera controller.
+
+1. In your empty `if` block, get the scene target, verify that it is of type `Point`, and cast it to `Point`:
+
+    ```
+    Geometry target = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale).TargetGeometry;
+    if (target.GeometryType == GeometryType.Point)
+    {
+        Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (Esri.ArcGISRuntime.Geometry.MapPoint)target;
+        
+    }
+    ```
+
+1. After getting `targetPoint`, get the `SceneView`'s current camera and its location, and verify that the location is not null:
+
+    ```
+   Camera currentCamera = sceneView.Camera;
+   Esri.ArcGISRuntime.Geometry.MapPoint currentCameraPoint = currentCamera.Location;
+   if (null != currentCameraPoint)
+   { 
+        
+    }
+    ```
+
+1. If the current camera point is not null, use [`GeometryEngine.DistanceGeodetic(MapPoint, MapPoint, LinearUnit, AngularUnit, GeodeticCurveType)`](https://developers.arcgis.com/net/latest/wpf/api-reference/html/M_Esri_ArcGISRuntime_Geometry_GeometryEngine_DistanceGeodetic.htm) to calculate the ground distance between the target point and the x/y part of the current camera location. Then use the Pythagorean theorem to calculate the distance from the target point and the current camera:
+
+    ```
+    double xyDistance = GeometryEngine.DistanceGeodetic(targetPoint, currentCameraPoint, LinearUnits.Meters, AngularUnits.Degrees, GeodeticCurveType.Geodesic).Distance;
+    double zDistance = currentCameraPoint.Z;
+    double distanceToTarget = Math.Sqrt(Math.Pow(xyDistance, 2.0) + Math.Pow(zDistance, 2.0));
+
+    ```
+
+1. Create a new [`OrbitLocationCameraController`](https://developers.arcgis.com/net/latest/wpf/api-reference/html/T_Esri_ArcGISRuntime_UI_OrbitLocationCameraController.htm) with the target point and distance you calculated. Set its heading and pitch from the current camera. Then give the `SceneView` the camera controller you created:
+
+    ```
+    OrbitLocationCameraController cameraController = new OrbitLocationCameraController((MapPoint)target, distanceToTarget);
+    cameraController.CameraHeadingOffset = currentCamera.Heading;
+    cameraController.CameraPitchOffset = currentCamera.Pitch;
+    sceneView.CameraController = cameraController;
+    ```
+    
+1. Run your app. Switch to 3D mode, navigate to a point where you want to lock, and tap the lock button. Verify that navigation now focuses on the target point. Tap the lock button again and verify that normal navigation is restored:
+
+    ![Lock focus button](04a-lock-focus-button.jpg)
 ## How did it go?
 
 If you have trouble, **refer to the solution code**, which is linked near the beginning of this exercise. You can also **submit an issue** in this repo to ask a question or report a problem. If you are participating live with Esri presenters, feel free to **ask a question** of the presenters.
