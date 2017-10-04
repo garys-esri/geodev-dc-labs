@@ -14,15 +14,10 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
 You can use ArcGIS Runtime to detect when and where the user interacts with the map or scene, either with the mouse or with a touchscreen. In this exercise, you just need the user to click or tap a point. You could detect every user click, but instead, we will let the user activate and deactivate this capability with a button.
 
-1. We will add a new button to the UI by adding it in the MainWindow.xaml using [one of the images you downloaded](../../images/location.png) during [Exercise 1](Exercise 1 Map and Scene.md),  Add the following xaml below the closing tag for Border:
+1. We will add a new button to the UI by adding it in the MainWindow.xaml using [one of the images you downloaded](../../images/location.png) during [Exercise 1](Exercise 1 Map and Scene.md),  Add the following xaml inside your second border section in the xaml:
 
     ```
-    <Border VerticalAlignment="Bottom"
-            Margin="0,0,45,0" Width="67" Height="125" HorizontalAlignment="Right">
-        <StackPanel Margin="0" Width="72" VerticalAlignment="Bottom">
-            <Button x:Name="QueryandBufferButton" Width="50" Height="50" Padding="1" Margin="0,5" HorizontalAlignment="Left" Content="{DynamicResource Location}" />
-        </StackPanel>
-    </Border>
+     <Button x:Name="QueryandBufferButton" Click="QueryandBufferButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5" HorizontalAlignment="Right" Content="{DynamicResource Location}" />
     ```
     
 1. Add the click event in the xaml by typing Click= and use: after the x:Name="QueryAndBufferButton" and tabbing to creat the code in the MainWindow.xaml.cs.  Your MainWidnow.xaml button line will look like this:
@@ -49,21 +44,20 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 1. In the same click event we want to start the listener for the tapped event for the map or scene views depending on the state of the button.  If the state is that the button is not selected anymore we want to stop listening for the tapped event.  If you remove the += OnView_Tapped and type in the += Visual studio will create the method for you and you can rename it:
 
     ```
-    if (threeD && QueryandBufferButton.Content == FindResource("LocationSelected"))
-    {
-        if (sceneView != null)
-           sceneView.GeoViewTapped += OnView_Tapped;     
-        }
-        else if (!threeD && QueryandBufferButton.Content == FindResource("LocationSelected"))
-        {
-            mapView.GeoViewTapped += OnView_Tapped; ;
-        }
-        else
-        {
-           mapView.GeoViewTapped -= OnView_Tapped;
-           sceneView.GeoViewTapped -= OnView_Tapped;
-         }
-    }
+    if (!threeD)
+            {
+                //Change Query button to Selected image
+                QueryandBufferButton.Content = FindResource(QueryandBufferButton.Content == FindResource("Location") ? "LocationSelected" : "Location");
+                if (QueryandBufferButton.Content == FindResource("LocationSelected"))
+                {
+                    mapView.GeoViewTapped += OnView_Tapped;
+                }
+                else
+                {
+
+                    mapView.GeoViewTapped -= OnView_Tapped;
+                }
+            }
     ```
     If you don't have Visual Studio create the method for you here is the code for the method:
     ```
@@ -109,30 +103,20 @@ You need to buffer the clicked point and display both the point and the buffer a
     mapView.GraphicsOverlays.Add(bufferAndQueryMapGraphics);
     ```
     
-1. In `ViewButton_Click()`, after the call to `sceneView.Scene = myScene`, add the scene `GraphicsOverlay` to the `SceneView`. The one for the map only required one line of code, while this one for the scene requires an extra line of code to specify that the graphics should be draped on the 3D surface:
+1. Create a `private MapPoint getGeoPoint(GeoInputEventArgs)` method to convert a `GeoInputEventArgs` to a `MapPoint`. This method should use either the `MapView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(GeoInputEventArgs)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. 
 
     ```
-    bufferAndQuerySceneGraphics.SceneProperties.SurfacePlacement = SurfacePlacement.Draped;
-    sceneView.GraphicsOverlays.Add(bufferAndQuerySceneGraphics);
-    ```
-
-1. Create a `private MapPoint getGeoPoint(GeoInputEventArgs)` method to convert a `GeoInputEventArgs` to a `MapPoint`. This method should use either the `MapView` or the `SceneView` to convert a screen point to a geographic point, depending on whether the app is currently in 2D mode or 3D mode. You're only going to call `getGeoPoint(GeoInputEventArgs)` in one place here in Exercise 4, so you don't really have to create a method just for this. But you will thank yourself for writing this method when you get to Exercise 5. 
-
-    ```
-    private MapPoint getGeoPoint(GeoViewInputEventArgs point)
-    {
-    MapPoint geoPoint = null;
-    Point screenPoint = new Point(point.Position.X, point.Position.Y);
-    if (threeD)
-      {
-         geoPoint = sceneView.ScreenToBaseSurface(screenPoint);
-      }
-      else
-      {
-         geoPoint = mapView.ScreenToLocation(screenPoint);
-      }
-      return geoPoint;
-    }
+    private MapPoint getGeoPoint(Esri.ArcGISRuntime.UI.Controls.GeoViewInputEventArgs point)
+        {
+            MapPoint geoPoint = null;
+            Point screenPoint = new Point(point.Position.X, point.Position.Y);
+            if (!threeD)
+            {
+                geoPoint = mapView.ScreenToLocation(screenPoint);
+            }
+            
+            return geoPoint;
+        }
     ```
 
 1. In `OnView_Tapped()`, you need to replace your `console.writeline` with code to create a buffer and display the point and buffer as graphics. First, use `getGeoPoint(GeoViewInputEventArgs e)` to convert the `GeoViewInputEventArgs` to a geographic point. Next, create a 1000-meter buffer, which is pretty simple with ArcGIS Runtime's `GeometryEngine` class. _Note: ArcGIS Runtime Quartz Beta 1 cannot create geodesic buffers, so here you must project the point to a projected coordinate system (PCS), such as Web Mercator (3857), before creating the buffer. Using a PCS specific to the geographic area in question would produce a more accurate buffer. However, it is anticipated that ArcGIS Runtime Quartz will provide support for geodesic buffers, so writing code to find a better PCS will not be necessary with the Quartz release. Therefore, we did not write that code for this tutorial._
@@ -146,7 +130,7 @@ You need to buffer the clicked point and display both the point and the buffer a
 1. In `OnView_Tapped()`, add the point and buffer as graphics. You only need to add them to the `GraphicsOverlay` for the `GeoView` currently in use--`MapView` or `SceneView`--so check the value of `threeD` and choose a `GraphicsOverlay` accordingly. Clear its graphics and then add the point and buffer as new `Graphic` objects:
 
     ```
-    GraphicCollection graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).Graphics;
+    GraphicCollection graphics = bufferAndQueryMapGraphics.Graphics;
     graphics.Clear();
     graphics.Add(new Graphic(buffer, BUFFER_SYMBOL));
     graphics.Add(new Graphic(geoPoint, CLICK_SYMBOL));
@@ -155,13 +139,11 @@ You need to buffer the clicked point and display both the point and the buffer a
 
     ```
     bufferAndQueryMapGraphics.Graphics.Clear();
-    bufferAndQuerySceneGraphics.Graphics.Clear();
     ```
 1. Compile and run your app. Verify that if you toggle the buffer and select button and then click the map or scene, the point you clicked and a 1000-meter buffer around it appear on the map or scene:
 
     ![Click and buffer graphics (map)](09-click-and-buffer-graphics-map.png)
 
-    ![Click and buffer graphics (scene)](10-click-and-buffer-graphics-scene.png)
     
 ## Query for features within the buffer
 
@@ -174,32 +156,30 @@ There are a few different ways to query and/or select features in ArcGIS Runtime
     query.Geometry = buffer;
     ```
     
-1. For each of the `FeatureLayer` objects in the operational layers of the `SceneView`'s scene or the `MapView`'s map, call `selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`. Use `FeatureLayer.SelectionMode.NEW` to do a new selection, as opposed to adding to or removing from the current selection. _Note: ArcGIS Runtime Quartz Beta 1 highlights selected features on the map but not on the scene. It is anticipated that this behavior will be fixed in the ArcGIS Runtime Quartz release._ Add this code after instantiating the query object and setting its geometry:
+1. For each of the `FeatureLayer` objects in the operational layers of the `MapView`'s map, call `selectFeaturesAsync(QueryParameters, FeatureLayer.SelectionMode)`. Use `FeatureLayer.SelectionMode.NEW` to do a new selection, as opposed to adding to or removing from the current selection. _Note: ArcGIS Runtime Quartz Beta 1 highlights selected features on the map but not on the scene. It is anticipated that this behavior will be fixed in the ArcGIS Runtime Quartz release._ Add this code after instantiating the query object and setting its geometry:
 
     ```
     LayerCollection operationalLayers;
-    if (threeD)
-       operationalLayers = sceneView.Scene.OperationalLayers;
-     else
-        operationalLayers = mapView.Map.OperationalLayers;
-      foreach (Layer layer in operationalLayers)
-      {
-        ((FeatureLayer)layer).SelectFeaturesAsync(query, SelectionMode.New);
-      }
+                
+    operationalLayers = mapView.Map.OperationalLayers;
+    foreach (Layer layer in operationalLayers)
+    {
+         ((FeatureLayer)layer).SelectFeaturesAsync(query, SelectionMode.New);
+    }
     ```
 
 1. Last you want to clear the selection when the query button is unselected.  Add this code in the 'QueryandBufferButton_Click' after you clear the graphics:
 
     ```
     LayerCollection operationalLayers;
-    if (threeD)
-       operationalLayers = sceneView.Scene.OperationalLayers;
-     else
-        operationalLayers = mapView.Map.OperationalLayers;
+    if (!threeD)
+    {
+      operationalLayers = mapView.Map.OperationalLayers;
       foreach (Layer layer in operationalLayers)
       {
         ((FeatureLayer)layer).ClearSelection();
       }
+    }
     ```
     
 1. Compile and run your app. Verify on the 2D map that features within the clicked buffer are highlighted on the map:
