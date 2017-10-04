@@ -102,10 +102,11 @@ ArcGIS Runtime also supports 3D visualization. Everyone loves 3D! To conclude th
     <esri:SceneView x:Name="sceneView" Visibility="Hidden" Margin="0,0,0.4,-0.2"/>
     ```
     
-10. Before your constructor in MainWindow.xaml.cs, instantiate a variable for the Scene.
+10. Before your constructor in MainWindow.xaml.cs, instantiate a variable for the Scene.  Also add a boolean for when view is in 3D, this will be used in the next exercise.
 
     ```
     private Scene myScene = null;
+    private bool threeD = false;
     ```
     
 11. In MainWindow.xaml we need to add a click event to the button to toggle to a 3D view.  Visual Studio will create the for you when start typeing the Click= and you can tab to have the event handler created automatically. 
@@ -127,11 +128,11 @@ ArcGIS Runtime also supports 3D visualization. Everyone loves 3D! To conclude th
         ViewButton.Content = FindResource(ViewButton.Content == FindResource("3D") ? "2D" : "3D");
 	if (ViewButton.Content == FindResource("2D"))
         {
-            
+            threeD = true;
         }
         else
         {
-            
+            threeD= false;
         }
     }
     ```
