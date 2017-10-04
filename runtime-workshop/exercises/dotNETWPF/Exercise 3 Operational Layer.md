@@ -2,7 +2,7 @@
 
 This exercise walks you through the following:
 - Add a layer from a mobile map package to the 2D map
-- Add a layer from a mobile map package to the 3D scene
+- Add a scene service layer to the 3D scene
 
 Prerequisites:
 - Complete [Exercise 2](Exercise 2 Zoom Buttons.md), or get the Exercise 2 code solution compiling and running properly, preferably in an IDE.
@@ -40,55 +40,62 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
     ![Mobile map package layer](05-mmpk-layer.png)
 
-## Add a layer from a mobile map package to the 3D scene
+## Add a scene layer to the 3D scene
 
-A layer can only reside in one map or scene at a time. Therefore, to add layers to the 3D scene, you will have to open the mobile map package again. That will give you a `Map` as before, which you can't use with a `SceneView`--and there is no "`MobileScenePackage`"--so you will have to get the layers from this `Map` and add them to your existing `Scene`.
+Web scene layers are cached web layers that are optimized for displaying a large amount of 2D and 3D features. Scene layers can be viewed in a variety of ArcGIS clients, including ArcGIS Runtime. Here you will add a scene layer to your 3D scene.
 
-1. In your 2D/3D toggle button event handler method (ViewButton_Click, after you instantiate your `Scene` set its basemap and surface, and instantiate your `SceneView`, open the mobile map package aynchronously, just as you did a few steps ago for the 2D map:
+1. Declare a constant value to specify the URL of a scene service. You can use a `SceneServer` URL or an ArcGIS Online or Portal for ArcGIS item URL that represents a scene service. The following URL shows plain gray buildings in Washington, D.C.:
 
     ```
-    var mmpk = await MobileMapPackage.OpenAsync(MMPK_PATH);
+    private static string SCENE_SERVICE_URL =
+        "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a";
     ```
+
+    The following URL shows photo-realistic buildings in Philadelphia:
     
-1. Get the first `Map` in the `MobileMapPackage`, as you did before for the 2D map. However, you cannot add a `Map` to a `SceneView`, so you will instead add the `Map`'s layers to the `Scene`'s operational layers. But a layer can only belong to one `Map` or `Scene` at a time, so you can get the layercollection, clear the `Map`'s layer list (bonus: see what happens if you don't!), and only then add the list of layers to the scene. Here is the code for adding the MMPK's layers to your `Scene`. Put this code in the done loading listener you created in the previous step:
+    ```
+    private static final String SCENE_SERVICE_URL =
+        "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
+    ```
+
+1. In Exercise 1, you added code to set up the scene with a basemap and an elevation source. After that code, in the same block, create a new `ArcGISSceneLayer` based on the scene service, give the layer an event handler for when it is done loading, and add the layer to the scene:
 
     ```
-    if (mmpk.Maps.Count >= 0)
-    {
-        myMap = mmpk.Maps[0];
-        LayerCollection layerCollection = myMap.OperationalLayers;
-        
-        for (int i = 0; i < layerCollection.Count(); i++)
+     _sceneLayer = new ArcGISSceneLayer(new Uri(SCENE_SERVICE_URL));
+     myScene.OperationalLayers.Add(_sceneLayer);
+
+     //Make sure layer is loaded
+    _sceneLayer.LoadStatusChanged += SceneLayer_LoadStatusChanged;
+    scene.getOperationalLayers().add(sceneLayer);
+    
+    private async void SceneLayer_LoadStatusChanged(object sender, Esri.ArcGISRuntime.LoadStatusEventArgs e)
         {
-            var thelayer = layerCollection[i];
-            myMap.OperationalLayers.Clear();
-            myScene.OperationalLayers.Add(thelayer);
+            // If layer isn't loaded, do nothing
+            if (e.Status != Esri.ArcGISRuntime.LoadStatus.Loaded)
+                return;
         }
-    }
     ```
     
-1. After adding the layers to the scene (inside the `if` block from the previous step), zoom to the layer you added by giving your `SceneView` the MMPK map's `Viewpoint`:
+1. Inside this new event handler, set your `SceneView`'s viewpoint to a new `Viewpoint` using the scene layer's full extent:
 
     ```
-    sceneView.SetViewpoint(myMap.InitialViewpoint);
+    sceneView.SetViewpoint(new Viewpoint(_sceneLayer.FullExtent));
     ```
     
-1. Compile and run your app. Verify that when you switch to 3D, the scene displays Washington, D.C., with the red triangles representing crime incidents:
-
-    ![Mobile map package layer on a 3D scene](06-mmpk-layer-scene.png)
+1. Compile and run your app. Verify that when you switch to 3D, the scene displays the 3D features from the scene layer.
     
-1. Remember in [Exercise 2](Exercise 2 Zoom Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`. Here is the code to insert immediately after the previous step (still inside the `if` block):
+1. Remember in [Exercise 2](Exercise%202%20Zoom%20Buttons.md#zoom-in-and-out-on-the-map-and-the-scene) when you manipulated a `Camera` to zoom in and out? Here we will also use a `Camera`, but this time we will rotate the camera to provide an oblique view of the scene. We will focus the rotation on the current viewpoint's target point. The `Camera.rotateAround` method lets us specify a change in heading, pitch, and roll; let's change the heading by 45 degrees and the pitch by 65 degrees. After `rotateAround`, we will give the rotated `Camera` to the `SceneView`. Here is the code to insert immediately after the previous step:
 
     ```
-    Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
-    Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
-    Camera camera = sceneView.Camera.RotateAround(targetPoint, 45.0, 65.0, 0.0);
-    await sceneView.SetViewpointCameraAsync(camera);
+   Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
+   Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
+   Camera camera = sceneView.Camera.RotateAround(targetPoint, 45.0, 65.0, 0.0);
+
+   await sceneView.SetViewpointCameraAsync(camera);
     ```
 
-1. Compile and run your app. Verify that when you switch to 3D, the crime incidents display and the view is rotated and pitched. Also try the built-in 3D navigation by holding the right mouse button and moving the mouse:
+1. Compile and run your app. Verify that when you switch to 3D, the 3D features display and the view is rotated and pitched.
 
-    ![3D scene pitched and rotated](07-mmpk-layer-scene-rotated.png)
     
 ## How did it go?
 
