@@ -22,6 +22,8 @@ namespace Ex1_MapAndScene
         private Scene myScene = null;
         private bool threeD = false;
         private static string MMPK_PATH = @"..\..\data\DC_Crime_Data.mmpk";
+        private static string SCENE_SERVICE_URL = "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a";
+        ArcGISSceneLayer _sceneLayer;
         private SimpleMarkerSymbol CLICK_SYMBOL = new SimpleMarkerSymbol(SimpleMarkerSymbolStyle.Circle, Colors.Orange, 10);
         private SimpleFillSymbol BUFFER_SYMBOL = new SimpleFillSymbol(SimpleFillSymbolStyle.Null, Colors.Transparent, new SimpleLineSymbol(SimpleLineSymbolStyle.Solid, Colors.Orange, 3));
         private GraphicsOverlay bufferAndQueryMapGraphics = new GraphicsOverlay();
@@ -37,7 +39,8 @@ namespace Ex1_MapAndScene
         private async void Initialize()
         {
             //Exercise 1: Create new Map with basemap and initial location
-            myMap = new Map(Basemap.CreateTopographicVector());
+            myMap = new Map(Basemap.CreateStreetsVector());
+
             //Exercise 1: Assign the map to the MapView
             mapView.Map = myMap;
 
@@ -47,13 +50,13 @@ namespace Ex1_MapAndScene
             {
                 myMap = mmpk.Maps[0];
                 //Exercise 3: Mobile map package does not contain a basemap so must add one.
-                myMap.Basemap = Basemap.CreateTopographicVector();
+                myMap.Basemap = Basemap.CreateStreetsVector();
                 mapView.Map = myMap;
             }
             mapView.GraphicsOverlays.Add(bufferAndQueryMapGraphics);
         }
 
-        private async void ViewButton_Click(object sender, RoutedEventArgs e)
+        private void ViewButton_Click(object sender, RoutedEventArgs e)
         {
             //Change button to 2D or 3D when button is clicked
             ViewButton.Content = FindResource(ViewButton.Content == FindResource("3D") ? "2D" : "3D");
@@ -63,7 +66,7 @@ namespace Ex1_MapAndScene
                 if (myScene == null)
                 {
                     //Create a new scene
-                    myScene = new Scene(Basemap.CreateNationalGeographic());
+                    myScene = new Scene(Basemap.CreateImageryWithLabels());
                     sceneView.Scene = myScene;
                     // create an elevation source
                     var elevationSource = new ArcGISTiledElevationSource(new System.Uri(ELEVATION_IMAGE_SERVICE));
@@ -72,43 +75,75 @@ namespace Ex1_MapAndScene
                     sceneSurface.ElevationSources.Add(elevationSource);
                     // apply the surface to the scene
                     sceneView.Scene.BaseSurface = sceneSurface;
+                    sceneView.Scene = myScene;
 
-                    //Exercise 3: Open mobie map package (.mmpk) and add its operational layers to the scene
-                    var mmpk = await MobileMapPackage.OpenAsync(MMPK_PATH);
+                    _sceneLayer = new ArcGISSceneLayer(new Uri(SCENE_SERVICE_URL));
+                    myScene.OperationalLayers.Add(_sceneLayer);
 
-                    if (mmpk.Maps.Count >= 0)
-                    {
-                        myMap = mmpk.Maps[0];
-                        LayerCollection layerCollection = myMap.OperationalLayers;
+                    //Make sure layer is loaded
+                    _sceneLayer.LoadStatusChanged += SceneLayer_LoadStatusChanged;
 
-                        for (int i = 0; i < layerCollection.Count(); i++)
-                        {
-                            var thelayer = layerCollection[i];
-                            myMap.OperationalLayers.Clear();
-                            myScene.OperationalLayers.Add(thelayer);
-                            await sceneView.SetViewpointAsync(myMap.InitialViewpoint);
-                            //Rotate the camera
-                            Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
-                            Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
-                            Camera camera = sceneView.Camera.RotateAround(targetPoint, 45.0, 65.0, 0.0);
-                            await sceneView.SetViewpointCameraAsync(camera);
-                        }
-                        sceneView.Scene = myScene;
-                        bufferAndQuerySceneGraphics.SceneProperties.SurfacePlacement = SurfacePlacement.Draped;
-                        sceneView.GraphicsOverlays.Add(bufferAndQuerySceneGraphics);
-                    }
                 }
                 
                 //Exercise 1 Once the scene has been created hide the mapView and show the sceneView
                 mapView.Visibility = Visibility.Hidden;
                 sceneView.Visibility = Visibility.Visible;
-
+                
             }
             else
             {
                 threeD = false;
                 sceneView.Visibility = Visibility.Hidden;
                 mapView.Visibility = Visibility.Visible;
+            }
+        }
+        private async void SceneLayer_LoadStatusChanged(object sender, Esri.ArcGISRuntime.LoadStatusEventArgs e)
+        {
+            // If layer isn't loaded, do nothing
+            if (e.Status != Esri.ArcGISRuntime.LoadStatus.Loaded)
+                return;
+
+            sceneView.SetViewpoint(new Viewpoint(_sceneLayer.FullExtent));
+
+            //Rotate the camera
+            sceneView.SetViewpoint(new Viewpoint(_sceneLayer.FullExtent));
+            Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
+            Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
+            Camera camera = sceneView.Camera.RotateAround(targetPoint, 45.0, 65.0, 0.0);
+
+            await sceneView.SetViewpointCameraAsync(camera);
+        }
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (threeD)
+            {
+                //Change button to lock or lock_selected when button is clicked
+                LockButton.Content = FindResource(LockButton.Content == FindResource("LockFocusSelected") ? "LockFocus" : "LockFocusSelected");
+                if (LockButton.Content == FindResource("LockFocusSelected"))
+                {
+                    Esri.ArcGISRuntime.Geometry.Geometry target = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale).TargetGeometry;
+                    if (target.GeometryType == GeometryType.Point)
+                    {
+                        Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (Esri.ArcGISRuntime.Geometry.MapPoint)target;
+                        Camera currentCamera = sceneView.Camera;
+                        Esri.ArcGISRuntime.Geometry.MapPoint currentCameraPoint = currentCamera.Location;
+                        if (null != currentCameraPoint)
+                        {
+                            double xyDistance = GeometryEngine.DistanceGeodetic(targetPoint, currentCameraPoint, LinearUnits.Meters, AngularUnits.Degrees, GeodeticCurveType.Geodesic).Distance;
+                            double zDistance = currentCameraPoint.Z;
+                            double distanceToTarget = Math.Sqrt(Math.Pow(xyDistance, 2.0) + Math.Pow(zDistance, 2.0));
+
+                            OrbitLocationCameraController cameraController = new OrbitLocationCameraController((MapPoint)target, distanceToTarget);
+                            cameraController.CameraHeadingOffset = currentCamera.Heading;
+                            cameraController.CameraPitchOffset = currentCamera.Pitch;
+                            sceneView.CameraController = cameraController;
+                        }
+                    }
+                }
+                else
+                {
+                    sceneView.CameraController = new GlobeCameraController();
+                }
             }
         }
         //Exercise 2
@@ -151,68 +186,64 @@ namespace Ex1_MapAndScene
 
         private void QueryandBufferButton_Click(object sender, RoutedEventArgs e)
         {
-            //Change Query button to Selected image
-            QueryandBufferButton.Content = FindResource(QueryandBufferButton.Content == FindResource("Location") ? "LocationSelected" : "Location");
-            if (QueryandBufferButton.Content == FindResource("LocationSelected"))
+            if (!threeD)
             {
-                if (sceneView != null)
-                    sceneView.GeoViewTapped += OnView_Tapped;
-                mapView.GeoViewTapped += OnView_Tapped;
-            }       
-            else
-            {
-
-                mapView.GeoViewTapped -= OnView_Tapped;
-                sceneView.GeoViewTapped -= OnView_Tapped;
-                bufferAndQueryMapGraphics.Graphics.Clear();
-                bufferAndQuerySceneGraphics.Graphics.Clear();
-                LayerCollection operationalLayers;
-                if (threeD)
-                    operationalLayers = sceneView.Scene.OperationalLayers;
-                else
-                    operationalLayers = mapView.Map.OperationalLayers;
-                foreach (Layer layer in operationalLayers)
+                //Change Query button to Selected image
+                QueryandBufferButton.Content = FindResource(QueryandBufferButton.Content == FindResource("Location") ? "LocationSelected" : "Location");
+                if (QueryandBufferButton.Content == FindResource("LocationSelected"))
                 {
-                    ((FeatureLayer)layer).ClearSelection();
+                    mapView.GeoViewTapped += OnView_Tapped;
+                }
+                else
+                {
+
+                    mapView.GeoViewTapped -= OnView_Tapped;
+                    bufferAndQueryMapGraphics.Graphics.Clear();
+                    bufferAndQuerySceneGraphics.Graphics.Clear();
+                    LayerCollection operationalLayers;
+                    
+                    operationalLayers = mapView.Map.OperationalLayers;
+                    foreach (Layer layer in operationalLayers)
+                    {
+                        ((FeatureLayer)layer).ClearSelection();
+                    }
                 }
             }
         }
 
         private void OnView_Tapped(object sender, Esri.ArcGISRuntime.UI.Controls.GeoViewInputEventArgs e)
         {
-            MapPoint geoPoint = getGeoPoint(e);
-            geoPoint = (MapPoint)GeometryEngine.Project(geoPoint, SpatialReference.Create(3857));
-            Polygon buffer = (Polygon)GeometryEngine.Buffer(geoPoint, 1000.0);
-
-            GraphicCollection graphics = (threeD ? bufferAndQuerySceneGraphics : bufferAndQueryMapGraphics).Graphics;
-            graphics.Clear();
-            graphics.Add(new Graphic(buffer, BUFFER_SYMBOL));
-            graphics.Add(new Graphic(geoPoint, CLICK_SYMBOL));
-
-            Esri.ArcGISRuntime.Data.QueryParameters query = new Esri.ArcGISRuntime.Data.QueryParameters();
-            query.Geometry = buffer;
-            LayerCollection operationalLayers;
-            if (threeD)
-                operationalLayers = sceneView.Scene.OperationalLayers;
-            else
-                operationalLayers = mapView.Map.OperationalLayers;
-            foreach (Layer layer in operationalLayers)
+            if (!threeD)
             {
-                ((FeatureLayer)layer).SelectFeaturesAsync(query, SelectionMode.New);
+                MapPoint geoPoint = getGeoPoint(e);
+                geoPoint = (MapPoint)GeometryEngine.Project(geoPoint, SpatialReference.Create(3857));
+                Polygon buffer = (Polygon)GeometryEngine.Buffer(geoPoint, 1000.0);
+
+                GraphicCollection graphics = bufferAndQueryMapGraphics.Graphics;
+                graphics.Clear();
+                graphics.Add(new Graphic(buffer, BUFFER_SYMBOL));
+                graphics.Add(new Graphic(geoPoint, CLICK_SYMBOL));
+
+                Esri.ArcGISRuntime.Data.QueryParameters query = new Esri.ArcGISRuntime.Data.QueryParameters();
+                query.Geometry = buffer;
+                LayerCollection operationalLayers;
+                
+                operationalLayers = mapView.Map.OperationalLayers;
+                foreach (Layer layer in operationalLayers)
+                {
+                    ((FeatureLayer)layer).SelectFeaturesAsync(query, SelectionMode.New);
+                }
             }
         }
         private MapPoint getGeoPoint(Esri.ArcGISRuntime.UI.Controls.GeoViewInputEventArgs point)
         {
             MapPoint geoPoint = null;
             Point screenPoint = new Point(point.Position.X, point.Position.Y);
-            if (threeD)
-            {
-                geoPoint = sceneView.ScreenToBaseSurface(screenPoint);
-            }
-            else
+            if (!threeD)
             {
                 geoPoint = mapView.ScreenToLocation(screenPoint);
             }
+            
             return geoPoint;
         }
     }
