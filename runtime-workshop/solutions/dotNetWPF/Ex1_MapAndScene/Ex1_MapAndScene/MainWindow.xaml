@@ -8,6 +8,14 @@
     <Window.Resources>
         <Image x:Key="3D" Source="images/three_d.png" Height="50" Width="50" />
         <Image x:Key="2D" Source="images/two_d.png" Height="50" Width="50"/>
+        <Image x:Key="ZoomIn" Source="images/zoom_in.png" Stretch="Fill"/>
+        <Image x:Key="ZoomOut" Source="images/zoom_out.png" Stretch="Fill"/>
+        <Image x:Key="LockFocus" Source="images/lock.png" Stretch="Fill"/>
+        <Image x:Key="LockFocusSelected" Source="images/lock_selected.png" Stretch="Fill"/>
+        <Image x:Key="Location" Source="images/location.png" Stretch="Fill"/>
+        <Image x:Key="LocationSelected" Source="images/location_selected.png" Stretch="Fill"/>
+        <Image x:Key="Routing" Source="images/routing.png" Stretch="Fill"/>
+        <Image x:Key="RoutingSelected" Source="images/routing_selected.png" Stretch="Fill"/>
     </Window.Resources>
     <Grid>
         <esri:MapView x:Name="mapView" Margin="0,0,0.4,-0.2"/>

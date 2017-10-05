@@ -2,7 +2,7 @@
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Data;
-using Esri.ArcGISRuntime.NetworkAnalyst;
+using Esri.ArcGISRuntime.Tasks.NetworkAnalysis;
 using Esri.ArcGISRuntime.Portal;
 using Esri.ArcGISRuntime.Security;
 
@@ -43,11 +43,10 @@ namespace Ex1_MapAndScene
             ViewButton.Content = FindResource(ViewButton.Content == FindResource("3D") ? "2D" : "3D");
             if (ViewButton.Content == FindResource("2D"))
             {
-                threeD = true;
                 if (myScene == null)
                 {
                     //Create a new scene
-                    myScene = new Scene(Basemap.CreateStreets());
+                    myScene = new Scene(Basemap.CreateImageryWithLabels());
                     sceneView.Scene = myScene;
                     
                     // create an elevation source
@@ -63,12 +62,13 @@ namespace Ex1_MapAndScene
                 //Once the scene has been created hide the mapView and show the sceneView
                 mapView.Visibility = Visibility.Hidden;
                 sceneView.Visibility = Visibility.Visible;
+                threeD = true;
             }
             else
             {
-                threeD = false;
                 sceneView.Visibility = Visibility.Hidden;
                 mapView.Visibility = Visibility.Visible;
+                threeD = false;
             }
         }
     }
