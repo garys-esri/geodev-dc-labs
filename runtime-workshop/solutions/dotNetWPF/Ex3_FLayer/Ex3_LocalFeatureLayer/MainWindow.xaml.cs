@@ -4,6 +4,7 @@ using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Data;
 using Esri.ArcGISRuntime.Portal;
 using Esri.ArcGISRuntime.Security;
+using Esri.ArcGISRuntime.UI;
 
 using System;
 using System.Diagnostics;
@@ -20,6 +21,8 @@ namespace Ex1_MapAndScene
         private Scene myScene = null;
         private bool threeD = false;
         private static string MMPK_PATH = @"..\..\data\DC_Crime_Data.mmpk";
+        private static string SCENE_SERVICE_URL = "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a";
+        ArcGISSceneLayer _sceneLayer;
 
         public MainWindow()
         {
@@ -41,12 +44,12 @@ namespace Ex1_MapAndScene
             {
                 myMap = mmpk.Maps[0];
                 //Exercise 3: Mobile map package does not contain a basemap so must add one.
-                myMap.Basemap = Basemap.CreateTopographicVector();
+                myMap.Basemap = Basemap.CreateStreetsVector();
                 mapView.Map = myMap;
             }
         }
 
-        private async void ViewButton_Click(object sender, RoutedEventArgs e)
+        private void ViewButton_Click(object sender, RoutedEventArgs e)
         {
             //Change button to 2D or 3D when button is clicked
             ViewButton.Content = FindResource(ViewButton.Content == FindResource("3D") ? "2D" : "3D");
@@ -56,7 +59,7 @@ namespace Ex1_MapAndScene
                 if (myScene == null)
                 {
                     //Create a new scene
-                    myScene = new Scene(Basemap.CreateNationalGeographic());
+                    myScene = new Scene(Basemap.CreateImageryWithLabels());
                     sceneView.Scene = myScene;
                     // create an elevation source
                     var elevationSource = new ArcGISTiledElevationSource(new System.Uri(ELEVATION_IMAGE_SERVICE));
@@ -65,30 +68,14 @@ namespace Ex1_MapAndScene
                     sceneSurface.ElevationSources.Add(elevationSource);
                     // apply the surface to the scene
                     sceneView.Scene.BaseSurface = sceneSurface;
-                    //Exercise 3: Open mobie map package (.mmpk) and add its operational layers to the scene
-                    var mmpk = await MobileMapPackage.OpenAsync(MMPK_PATH);
+                    sceneView.Scene = myScene;
 
-                    if (mmpk.Maps.Count >= 0)
-                    {
-                        myMap = mmpk.Maps[0];
-                        LayerCollection layerCollection = myMap.OperationalLayers;
+                    _sceneLayer = new ArcGISSceneLayer(new Uri(SCENE_SERVICE_URL));
+                    myScene.OperationalLayers.Add(_sceneLayer);
 
-                        for (int i = 0; i < layerCollection.Count(); i++)
-                        {
-                            var thelayer = layerCollection[i];
-                            myMap.OperationalLayers.Clear();
-                            myScene.OperationalLayers.Add(thelayer);
-                            await sceneView.SetViewpointAsync(myMap.InitialViewpoint);
-                            
-                            //Rotate the camera
-                            Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
-                            Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
-                            Camera camera = sceneView.Camera.RotateAround(targetPoint, 45.0, 65.0, 0.0);
-                            await sceneView.SetViewpointCameraAsync(camera);
-                        }
-                        sceneView.Scene = myScene;
-                    }
-                
+                    //Make sure layer is loaded
+                    _sceneLayer.LoadStatusChanged += SceneLayer_LoadStatusChanged;
+                    
                 }
                 //Exercise 1 Once the scene has been created hide the mapView and show the sceneView
                 mapView.Visibility = Visibility.Hidden;
@@ -102,6 +89,55 @@ namespace Ex1_MapAndScene
                 mapView.Visibility = Visibility.Visible;
             }
         }
+
+        private async void SceneLayer_LoadStatusChanged(object sender, Esri.ArcGISRuntime.LoadStatusEventArgs e)
+        {
+            // If layer isn't loaded, do nothing
+            if (e.Status != Esri.ArcGISRuntime.LoadStatus.Loaded)
+                return;
+
+            sceneView.SetViewpoint(new Viewpoint(_sceneLayer.FullExtent));
+
+            //Rotate the camera
+            sceneView.SetViewpoint(new Viewpoint(_sceneLayer.FullExtent));
+            Viewpoint viewpoint = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale);
+            Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (MapPoint)viewpoint.TargetGeometry;
+            Camera camera = sceneView.Camera.RotateAround(targetPoint, 45.0, 65.0, 0.0);
+
+            await sceneView.SetViewpointCameraAsync(camera);
+        }
+
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Change button to lock or lock_selected when button is clicked
+            LockButton.Content = FindResource(LockButton.Content == FindResource("LockFocusSelected") ? "LockFocus" : "LockFocusSelected");
+            if (LockButton.Content == FindResource("LockFocusSelected"))
+            {
+                Geometry target = sceneView.GetCurrentViewpoint(ViewpointType.CenterAndScale).TargetGeometry;
+                if (target.GeometryType == GeometryType.Point)
+                {
+                    Esri.ArcGISRuntime.Geometry.MapPoint targetPoint = (Esri.ArcGISRuntime.Geometry.MapPoint)target;
+                    Camera currentCamera = sceneView.Camera;
+                    Esri.ArcGISRuntime.Geometry.MapPoint currentCameraPoint = currentCamera.Location;
+                    if (null != currentCameraPoint)
+                    {
+                        double xyDistance = GeometryEngine.DistanceGeodetic(targetPoint, currentCameraPoint, LinearUnits.Meters, AngularUnits.Degrees, GeodeticCurveType.Geodesic).Distance;
+                        double zDistance = currentCameraPoint.Z;
+                        double distanceToTarget = Math.Sqrt(Math.Pow(xyDistance, 2.0) + Math.Pow(zDistance, 2.0));
+
+                        OrbitLocationCameraController cameraController = new OrbitLocationCameraController((MapPoint)target, distanceToTarget);
+                        cameraController.CameraHeadingOffset = currentCamera.Heading;
+                        cameraController.CameraPitchOffset = currentCamera.Pitch;
+                        sceneView.CameraController = cameraController;
+                    }
+                }
+            }
+            else
+            {
+                sceneView.CameraController = new GlobeCameraController();
+            }
+        }
+
         //Exercise 2
         private void ZoomInButton_Click(object sender, RoutedEventArgs e)
         {
