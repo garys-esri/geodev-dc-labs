@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 
 
-import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
-import ArcGIS.AppFramework.Runtime 1.0
+import Esri.ArcGISRuntime 100.1
 
 App {
     id: app
@@ -58,44 +58,37 @@ App {
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
         }
-
     }
-    Map {
-        id: map
 
+    MapView {
+        id:mapView
         anchors {
             left: parent.left
             right: parent.right
             top: titleRect.bottom
             bottom: parent.bottom
         }
-
-        wrapAroundEnabled: true
-        rotationByPinchingEnabled: true
-        magnifierOnPressAndHoldEnabled: true
-        mapPanningByMagnifierEnabled: true
-        zoomByPinchingEnabled: true
-
-        ArcGISTiledMapServiceLayer {
-            url: app.info.propertyValue("basemapServiceUrl", "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer")
+        Map {
+           id: map
+           BasemapStreetsVector {}
+           ViewpointExtent {
+                Envelope {
+                    xMax: -8539362.27
+                    yMax: 4723928.16
+                    xMin: -8610295.83
+                    yMin: 4702907.97
+                    spatialReference: SpatialReference {wkid: 102100}
+                }
+           }
         }
-
-        onStatusChanged: {
-            if (status === Enums.MapStatusReady) {
-                extent = initialExtent;
-            }
-        }
-        Envelope {
-            id: initialExtent
-            xMax: -8539362.27
-            yMax: 4723928.16
-            xMin: -8610295.83
-            yMin: 4702907.97
-            spatialReference: map.spatialReference
+        // Busy Indicator
+        BusyIndicator {
+            anchors.centerIn: mapView
+            width: height
+            running: true
+            visible: (mapView.drawStatus === Enums.DrawStatusInProgress)
         }
     }
-
-
-
 }
+
 
