@@ -23,6 +23,8 @@ import ArcGIS.AppFramework.Controls 1.0
 import Esri.ArcGISRuntime 100.1
 
 App {
+    property bool threeD: false
+
     id: app
     width: 400
     height: 640
@@ -87,6 +89,66 @@ App {
             width: height
             running: true
             visible: (mapView.drawStatus === Enums.DrawStatusInProgress)
+        }
+    }
+    SceneView {
+        id: sceneView
+        anchors.fill: parent
+        visible: false
+
+        Scene {
+            BasemapImagery {}
+            Surface {
+                ArcGISTiledElevationSource {
+                    url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+                }
+            }
+        }
+    }
+    Component.onCompleted: {
+    // set viewpoint to the specified camera
+        sceneView.setViewpointCameraAndWait(camera)
+    }
+
+    Camera {
+            id: camera
+            heading: 10.0
+            pitch: 80.0
+            roll: 100.0
+
+            Point {
+                x: -77.04
+                y: 38.88
+                z: 500.0
+                spatialReference: SpatialReference.createWgs84()
+            }
+    }
+    Column{
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 10
+        padding: 5
+
+        Button {
+            id: changeView
+            enabled: true
+            Image {
+                id: theView
+                anchors.fill: parent
+                source: "https://raw.githubusercontent.com/garys-esri/geodev-dc-labs/master/2016-11-runtime/images/three_d.png"
+                fillMode: Image.PreserveAspectFit
+            }
+            checkable: false
+            width: 30
+            height: 30
+
+            onClicked: {
+                threeD = !threeD
+                            mapView.visible = !threeD
+                            sceneView.visible = threeD
+                theView.source = threeD ? "https://raw.githubusercontent.com/garys-esri/geodev-dc-labs/master/2016-11-runtime/images/two_d.png" : "https://raw.githubusercontent.com/garys-esri/geodev-dc-labs/master/2016-11-runtime/images/three_d.png"
+
+            }
         }
     }
 }

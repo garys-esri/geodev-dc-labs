@@ -21,7 +21,7 @@
     "largeThumbnail": null,
     "licenseInfo": "\n<p style='-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'><br /></p>",
     "listed": false,
-    "modified": 1477032426000,
+    "modified": 1503425529360,
     "name": null,
     "numComments": 3,
     "numRatings": 0,
@@ -37,7 +37,7 @@
     "spatialReference": null,
     "tags": null,
     "thumbnail": "thumbnail/thumbnail.png",
-    "title": "Ex1_Map",
+    "title": "Ex1_MapScene",
     "type": "Native Application",
     "typeKeywords": [
         "API_QML",
