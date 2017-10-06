@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,14 @@
  *
  */
 
-
-import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick 2.7
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import QtPositioning 5.3
 
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
-import ArcGIS.AppFramework.Runtime 1.0
-import ArcGIS.AppFramework.Runtime.Controls 1.0
+import Esri.ArcGISRuntime 100.1
 
 App {
     id: app
@@ -60,69 +59,153 @@ App {
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
         }
-
     }
-    Map {
-        id: map
 
+    MapView {
+        id:mapView
         anchors {
             left: parent.left
             right: parent.right
             top: titleRect.bottom
             bottom: parent.bottom
         }
+        Map {
+           id: map
+           BasemapStreetsVector {}
+           ViewpointExtent {
+                Envelope {
+                    xMax: -8539362.27
+                    yMax: 4723928.16
+                    xMin: -8610295.83
+                    yMin: 4702907.97
+                    spatialReference: SpatialReference {wkid: 102100}
+                }
+           }
+           FeatureLayer {
+               ServiceFeatureTable {
+                   url: "http://services.arcgis.com/lA2FZKuu26Fips7U/arcgis/rest/services/MetroLines/FeatureServer/0"
+               }
+           }
+           FeatureLayer {
+               id: metrostopsLayer
+               visible: false
+               ServiceFeatureTable {
+                   url: "http://services.arcgis.com/lA2FZKuu26Fips7U/ArcGIS/rest/services/MetroStops/FeatureServer/0"
+               }
+           }
 
-        wrapAroundEnabled: true
-        rotationByPinchingEnabled: true
-        magnifierOnPressAndHoldEnabled: true
-        mapPanningByMagnifierEnabled: true
-        zoomByPinchingEnabled: true
-
-        ArcGISTiledMapServiceLayer {
-            url: app.info.propertyValue("basemapServiceUrl", "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer")
         }
-
-        onStatusChanged: {
-            if (status === Enums.MapStatusReady) {
-                extent = initialExtent;
-                startGraphics.renderingMode = Enums.RenderingModeStatic;
-                addLayer(startGraphics);
-
+        GraphicsOverlay{
+            id: startGraphics
+            renderer: SimpleRenderer {
+                SimpleMarkerSymbol {
+                    style: Enums.SimpleMarkerSymbolStyleSquare
+                    size: 10
+                    color: "green"
+                }
             }
         }
-        Envelope {
-            id: initialExtent
-            xMax: -8539362.27
-            yMax: 4723928.16
-            xMin: -8610295.83
-            yMin: 4702907.97
-            spatialReference: map.spatialReference
-        }
-
-        ZoomButtons {
-            anchors {
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-                margins: 10
+        Graphic {
+            id: bufferGraphic
+            symbol: SimpleFillSymbol {
+                color: Qt.rgba(0.0, 0, 0.5, 0)
+                outline:  SimpleLineSymbol {
+                    color: "aqua"
+                    style: Enums.SimpleLineSymbolStyleSolid
+                    width: 2
+                }
             }
         }
 
-        positionDisplay {
-            positionSource: PositionSource {
+
+        onMouseClicked: {
+            startGraphics.graphics.clear();
+            metrostopsLayer.clearSelection();
+            var graphic = ArcGISRuntimeEnvironment.createObject("Graphic");
+            graphic.geometry = mouse.mapPoint;
+            graphic.spatialReference = map.spatialReference;
+               if (bufferqueryButton.checked) {
+                   //console.log(startGraphics.numberOfGraphics);
+                   if (startGraphics.graphics.count === 0) {
+                       startGraphics.graphics.append(graphic);
+                       metrostopsLayer.visible = true;
+                       //console.log(graphic.spatialReference);
+
+                       //var bufferPolygon = graphic.geometry.buffer(10000, map.spatialReference.unit);
+                       var bufferPolygon = GeometryEngine.buffer(graphic.geometry, 10000)
+                       console.log(bufferPolygon);
+                       //var graphic1 = ArcGISRuntimeEnvironment.createObject("Graphic");
+                       bufferGraphic.geometry = bufferPolygon;
+                       startGraphics.graphics.append(bufferGraphic);
+
+                       queryParams.geometry = bufferGraphic.geometry;
+                       metrostopsLayer.selectionColor = "aqua";
+                       metrostopsLayer.selectFeaturesWithQuery(queryParams,Enums.SelectionModeNew);
+
+                   }
+               }
+           }
+        }
+        Column{
+            anchors.right: parent.right
+            anchors.top: titleRect.bottom
+            spacing: 10
+            padding: 5
+            Button {
+                id:zoomOut
+                visible: true
+                height: 32
+                width: 32
+                text: "+"
+                enabled: true
+                style: ButtonStyle {
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 25
+                        border.width: control.activeFocus ? 2 : 1
+                        border.color: "#888"
+                        radius: 4
+                        gradient: Gradient {
+                            GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                            GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                        }
+                    }
+                }
+                onClicked: {
+                    var theScale = mapView.mapScale
+                    theScale += theScale
+                    mapView.setViewpointScale(theScale)
+                }
+
+            }
+            Button {
+                id:zoomIn
+                visible: true
+                height: 32
+                width: 32
+                text: "-"
+                enabled: true
+                style: ButtonStyle {
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 25
+                        border.width: control.activeFocus ? 2 : 1
+                        border.color: "#888"
+                        radius: 4
+                        gradient: Gradient {
+                            GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                            GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                        }
+                    }
+                }
+                onClicked: {
+                    var theScale = mapView.mapScale
+                    theScale = theScale - (theScale/2)
+                    console.log(theScale)
+                    mapView.setViewpointScale(theScale)
+                }
             }
         }
-
-        GeodatabaseFeatureServiceTable {
-                id: metroLineTable
-                url: "http://services.arcgis.com/lA2FZKuu26Fips7U/arcgis/rest/services/MetroLines/FeatureServer/0"
-        }
-
-        FeatureLayer{
-            id: metrolineLayer
-            featureTable: metroLineTable
-            visible: true
-        }
-
         Column{
             id: controls
             spacing: 10
@@ -147,7 +230,7 @@ App {
                 checked: false
                 onPressedChanged: {
                     if (!checked){
-                        startGraphics.removeAllGraphics();
+                        startGraphics.graphics.clear();
                         metrostopsLayer.clearSelection();
                     }
 
@@ -155,74 +238,15 @@ App {
 
             }
         }
-        GraphicsLayer {
-                    id: startGraphics
-                    renderer: SimpleRenderer {
-                        SimpleMarkerSymbol {
-                            style: Enums.SimpleMarkerSymbolStyleSquare
-                            size: 10
-                            color: "green"
-                        }
-                    }
-        }
-        Graphic {
-                id: bufferGraphic
-                symbol: SimpleFillSymbol {
-                    color: Qt.rgba(0.0, 0, 0.5, 0.5)
-                    outline:  SimpleLineSymbol {
-                        color: "aqua"
-                        style: Enums.SimpleLineSymbolStyleSolid
-                        width: 2
-                    }
-                }
-            }
-
-        GeodatabaseFeatureServiceTable {
-                id: featureServiceTable
-                url: "http://services.arcgis.com/lA2FZKuu26Fips7U/arcgis/rest/services/MetroStops/FeatureServer/0"
-        }
-
-        FeatureLayer {
-                    id: metrostopsLayer
-                    featureTable: featureServiceTable
-                    visible: false
-        }
-        onMouseClicked: {
-            startGraphics.removeAllGraphics();
-            metrostopsLayer.clearSelection();
-            var graphic = ArcGISRuntime.createObject("Graphic");
-            graphic.geometry = mouse.mapPoint;
-
-            if (bufferqueryButton.checked) {
-                if (startGraphics.numberOfGraphics === 0) {
-                    startGraphics.addGraphic(graphic);
-                    metrostopsLayer.visible = true;
-
-                    var bufferPolygon = graphic.geometry.buffer(10000, map.spatialReference.unit);
-                    var graphic1 = bufferGraphic.clone();
-                    graphic1.geometry = bufferPolygon;
-                    startGraphics.addGraphic(graphic1);
-
-                    queryParams.geometry = graphic1.geometry;
-                    metrostopsLayer.selectionColor = "aqua";
-                    metrostopsLayer.selectFeaturesByQuery(queryParams);
-
-                }
-            }
-
-
-        }
-        Query {
+        QueryParameters {
                 id: queryParams
                 spatialRelationship: Enums.SpatialRelationshipIntersects
-                outFields: ["OBJECTID_1", "NAME"]
-            }
-
+        }
+        // Busy Indicator
+        BusyIndicator {
+            anchors.centerIn: mapView
+            width: height
+            running: true
+            visible: (mapView.drawStatus === Enums.DrawStatusInProgress)
+        }
     }
-
-
-
-
-
-
-}
