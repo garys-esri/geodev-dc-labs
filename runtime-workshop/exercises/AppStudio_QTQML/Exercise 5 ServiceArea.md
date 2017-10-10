@@ -22,6 +22,7 @@ After doing Exercise 4, this should seem familiar to you.
                 Image {
                     anchors.fill: parent
                     source: "https://raw.githubusercontent.com/garys-esri/geodev-dc-labs/master/2016-11-runtime/images/car.png"
+                    //source: "http://static.arcgis.com/images/Symbols/SafetyHealth/Hospital.png"
                     fillMode: Image.PreserveAspectFit
                 }
                 checkable: true
@@ -30,10 +31,7 @@ After doing Exercise 4, this should seem familiar to you.
                 checked: false
 
                 onPressedChanged: {
-                    if (!checked){
-                        startGraphics.removeAllGraphics();
-                        metrostopsLayer.clearSelection();
-                    }
+                    
                 }
             }
 
@@ -44,7 +42,7 @@ After doing Exercise 4, this should seem familiar to you.
                     if (!checked){
                         if (bufferqueryButton.checked)
                             bufferqueryButton.checked = false;
-                        startGraphics.removeAllGraphics();
+                        startGraphics.graphics.clear();
                         metrostopsLayer.clearSelection();
                     }
                 }
@@ -60,85 +58,93 @@ After doing Exercise 4, this should seem familiar to you.
                     }
                 }
     ```
-1. Add a global variable for facilities:
+1. Add a global variable for facilities parameters:
 	```
-    property int facilities: 0
+    	property var facilityParams: null
 	```
-1. Next we need to create the NetworkAnalystFeatures:
 
-    ```
-               NAFeaturesAsFeature {
-                id: facilitiesFeatures
-            }
-
-    ```
 1. Also create some graphics and symbols for these features:
 
     ```
-                SimpleFillSymbol {
-                id: polygonFill
-            }
+      SimpleFillSymbol {
+            id: polygonFill
+            // default property: ouline
+                    SimpleLineSymbol {
+                        style: Enums.SimpleLineSymbolStyleDash
+                        color: Qt.rgba(0.0, 0.0, 0.5, 1)
+                        width: 1
+                        antiAlias: true
+                    }
+        }
 
-            Graphic {
-                id: serviceAreaPolygonGraphic
-            }
+        Graphic {
+            id: serviceAreaPolygonGraphic
+        }
 
-            SimpleLineSymbol {
-                id: symbolOutline
-                color: "black"
-                width: 0.5
-            }
+        SimpleLineSymbol {
+            id: symbolOutline
+            color: "black"
+            width: 0.5
+        }
 
-            SimpleMarkerSymbol {
-                id: facilitySymbol
-                color: "blue"
-                style: Enums.SimpleMarkerSymbolStyleSquare
-                size: 10
-                outline: symbolOutline
-            }
+        SimpleMarkerSymbol {
+            id: facilitySymbol
+            color: "blue"
+            style: Enums.SimpleMarkerSymbolStyleSquare
+            size: 10
+            outline: symbolOutline
+        }
 
-            Graphic {
-                id: facilityGraphic
-                symbol: facilitySymbol
-            }
-
+        Graphic {
+            id: facilityGraphic
+            symbol: facilitySymbol
+        }
+        
     ```
 
-1. Next we will need to create the ServiceAreaTaskParameters that will be passed to the serviceAreaTask that we will create later:  
+1. Next we will need to create the DefaultParameters that will be passed to the serviceAreaTask that we will create later:  
 
     ```
-    ServiceAreaTaskParameters {
-                id: taskParameters
-            }
+    function setupRouting() {
+            //busy = true;
+            //message = "";
+            serviceAreaTask.createDefaultParameters();
+        }
     ```    
     
 1. Now let's add the code for when the button for drivetime is clicked and the user clicks on the map.  This will be added as an else if to the onMouseClicked.  Basically we are getting the graphic where the user clicked and adding this location to the facilitiesFeatures that we created earlier and then creating the taskParameters properties for the facility locations, defaultBreaks, and the outSpatialReference.
 
     ```
     else if (drivetimeButton.checked) {
-                if (startGraphics.numberOfGraphics === 0) {
-                  startGraphics.addGraphic(graphic);
-                  facilitiesFeatures.setFeatures(0);
-                  facilities = 0;
+                   if (startGraphics.graphics.count === 0) {
+                     startGraphics.graphics.append(graphic);
+                     var facilitiesFeatures = [];
+                     var facilities = ArcGISRuntimeEnvironment.createObject(
+                                   "ServiceAreaFacility", {geometry: graphic.geometry});
+                     //console.log(facilities);
 
-                  facilities++;
-                  facilitiesFeatures.addFeature(graphic);
+                     facilitiesFeatures.push(facilities);
+                     console.log(facilitiesFeatures.length);
 
-                  taskParameters.facilities = facilitiesFeatures;
-                  taskParameters.defaultBreaks = [1.0, 3.0, 5.0];
-                  taskParameters.outSpatialReference = map.spatialReference;
-		}
-	}
+
+
+                     console.log(facilityParams);
+                     facilityParams.setFacilities(facilitiesFeatures);
+
+                     console.log("call solver");
+                     serviceAreaTask.solveServiceArea(facilityParams);
+                   }
+               }
     ```
 
 1. Since the ServiceArea requires a credentials to use the service, we can do this a couple different ways but this exercise we will use the clientId and clientSecret.  You get these by going to developers.arcgis.com and registering your app with the org account that you are using for the class.  Once you have these add the strings below with this code:
 
     ```
-     UserCredentials {
+     Credential {
             id: oAuthCredentials
             oAuthClientInfo: OAuthClientInfo {
-                clientId: ""
-                clientSecret: ""
+                clientId: "2MGu4pheoHoITxjH"
+                clientSecret: "361f3be9e7884af8aefcf893e0de0e9d"
                 oAuthMode: Enums.OAuthModeApp
 
             }
@@ -148,37 +154,55 @@ After doing Exercise 4, this should seem familiar to you.
 1. Now let's build the solver for the service area.  In the serviceAreaTask we will pass the url for the rest service and in the onSolveStatusChanged if it is complete we will add the polygons to the map by randomly assigning different colored polygons for the service areas.  If there is an error we will report it.
 
     ```
-    ServiceAreaTask {
-                id: serviceAreaTask
-                url: "http://route.arcgis.com/arcgis/rest/services/World/ServiceAreas/NAServer/ServiceArea_World"
+   ServiceAreaTask {
+            id: serviceAreaTask
+            url: "http://route.arcgis.com/arcgis/rest/services/World/ServiceAreas/NAServer/ServiceArea_World"
+            //url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/NetworkAnalysis/SanDiego/NAServer/ServiceArea"
+            credential: oAuthCredentials
 
-                onSolveStatusChanged: {
-                    if (solveStatus === Enums.SolveStatusCompleted) {
+            onLoadStatusChanged: {
+                if (loadStatus !== Enums.LoadStatusLoaded)
+                    return;
 
-                        var polygons = solveResult.serviceAreaPolygons.graphics;
-                        for (var index = 0; index < polygons.length; index++) {
-                            var polygon = polygons[index];
-                            polygonFill.color = Qt.rgba(Math.random()%255, Math.random()%255, Math.random()%255, .5);
-                            serviceAreaPolygonGraphic.symbol = polygonFill; // re-randomize the color
-                            var graphic = serviceAreaPolygonGraphic.clone();
-                            graphic.geometry = polygon.geometry;
-                            startGraphics.addGraphic(graphic);
-                        }
-                    } else if (solveStatus === Enums.SolveStatusErrored) {
-                        errorMsg = "Solve error:" + solveError.message+ "\nPlease reset and start over.";
-                        messageDialog.visible = true;
+                setupRouting();
+            }
+            onSolveServiceAreaStatusChanged: {
+
+                if (solveServiceAreaStatus === Enums.TaskStatusCompleted) {
+
+                    var results = solveServiceAreaResult.resultPolygons(0);
+                    var theVal = results.length - 1;
+                    for (var index = theVal; index >= 0; index--) {
+                        var polySymbol = ArcGISRuntimeEnvironment.createObject("SimpleFillSymbol");
+                        polySymbol.color = Qt.rgba(Math.random()%255, Math.random()%255, Math.random()%255, .5);
+                        var resultGeometry = results[index].geometry;
+
+                        var graphic = ArcGISRuntimeEnvironment.createObject("Graphic", {geometry: resultGeometry, symbol: polySymbol});
+                        startGraphics.graphics.append(graphic);
                     }
+                } else if (solveServiceAreaResult === null || solveServiceAreaResult.error) {
+                    errorMsg = "Solve error:" + solveServiceAreaResult.error.message + "\nPlease reset and start over.";
+                    messageDialog.visible = true;
                 }
             }
+            onCreateDefaultParametersStatusChanged: {
+                console.log("inside oncreatedefaultparams changed");
+                       if (createDefaultParametersStatus !== Enums.TaskStatusCompleted)
+                           return;
+
+                       busy = false;
+                       facilityParams = createDefaultParametersResult;
+                       facilityParams.defaultImpedanceCutoffs = [1.0, 3.0, 5.0];
+                       facilityParams.outputSpatialReference = SpatialReference.createWebMercator();
+                       facilityParams.returnPolygonBarriers = true;
+                       facilityParams.polygonDetail = Enums.ServiceAreaPolygonDetailHigh;
+                       console.log("facilityparams:  ", facilityParams.defaultImpedanceCutoffs);
+                   }
+
+        }
    ```
     
-1. The last step is actually calling the service area to be solved.  This will be done back on the onMouseClicked and these two lines will be added after you set the taskParameters.
 
-    ```
-   		serviceAreaTask.credentials = oAuthCredentials;
-        serviceAreaTask.solve(taskParameters);
-    ```
-        
 1. Compile and run your app. Verify that you can click the drive time button and click on the map and drive times are created.:
 
     ![Service Area](08-service-area.png)
