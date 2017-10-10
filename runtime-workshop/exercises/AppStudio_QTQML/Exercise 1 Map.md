@@ -57,7 +57,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 3. Now lets add a map to the app.  First you will need to import ArcGIS.AppFramework.Runtime 1.0. Then you will need to add a map to your app by adding the below code after your rectangle you added above.
 
     ```
-MapView {
+     MapView {
         id:mapView
         anchors {
             left: parent.left
