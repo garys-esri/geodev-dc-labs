@@ -12,19 +12,14 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
 ArcGIS Runtime provides a variety of ways to add **operational layers** to the map--feature services, dynamic map services, offline geodatabases, and mobile map packages, for example. In this exercise, you will add a feature service.
 
-1. To add a feature service you first need to create a GeodatabaseFeatureServiceTable and then the FeatureLayer:
+1. To add a feature service you will need to create a FeatureLayer:
 
     ```
-    GeodatabaseFeatureServiceTable {
-          id: metroLineTable
-          url: "http://services.arcgis.com/lA2FZKuu26Fips7U/arcgis/rest/services/MetroLines/FeatureServer/0"
-    }
-
-    FeatureLayer{
-         id: metrolineLayer
-         featureTable: metroLineTable
-         visible: true
-    }
+        FeatureLayer {
+               ServiceFeatureTable {
+                   url: "http://services.arcgis.com/lA2FZKuu26Fips7U/arcgis/rest/services/MetroLines/FeatureServer/0"
+               }
+           }
     ```  
 1. Compile and run your app. Verify that the map zooms to Washington, D.C., and that a layer of metro lines appears on top of the basemap. 
 
