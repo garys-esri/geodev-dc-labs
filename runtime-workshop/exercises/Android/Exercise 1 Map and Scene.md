@@ -34,7 +34,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         android:src="@drawable/three_d"/>
     ```
 
-1. Connect your Android device to your computer with a USB cable. In Android Studio, run your new app. Verify that a blank app runs, possibly with a default "Hello World" message inserted by Android Studio:
+1. Connect your Android device to your computer with a USB cable. In Android Studio, run your new app. Verify that an app runs with a 3D button in the lower right corner:
 
     ![Blank app](01-blank-app.png)
     
