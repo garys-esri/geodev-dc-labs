@@ -57,46 +57,41 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 3. Now lets add a map to the app.  First you will need to import ArcGIS.AppFramework.Runtime 1.0. Then you will need to add a map to your app by adding the below code after your rectangle you added above.
 
     ```
-        Map {
-        id: map
-
+MapView {
+        id:mapView
         anchors {
             left: parent.left
             right: parent.right
             top: titleRect.bottom
             bottom: parent.bottom
         }
-
-        wrapAroundEnabled: true
-        rotationByPinchingEnabled: true
-        magnifierOnPressAndHoldEnabled: true
-        mapPanningByMagnifierEnabled: true
-        zoomByPinchingEnabled: true
-
-        ArcGISTiledMapServiceLayer {
-            url: app.info.propertyValue("basemapServiceUrl", "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer")
+        Map {
+           id: map
+           BasemapStreetsVector {}
+           ViewpointExtent {
+                Envelope {
+                    xMax: -8539362.27
+                    yMax: 4723928.16
+                    xMin: -8610295.83
+                    yMin: 4702907.97
+                    spatialReference: SpatialReference {wkid: 102100}
+                }
+           }
         }
-    }
     ```
 4. Compile and run your app. The shortcut to this is Alt-Shift-R.
 
     ![Basic map with title](01-basic-map-app.PNG)
     
-5. Since we will focus on the DC area let's set the initial extent of our map so it is zoomed into DC.  Added the following onStatusChanged and envelope code to update the extent when the map is ready.
+5. Add a status indicator.
 
     ```
-   onStatusChanged: {
-            if (status === Enums.MapStatusReady) {
-                extent = initialExtent;
-            }
-        }
-        Envelope {
-            id: initialExtent
-            xMax: -8539362.27
-            yMax: 4723928.16
-            xMin: -8610295.83
-            yMin: 4702907.97
-            spatialReference: map.spatialReference
+  // Busy Indicator
+        BusyIndicator {
+            anchors.centerIn: mapView
+            width: height
+            running: true
+            visible: (mapView.drawStatus === Enums.DrawStatusInProgress)
         }
     ```
     
