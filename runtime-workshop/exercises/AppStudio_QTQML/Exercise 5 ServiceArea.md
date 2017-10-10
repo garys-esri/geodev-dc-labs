@@ -201,8 +201,13 @@ After doing Exercise 4, this should seem familiar to you.
 
         }
    ```
-    
+1. Now we need to check the status change on the map for loading the serviceareatask.  This will need to be added to the Map portion of the code.  
 
+    ```   
+    onLoadStatusChanged: {
+               serviceAreaTask.load();
+           }
+    ```
 1. Compile and run your app. Verify that you can click the drive time button and click on the map and drive times are created.:
 
     ![Service Area](08-service-area.png)
