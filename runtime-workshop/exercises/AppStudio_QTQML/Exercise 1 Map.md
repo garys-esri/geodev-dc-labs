@@ -86,7 +86,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 5. Add a status indicator.
 
     ```
-  // Busy Indicator
+        // Busy Indicator
         BusyIndicator {
             anchors.centerIn: mapView
             width: height
