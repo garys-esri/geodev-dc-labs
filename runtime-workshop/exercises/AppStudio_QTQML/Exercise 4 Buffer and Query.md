@@ -98,7 +98,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 1. Now let's add the onMouseClick and create the buffer:
 
        ```
-	onMouseClicked: {
+	    onMouseClicked: {
             startGraphics.graphics.clear();
             metrostopsLayer.clearSelection();
             var graphic = ArcGISRuntimeEnvironment.createObject("Graphic");
