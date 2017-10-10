@@ -151,7 +151,7 @@ After doing Exercise 4, this should seem familiar to you.
         }
     ```
     
-1. Now let's build the solver for the service area.  In the serviceAreaTask we will pass the url for the rest service and in the onSolveStatusChanged if it is complete we will add the polygons to the map by randomly assigning different colored polygons for the service areas.  If there is an error we will report it.
+1. Now let's build the solver for the service area.  In the serviceAreaTask we will pass the url for the rest service and in the onSolveStatusChanged if it is complete we will add the polygons to the map by randomly assigning different colored polygons for the service areas.  
 
     ```
    ServiceAreaTask {
