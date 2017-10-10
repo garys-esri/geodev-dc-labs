@@ -31,6 +31,12 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 If you have trouble, **refer to the solution code**, which is linked near the beginning of this exercise. You can also **submit an issue** in this repo to ask a question or report a problem. If you are participating live with Esri presenters, feel free to **ask a question** of the presenters.
 
 If you completed the exercise, congratulations! You learned how to add a scene service to the 3D map.
+   ```
+    ArcGISSceneLayer{
+                    url: "https://tiles.arcgis.com/tiles/gdD5QuS3M8xgrMER/arcgis/rest/services/BuildingsDC/SceneServer"
+                }
+    ```  
+
 
 Ready for more? Choose from the following:
 
