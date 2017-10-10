@@ -17,7 +17,7 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
 1. We will add a new button to the UI using [one of the images in the repo](../../images/location.png).  Add the following code below:
 
     ```
-    Column{
+        Column{
             id: controls
             spacing: 10
             anchors {
@@ -41,126 +41,110 @@ You can use ArcGIS Runtime to detect when and where the user interacts with the 
                 checked: false
                 onPressedChanged: {
                     
-                    }
+
                 }
-
-    }
-    ```
-    
-1. Next we need to add a GraphicsLayer to add the graphics to the map:
-
-    ```
-    GraphicsLayer {
-        id: startGraphics
-        renderer: SimpleRenderer {
-          SimpleMarkerSymbol {
-              style: Enums.SimpleMarkerSymbolStyleSquare
-              size: 10
-              color: "green"
-           }
-        }
-    }
-
-    ```
-      
-1. In the onStatusChanged when the MapStutusReady we want to set the renderingmode and add the graphicslayers so onStatusChanged will look like this:
-
-    ```
-    onStatusChanged: {
-            if (status === Enums.MapStatusReady) {
-                extent = initialExtent;
-                startGraphics.renderingMode = Enums.RenderingModeStatic;
-                addLayer(startGraphics);
 
             }
         }
+    ```
+    
+1. Next we need to add a GraphicsOverlay to add the graphics to the map.  :
 
     ```
+   GraphicsOverlay{
+            id: startGraphics
+            renderer: SimpleRenderer {
+                SimpleMarkerSymbol {
+                    style: Enums.SimpleMarkerSymbolStyleSquare
+                    size: 10
+                    color: "green"
+                }
+            }
+        }
+        
+
+    ```
+      
+
     
 1. Next let's create the graphic for the buffer that is created:
 
     ```
     Graphic {
-                id: bufferGraphic
-                symbol: SimpleFillSymbol {
-                    color: Qt.rgba(0.0, 0, 0.5, 0.5)
-                    outline:  SimpleLineSymbol {
-                        color: "aqua"
-                        style: Enums.SimpleLineSymbolStyleSolid
-                        width: 2
-                    }
+            id: bufferGraphic
+            symbol: SimpleFillSymbol {
+                color: Qt.rgba(0.0, 0, 0.5, 0)
+                outline:  SimpleLineSymbol {
+                    color: "aqua"
+                    style: Enums.SimpleLineSymbolStyleSolid
+                    width: 2
                 }
             }
+        }
     ```
     
 1. Next let's add the metro stops feature service to query when we do the buffer
 
     ```
-            GeodatabaseFeatureServiceTable {
-                id: featureServiceTable
-                url: "http://services.arcgis.com/lA2FZKuu26Fips7U/arcgis/rest/services/MetroStops/FeatureServer/0"
-        }
-
-        FeatureLayer {
-                    id: metrostopsLayer
-                    featureTable: featureServiceTable
-                    visible: false
-        }
-
+       FeatureLayer {
+               id: metrostopsLayer
+               visible: false
+               ServiceFeatureTable {
+                   url: "http://services.arcgis.com/lA2FZKuu26Fips7U/ArcGIS/rest/services/MetroStops/FeatureServer/0"
+               }
+           }
     ```
     
 1. Now let's add the onMouseClick and create the buffer:
 
        ```
-		onMouseClicked: {
-            startGraphics.removeAllGraphics();
+	onMouseClicked: {
+            startGraphics.graphics.clear();
             metrostopsLayer.clearSelection();
-            var graphic = ArcGISRuntime.createObject("Graphic");
+            var graphic = ArcGISRuntimeEnvironment.createObject("Graphic");
             graphic.geometry = mouse.mapPoint;
+            graphic.spatialReference = map.spatialReference;
+               if (bufferqueryButton.checked) {
+                   //console.log(startGraphics.numberOfGraphics);
+                   if (startGraphics.graphics.count === 0) {
+                       startGraphics.graphics.append(graphic);
+                       metrostopsLayer.visible = true;
+                       //console.log(graphic.spatialReference);
 
-            if (bufferqueryButton.checked) {
-                if (startGraphics.numberOfGraphics === 0) {
-                    startGraphics.addGraphic(graphic);
-                    metrostopsLayer.visible = true;
+                       //var bufferPolygon = graphic.geometry.buffer(10000, map.spatialReference.unit);
+                       var bufferPolygon = GeometryEngine.buffer(graphic.geometry, 10000)
+                       console.log(bufferPolygon);
+                       //var graphic1 = ArcGISRuntimeEnvironment.createObject("Graphic");
+                       bufferGraphic.geometry = bufferPolygon;
+                       startGraphics.graphics.append(bufferGraphic);
 
-                    var bufferPolygon = graphic.geometry.buffer(10000, map.spatialReference.unit);
-                    var graphic1 = bufferGraphic.clone();
-                    graphic1.geometry = bufferPolygon;
-                    startGraphics.addGraphic(graphic1);
-                }
-            }
+                       queryParams.geometry = bufferGraphic.geometry;
+                       metrostopsLayer.selectionColor = "aqua";
+                       metrostopsLayer.selectFeaturesWithQuery(queryParams,Enums.SelectionModeNew);
 
-        }
+                   }
+               }
+           }
     ```
-    
+1.  You will need your queryparameters to be used in the query.
+    ```
+	QueryParameters {
+                id: queryParams
+                spatialRelationship: Enums.SpatialRelationshipIntersects
+        }
+    ```    
 1. Compile and run your app. Verify that when you click the button and click on the map you get a point and buffer
 
     ![Create Buffer](06-buffer.png)
 
-1.  Now let's select the metro stops within the buffer.  First we need to create our query.
-    ```
-		Query {
-                id: queryParams
-                spatialRelationship: Enums.SpatialRelationshipIntersects
-                outFields: ["OBJECTID_1", "NAME"]
-            }
-    ```
 
-1. Then set the query's geometry and select the features by query.  This will be done after the buffer is added to the map.
-	```
-		queryParams.geometry = graphic1.geometry;
-                    metrostopsLayer.selectionColor = "aqua";
-                    metrostopsLayer.selectFeaturesByQuery(queryParams);
-    ```
-1. Compile and run your app. Verify that when you click the button and click on the map you get a point and buffer
-
-    ![Buffer and Query](07-buffer-and-query.png)
 
 1.  Let's add one last bit of code to clear graphics when the button is pressed again.  You will add this to the code for the button's onPressedChanged:
 	```
 	if (!checked){
-        startGraphics.removeAllGraphics();
-        metrostopsLayer.clearSelection();
+                        startGraphics.graphics.clear();
+                        metrostopsLayer.clearSelection();
+                    }
     }
     ```	
 ## How did it go?
