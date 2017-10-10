@@ -12,19 +12,71 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 ## Add zoom in, zoom out, and location buttons to the UI
 1. If desired, make a copy of your Exercise 1 or continue to use the Exercise 1 solution. Just make sure you're running your Exercise 2 code as you complete this exercise.
 
-1. First we need to import the ArcGIS.AppFramework.Runtime.Controls 1.0.
+1. First we need to import the import ArcGIS.AppFramework.Controls 1.0.
 
     ```
-    import ArcGIS.AppFramework.Runtime.Controls 1.0
+    import ArcGIS.AppFramework.Controls 1.0
     ```
  
-1. Next we need to add the buttons to the app.  This code can be added right after where you created the initial Extent.
+1. Next we need to add the buttons to the app.  
     ```
-    ZoomButtons {
-            anchors {
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-                margins: 10
+       Column{
+            anchors.right: parent.right
+            anchors.top: titleRect.bottom
+            spacing: 10
+            padding: 5
+            Button {
+                id:zoomIn
+                visible: true
+                height: 32
+                width: 32
+                text: "+"
+                enabled: true
+                style: ButtonStyle {
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 25
+                        border.width: control.activeFocus ? 2 : 1
+                        border.color: "#888"
+                        radius: 4
+                        gradient: Gradient {
+                            GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                            GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                        }
+                    }
+                }
+                onClicked: {
+                    var theScale = mapView.mapScale
+                    theScale = theScale - (theScale/2)
+                    mapView.setViewpointScale(theScale)
+                }
+
+            }
+            Button {
+                id:zoomOut
+                visible: true
+                height: 32
+                width: 32
+                text: "-"
+                enabled: true
+                style: ButtonStyle {
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 25
+                        border.width: control.activeFocus ? 2 : 1
+                        border.color: "#888"
+                        radius: 4
+                        gradient: Gradient {
+                            GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                            GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                        }
+                    }
+                }
+                onClicked: {
+                    var theScale = mapView.mapScale
+                    theScale += theScale
+                    mapView.setViewpointScale(theScale)
+                }
             }
         }
 
@@ -34,23 +86,6 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     ![Zoom buttons](03-zoom-buttons.png)
 
-## Add the location button 
-1. To add the location button we need to import another library:
-    
-    ```
-     import QtPositioning 5.3
-    ```	
-2.  To add the position button after the zoom buttons just add this code below the zoom buttons:
-
-    ```
-    positionDisplay {
-         positionSource: PositionSource {
-         }
-    }
-    ```	
-1. Compile and run your app. Verify that the zoom buttons display on top of the map:
-
-    ![Zoom and location buttons](04-zoom-location-buttons.png)
 
 ## How did it go?
 
