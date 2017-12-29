@@ -42,7 +42,7 @@ If you need some help, you can refer to [the solution to this exercise](../../..
     use_frameworks!
 
     target 'WorkshopApp' do
-        pod 'ArcGIS-Runtime-SDK-macOS', '100.1'
+        pod 'ArcGIS-Runtime-SDK-macOS', '100.2'
     end
     ```
 

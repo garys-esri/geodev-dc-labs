@@ -2,5 +2,5 @@ platform :osx, '10.12'
 use_frameworks!
 
 target 'WorkshopApp' do
-    pod 'ArcGIS-Runtime-SDK-macOS', '100.1'
+    pod 'ArcGIS-Runtime-SDK-macOS', '100.2'
 end
