@@ -7,10 +7,10 @@ This exercise walks you through the following:
 - Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 Prerequisites:
-- Use a Mac with macOS 10.11 or 10.12.
-- (Optional) Use an iPhone, iPad, or iPod touch running iOS 9 or iOS 10. If desired, you can instead complete these exercises using the emulator that comes with Xcode.
-- Install iOS SDK 10.
-- Install Xcode 8.
+- Use a Mac with macOS 10.12 or 10.13.
+- (Optional) Use an iPhone, iPad, or iPod touch running iOS 10 or iOS 11. If desired, you can instead complete these exercises using the emulator that comes with Xcode.
+- Install iOS SDK 11.
+- Install Xcode 9.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/iOS/Swift/Ex1_MapAndScene), available in this repository.
 
@@ -37,11 +37,11 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 1. In your project directory, create a text file named `Podfile` with the following contents, replacing `WorkshopApp` with the name of your project:
 
     ```
-    platform :ios, '9.0'
+    platform :ios, '10.0'
     use_frameworks!
 
     target 'WorkshopApp' do
-    pod 'ArcGIS-Runtime-SDK-iOS', '100.1'
+    pod 'ArcGIS-Runtime-SDK-iOS', '100.2'
     end
     ```
 
