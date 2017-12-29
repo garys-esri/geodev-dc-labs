@@ -82,7 +82,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     
 ## Add ArcGIS Runtime to the app
 
-You have three options for adding ArcGIS Runtime 100.1.0 to your Java application project. Choose one of the following:
+You have three options for adding ArcGIS Runtime 100.2.0 to your Java application project. Choose one of the following:
 
 1. **Use Gradle**: you can use Gradle if you started the exercise by creating a Gradle project. Open `build.gradle` and add ArcGIS dependencies. See [Develop your first map app with Gradle](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app-with-gradle.htm) for details.
 
@@ -96,7 +96,7 @@ You have three options for adding ArcGIS Runtime 100.1.0 to your Java applicatio
         dependencies { classpath 'com.esri.arcgisruntime:gradle-arcgis-java-plugin:1.0.0' }
     }
 
-    arcgis.version = '100.1.0'
+    arcgis.version = '100.2.0'
 
     // download javadoc
     eclipse.classpath.downloadJavadoc = true
@@ -123,7 +123,7 @@ You have three options for adding ArcGIS Runtime 100.1.0 to your Java applicatio
         <dependency>
             <groupId>com.esri.arcgisruntime</groupId>
             <artifactId>arcgis-java</artifactId>
-            <version>100.1.0</version>
+            <version>100.2.0</version>
         </dependency>
     </dependencies>
 
@@ -134,7 +134,7 @@ You have three options for adding ArcGIS Runtime 100.1.0 to your Java applicatio
                 <artifactId>arcgis-java-maven-plugin</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <version>100.1.0</version>
+                    <version>100.2.0</version>
                 </configuration>
             </plugin>
         </plugins>
@@ -143,7 +143,7 @@ You have three options for adding ArcGIS Runtime 100.1.0 to your Java applicatio
     
     **Note:** Maven downloads the ArcGIS Runtime install to `<user home>/.arcgis`. ArcGIS Runtime tries to find it there, but that can fail under certain conditions. If it fails, you can go inside that install directory and copy the `jniLibs` and `resources` directories to your app's working directory.
 
-3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK (version 100.1.0) for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
+3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK (version 100.2.0) for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
 
 ## Add a 2D map to the app
 
