@@ -64,7 +64,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         })
         testCompile 'junit:junit:4.12'
         // Add the next line
-        compile 'com.esri.arcgisruntime:arcgis-android:100.1.0'
+        compile 'com.esri.arcgisruntime:arcgis-android:100.2.0'
     }
     ```
     
