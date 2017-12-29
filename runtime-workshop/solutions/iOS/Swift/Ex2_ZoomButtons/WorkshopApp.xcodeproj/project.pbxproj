@@ -12,6 +12,7 @@
 		4E9608741F5762560024806B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E9608721F5762560024806B /* Main.storyboard */; };
 		4E9608761F5762560024806B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E9608751F5762560024806B /* Assets.xcassets */; };
 		4E9608791F5762560024806B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E9608771F5762560024806B /* LaunchScreen.storyboard */; };
+		8EEF2A10CFEEB25F805E4B3C /* Pods_WorkshopApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF693C0FA11BB547357059C0 /* Pods_WorkshopApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		4E9608751F5762560024806B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4E9608781F5762560024806B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4E96087A1F5762560024806B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF693C0FA11BB547357059C0 /* Pods_WorkshopApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WorkshopApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D54A2B537999BF5F795F11F8 /* Pods-WorkshopApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorkshopApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -31,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EEF2A10CFEEB25F805E4B3C /* Pods_WorkshopApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +43,7 @@
 		19150849A78098B5689598A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CF693C0FA11BB547357059C0 /* Pods_WorkshopApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

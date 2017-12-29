@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07508DC77CAAC8C9FFA97FB1 /* Pods_WorkshopApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AB93DE9883C3901CFE95308 /* Pods_WorkshopApp.framework */; };
 		4E8F67CA1F5F2CEB000E9A3A /* DC_Crime_Data.mmpk in Resources */ = {isa = PBXBuildFile; fileRef = 4E8F67C91F5F2CEB000E9A3A /* DC_Crime_Data.mmpk */; };
 		4E96086F1F5762560024806B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E96086E1F5762560024806B /* AppDelegate.swift */; };
 		4E9608711F5762560024806B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9608701F5762560024806B /* ViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1AB93DE9883C3901CFE95308 /* Pods_WorkshopApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WorkshopApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F7920372E361B88FCE5362D /* Pods-WorkshopApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorkshopApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-WorkshopApp/Pods-WorkshopApp.release.xcconfig"; sourceTree = "<group>"; };
 		4E8F67C91F5F2CEB000E9A3A /* DC_Crime_Data.mmpk */ = {isa = PBXFileReference; lastKnownFileType = file; name = DC_Crime_Data.mmpk; path = ../../../../data/DC_Crime_Data.mmpk; sourceTree = "<group>"; };
 		4E96086B1F5762560024806B /* WorkshopApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkshopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -33,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07508DC77CAAC8C9FFA97FB1 /* Pods_WorkshopApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +45,7 @@
 		19150849A78098B5689598A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1AB93DE9883C3901CFE95308 /* Pods_WorkshopApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
