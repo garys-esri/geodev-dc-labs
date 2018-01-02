@@ -10,6 +10,8 @@
         <Image x:Key="2D" Source="images/two_d.png" Height="50" Width="50"/>
         <Image x:Key="ZoomIn" Source="images/zoom_in.png" Stretch="Fill"/>
         <Image x:Key="ZoomOut" Source="images/zoom_out.png" Stretch="Fill"/>
+        <Image x:Key="LockFocus" Source="images/lock.png" Stretch="Fill"/>
+        <Image x:Key="LockFocusSelected" Source="images/lock_selected.png" Stretch="Fill"/>
         <Image x:Key="Location" Source="images/location.png" Stretch="Fill"/>
         <Image x:Key="LocationSelected" Source="images/location_selected.png" Stretch="Fill"/>
         <Image x:Key="Routing" Source="images/routing.png" Stretch="Fill"/>
@@ -34,6 +36,11 @@
                 <Button x:Name="QueryandBufferButton" Click="QueryandBufferButton_Click" Width="50" Height="50" Padding="1" Margin="0,5" HorizontalAlignment="Left" Content="{DynamicResource Location}" />
             </StackPanel>
         </Border>
-
+        <Border VerticalAlignment="Bottom"
+            Margin="0,0,65,0" Width="67" Height="180" HorizontalAlignment="Right">
+            <StackPanel Margin="0" Width="72" VerticalAlignment="Top">
+                <Button x:Name="LockButton" Click="LockButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5" HorizontalAlignment="Right" RenderTransformOrigin="4.054,-0.693" Content="{DynamicResource LockFocus}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
