@@ -107,15 +107,24 @@ This portion of the exercise will teach you how to use _camera controllers_ in A
         <Image x:Key="LockFocusSelected" Source="images/lock_selected.png" Stretch="Fill"/>
     ```
 
-1. Next we need to creat a new button and put it on the UI.  So in MainWindow.xml, in the <Grid></Grid> add a new area to put the next set of buttons in on the UI.  We will want a border, stackpanel, and a new button using the images we added above.:
+1. Next we need to create a new button and put it on the UI.  So in MainWindow.xaml, in the <Grid></Grid> add a new area to put the next set of buttons in on the UI.  We will want a border, stackpanel, and a new button using the images we added above. Set the button's `IsEnabled` property to false so that it can't be clicked until the user has toggled to 3D at some point. Here is the code to insert in MainWindow.xaml:
 
     ```
     <Border VerticalAlignment="Bottom"
             Margin="0,0,65,0" Width="67" Height="180" HorizontalAlignment="Right">
-            <StackPanel Margin="0" Width="72" VerticalAlignment="Top">
-                <Button x:Name="LockButton" Click="LockButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5"   HorizontalAlignment="Right" RenderTransformOrigin="4.054,-0.693" Content="{DynamicResource LockFocus}"/>
-            </StackPanel>
-        </Border>
+        <StackPanel Margin="0" Width="72" VerticalAlignment="Top">
+            <Button x:Name="LockButton" Click="LockButton_Click" Width="50" Height="50"
+                    Padding="1" Margin="0,5,5,5" HorizontalAlignment="Right"
+                    RenderTransformOrigin="4.054,-0.693"
+                    Content="{DynamicResource LockFocus}" IsEnabled="False"/>
+        </StackPanel>
+    </Border>
+    ```
+
+1. In your 2D/3D toggle button listener, which we called `ViewButton_Click` in Exercise 1, you probably have an `if` block that means the user is toggling from 2D to 3D. If it is the first time that 3D has been enabled, you have a code block that creates a new `Scene`. In that same block, enable your new lock focus button:
+
+    ```
+    LockButton.IsEnabled = true;
     ```
 
 1. Add a click event to the button called LockButton_Click and in the MainWindow.cs it looks like this:
