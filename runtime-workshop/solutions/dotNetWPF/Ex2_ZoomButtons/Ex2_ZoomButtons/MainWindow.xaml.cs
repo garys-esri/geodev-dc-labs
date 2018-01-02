@@ -56,6 +56,9 @@ namespace Ex1_MapAndScene
                     sceneSurface.ElevationSources.Add(elevationSource);
                     // apply the surface to the scene
                     sceneView.Scene.BaseSurface = sceneSurface;
+
+                    // Exercise 2: Enable the lock focus button
+                    LockButton.IsEnabled = true;
                 }
                 //Once the scene has been created hide the mapView and show the sceneView
                 mapView.Visibility = Visibility.Hidden;

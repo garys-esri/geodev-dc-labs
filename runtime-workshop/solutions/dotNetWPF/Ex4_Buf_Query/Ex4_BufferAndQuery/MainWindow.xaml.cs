@@ -77,6 +77,9 @@ namespace Ex1_MapAndScene
                     sceneView.Scene.BaseSurface = sceneSurface;
                     sceneView.Scene = myScene;
 
+                    // Exercise 2: Enable the lock focus button
+                    LockButton.IsEnabled = true;
+
                     _sceneLayer = new ArcGISSceneLayer(new Uri(SCENE_SERVICE_URL));
                     myScene.OperationalLayers.Add(_sceneLayer);
 

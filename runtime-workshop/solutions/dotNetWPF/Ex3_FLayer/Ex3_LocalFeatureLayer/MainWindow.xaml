@@ -32,7 +32,7 @@
         <Border VerticalAlignment="Bottom"
             Margin="0,0,65,0" Width="67" Height="180" HorizontalAlignment="Right">
             <StackPanel Margin="0" Width="72" VerticalAlignment="Top">
-                <Button x:Name="LockButton" Click="LockButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5" HorizontalAlignment="Right" RenderTransformOrigin="4.054,-0.693" Content="{DynamicResource LockFocus}"/>
+                <Button x:Name="LockButton" Click="LockButton_Click" Width="50" Height="50" Padding="1" Margin="0,5,5,5" HorizontalAlignment="Right" RenderTransformOrigin="4.054,-0.693" Content="{DynamicResource LockFocus}" IsEnabled="False"/>
             </StackPanel>
         </Border>
     </Grid>
