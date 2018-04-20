@@ -58,13 +58,10 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     ```
     dependencies {
-        compile fileTree(dir: 'libs', include: ['*.jar'])
-        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-            exclude group: 'com.android.support', module: 'support-annotations'
-        })
-        testCompile 'junit:junit:4.12'
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        testImplementation 'junit:junit:4.12'
         // Add the next line
-        compile 'com.esri.arcgisruntime:arcgis-android:100.2.0'
+        implementation 'com.esri.arcgisruntime:arcgis-android:100.2.1'
     }
     ```
     
