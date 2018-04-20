@@ -1,5 +1,5 @@
 #-------------------------------------------------
-#  Copyright 2016 ESRI
+#  Copyright 2016-2018 ESRI
 #
 #  All rights reserved under the copyright laws of the United States
 #  and applicable international laws, treaties, and conventions.
@@ -10,6 +10,8 @@
 #
 #  See the Sample code usage restrictions document for further information.
 #-------------------------------------------------
+
+VERSION = "2018.04"
 
 mac {
     cache()
@@ -25,7 +27,7 @@ CONFIG += c++11
 
 QT += core gui opengl network positioning sensors qml quick
 
-ARCGIS_RUNTIME_VERSION = 100.2
+ARCGIS_RUNTIME_VERSION = "100.2.1"
 include($$PWD/arcgisruntime.pri)
 
 TEMPLATE = app
