@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.esri.wdc.geodev</groupId>
     <artifactId>Ex1_MapAndScene</artifactId>
-    <version>2018.03</version>
+    <version>2018.04</version>
   
     <repositories>
         <repository>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.esri.arcgisruntime</groupId>
             <artifactId>arcgis-java</artifactId>
-            <version>100.2.0</version>
+            <version>100.2.1</version>
         </dependency>
     </dependencies>
 
@@ -34,7 +34,7 @@
                 <artifactId>arcgis-java-maven-plugin</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <version>100.2.0</version>
+                    <version>100.2.1</version>
                 </configuration>
             </plugin>
             
