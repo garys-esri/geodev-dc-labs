@@ -7,7 +7,7 @@ android {
         applicationId "com.esri.wdc.geodev.workshopapp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 2
+        versionCode 3
         versionName "2018.04"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
