@@ -34,7 +34,7 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
     Open the app's `build.gradle` file where you added a reference to the ArcGIS Runtime Android library. Add a reference to the Android Support Library `v4` library:
     
     ```
-    compile 'com.android.support:support-v4:26.0.2'
+    implementation 'com.android.support:support-v4:27.1.1'
     ```
     
     Create an empty `private void` method for loading the mobile map package (you will fill in the method body later):
