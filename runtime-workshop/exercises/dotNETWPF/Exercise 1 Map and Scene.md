@@ -9,7 +9,7 @@ This exercise walks you through the following:
 Prerequisites:
 
 - Install Visual Studio 2015 
-- [Install ArcGIS Runtime SDK for .NET (Version 100.2.0)](https://developers.arcgis.com/net/latest/)
+- [Install ArcGIS Runtime SDK for .NET (Version 100.2.1)](https://developers.arcgis.com/net/latest/)
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/dotNETWPF/Ex1_MapAndScene), available in this repository.
 
