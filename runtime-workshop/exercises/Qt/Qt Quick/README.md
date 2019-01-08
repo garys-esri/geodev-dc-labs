@@ -1,7 +1,7 @@
-# macOS (Swift) exercises
+# Qt (Qt Quick) exercises
 
-- [Exercise 1: Map and Scene](Exercise 1 Map and Scene.md)
-- [Exercise 2: Add Zoom In and Zoom Out Buttons](Exercise 2 Add Zoom In and Zoom Out Buttons.md)
-- [Exercise 3: Add Operational Layers](Exercise 3 Add Operational Layers.md)
-- [Exercise 4: Buffer a Point and Query Features](Exercise 4 Buffer a Point and Query Features.md)
-- [Exercise 5: Routing](Exercise 5 Routing.md)
+- [Exercise 1: Map and Scene](Exercise%201%20Map%20and%20Scene.md)
+- [Exercise 2: Add Zoom In and Zoom Out Buttons](Exercise%202%20Zoom%20Buttons.md)
+- [Exercise 3: Add Operational Layers](Exercise%203%20Operational%20Layers.md)
+- [Exercise 4: Buffer a Point and Query Features](Exercise%204%20Buffer%20and%20Query.md)
+- [Exercise 5: Routing](Exercise%205%20Routing.md)
