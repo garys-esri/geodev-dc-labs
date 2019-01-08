@@ -1,5 +1,10 @@
 # GeoDev D.C. Labs
-Lab exercises for Esri GeoDev events held in the Washington, D.C., area.
+
+These lab exercises were developed for Esri GeoDev events held in the Washington, D.C., area. They are available for anyone who wants to get to know ArcGIS Runtime using step-by-step tutorial-style exercises in a variety of development platforms.
+
+Do you want to go step by step? [Go to the exercises.](runtime-workshop/exercises/README.md)
+
+Do you want to cut to the chase and see the code? [Go to the solutions.](runtime-workshop/solutions)
 
 ## Licensing
 
