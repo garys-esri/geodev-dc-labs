@@ -6,4 +6,4 @@
 - [iOS](iOS/Swift/README.md)
 - [Java](Java/README.md)
 - [macOS](macOS/Swift/README.md)
-- [Qt](Qt/Qt Quick/README.md)
+- [Qt](Qt/Qt%20Quick/README.md)
