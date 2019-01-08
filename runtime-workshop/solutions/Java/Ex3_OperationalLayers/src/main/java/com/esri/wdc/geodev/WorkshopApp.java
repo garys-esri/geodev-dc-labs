@@ -1,5 +1,5 @@
 /** *****************************************************************************
- * Copyright 2016-2017 Esri
+ * Copyright 2016-2019 Esri
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.esri.arcgisruntime.geometry.LinearUnit;
 import com.esri.arcgisruntime.geometry.LinearUnitId;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
+import com.esri.arcgisruntime.layers.KmlLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
 import com.esri.arcgisruntime.mapping.ArcGISTiledElevationSource;
@@ -36,6 +37,7 @@ import com.esri.arcgisruntime.mapping.view.GlobeCameraController;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
+import com.esri.arcgisruntime.ogc.kml.KmlDataset;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +62,9 @@ public class WorkshopApp extends Application {
     // Exercise 3: Specify operational layer paths
     private static final String MMPK_PATH = "../../../data/DC_Crime_Data.mmpk";
     private static final String SCENE_SERVICE_URL
-        = "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
+        = "https://www.arcgis.com/home/item.html?id=2c9286dfc69349408764e09022b1f52e";
+    private static final String KML_URL
+        = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week_age_link.kml";
 
     // Exercise 1: Declare and instantiate fields, including UI components
     private final MapView mapView = new MapView();
@@ -122,6 +126,10 @@ public class WorkshopApp extends Application {
                 mapView.setMap(map);
             }
             map.setBasemap(Basemap.createTopographicVector());
+
+            // Exercise 3: Add a KML layer to the map
+            KmlLayer kmlLayer = new KmlLayer(new KmlDataset(KML_URL));
+            map.getOperationalLayers().add(kmlLayer);
         });
         mmpk.loadAsync();
     }
@@ -197,6 +205,10 @@ public class WorkshopApp extends Application {
                     sceneView.setViewpointCameraAsync(camera);
                 });
                 scene.getOperationalLayers().add(sceneLayer);
+
+                // Exercise 3: Add a KML layer to the scene
+                KmlLayer kmlLayer = new KmlLayer(new KmlDataset(KML_URL));
+                scene.getOperationalLayers().add(kmlLayer);
 
                 sceneView.setArcGISScene(scene);
                 AnchorPane.setLeftAnchor(sceneView, 0.0);
