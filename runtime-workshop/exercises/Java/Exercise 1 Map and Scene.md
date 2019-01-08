@@ -7,7 +7,7 @@ This exercise walks you through the following:
 - Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 Prerequisites:
-- Install the Java Development Kit (JDK) version 8 or higher.
+- Install the Java Development Kit (JDK) version 11 or higher.
 - Optional: install a Java integrated development environment (IDE).
 
 If you need some help, you can refer to [the solution to this exercise](../../solutions/Java/Ex1_MapAndScene), available in this repository.
@@ -25,6 +25,16 @@ If you need some help, you can refer to [the solution to this exercise](../../so
 
     }
     ```
+
+	**Note:** In recent Java releases, the JDK no longer includes JavaFX, so you will probably need to add a JavaFX dependency to your new project. In Maven, this is done as follows inside `pom.xml`'s `<dependencies>` element (which you should create if it does not yet exist):
+
+    ```
+	<dependency>
+		<groupId>org.openjfx</groupId>
+		<artifactId>javafx-controls</artifactId>
+		<version>11.0.1</version>
+	</dependency>
+	```
 
 1. Instantiate a field of type `AnchorPane` that will hold the app's UI components:
 
@@ -75,14 +85,30 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         launch(args);
     }
     ```
-    
+
+1. In newer versions of Java, you will probably get the following error if you run the app right now:
+
+    >Error: JavaFX runtime components are missing, and are required to run this application
+
+	Solve this error by creating a new class with a `main` method and having it call your app class's `main` method, and run this new class instead of your app class ([more info](https://stackoverflow.com/a/52654791/720773)):
+
+	```
+	public class Launcher {
+
+		public static void main(String[] args) {
+			WorkshopApp.main(args);
+		}
+
+	}
+	```
+
 1. Compile and run your app. Verify that a button appears in the lower-right corner of the app:
 
     ![Blank app with button](01-blank-app-with-button.png)
     
 ## Add ArcGIS Runtime to the app
 
-You have three options for adding ArcGIS Runtime 100.2.1 to your Java application project. Choose one of the following:
+You have three options for adding ArcGIS Runtime to your Java application project. Choose one of the following:
 
 1. **Use Gradle**: you can use Gradle if you started the exercise by creating a Gradle project. Open `build.gradle` and add ArcGIS dependencies. See [Develop your first map app with Gradle](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app-with-gradle.htm) for details.
 
@@ -96,7 +122,7 @@ You have three options for adding ArcGIS Runtime 100.2.1 to your Java applicatio
         dependencies { classpath 'com.esri.arcgisruntime:gradle-arcgis-java-plugin:1.0.0' }
     }
 
-    arcgis.version = '100.2.1'
+    arcgis.version = '100.4.0'
 
     // download javadoc
     eclipse.classpath.downloadJavadoc = true
@@ -123,8 +149,18 @@ You have three options for adding ArcGIS Runtime 100.2.1 to your Java applicatio
         <dependency>
             <groupId>com.esri.arcgisruntime</groupId>
             <artifactId>arcgis-java</artifactId>
-            <version>100.2.1</version>
+            <version>100.4.0</version>
         </dependency>
+		<!-- Add an execution element to have ArcGIS Runtime
+		     automatically downloaded during the compile phase. -->
+		<executions>
+			<execution>
+				<phase>compile</phase>
+				<goals>
+					<goal>arcgis</goal>
+				</goals>
+			</execution>
+		</executions>
     </dependencies>
 
     <build>
@@ -134,16 +170,16 @@ You have three options for adding ArcGIS Runtime 100.2.1 to your Java applicatio
                 <artifactId>arcgis-java-maven-plugin</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <version>100.2.1</version>
+                    <version>100.4.0</version>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     ```
     
-    **Note:** Maven downloads the ArcGIS Runtime install to `<user home>/.arcgis`. ArcGIS Runtime tries to find it there, but that can fail under certain conditions. If it fails, you can go inside that install directory and copy the `jniLibs` and `resources` directories to your app's working directory.
+    **Note:** Maven downloads the ArcGIS Runtime install to `<user home>/.arcgis`. ArcGIS Runtime tries to find it there, but that can fail under certain conditions, especially with older ArcGIS Runtime releases. If it fails, you can go inside that install directory and copy the `jniLibs` and `resources` directories to your app's working directory.
 
-3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK (version 100.2.1) for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
+3. **Use the downloaded ArcGIS Runtime SDK**: download the ArcGIS Runtime SDK for Java and unzip it. In your Java project, reference the JAR files in the SDK's `libs` directory. You must also copy the SDK's `jniLibs` and `resources` directories to your Java project directory. (There are other ways of referencing ArcGIS Runtime, but copying `jniLibs` and `resources` is the simplest.) See [Develop your first map app using the downloaded SDK](https://developers.arcgis.com/java/latest/guide/develop-your-first-map-app.htm) for details.
 
 ## Add a 2D map to the app
 
