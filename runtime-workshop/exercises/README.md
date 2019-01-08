@@ -1,9 +1,9 @@
 # Exercises
 
-- [Android](Android)
-- [AppStudio for ArcGIS (QML)](AppStudio_QTQML)
-- [.NET (WPF)](dotNETWPF)
-- [iOS](iOS)
-- [Java](Java)
-- [macOS](macOS)
-- [Qt](Qt)
+- [Android](Android/README.md)
+- [AppStudio for ArcGIS (QML)](AppStudio_QTQML/README.md)
+- [.NET (WPF)](dotNETWPF/README.md)
+- [iOS](iOS/README.md)
+- [Java](Java/README.md)
+- [macOS](macOS/README.md)
+- [Qt](Qt/README.md)
