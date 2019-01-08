@@ -73,7 +73,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- * This Application class demonstrates key features of ArcGIS Runtime 100.0.
+ * This Application class demonstrates key features of ArcGIS Runtime.
  */
 public class WorkshopApp extends Application {
 
