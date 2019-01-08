@@ -4,7 +4,7 @@ These lab exercises were developed for Esri GeoDev events held in the Washington
 
 Do you want to go step by step? [Go to the exercises.](runtime-workshop/exercises/README.md)
 
-Do you want to cut to the chase and see the code? [Go to the solutions.](runtime-workshop/solutions/README.md)
+Do you want to cut to the chase and see the code? [Go to the solutions.](runtime-workshop/solutions)
 
 ## Licensing
 
