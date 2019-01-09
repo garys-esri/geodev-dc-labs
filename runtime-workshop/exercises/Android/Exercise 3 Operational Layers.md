@@ -23,14 +23,6 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
 1. In Android 6 (API level 23) and higher, in addition to the `uses-permission` element, a production app should include Java code to [request permissions at runtime](https://developer.android.com/training/permissions/requesting.html). You could instead go to **Settings > Apps > &lt;your app&gt; > Permissions** on your Android device and grant the **Storage** permission manually, but that permission sometimes gets wiped out when you reinstall the app during development, which becomes very inconvenient. Therefore, here we will take the time to request permissions at runtime.
     
-    First, open your project's `build.gradle` file where you added a reference to the Esri Bintray Maven repository. Add a reference to Google's Maven repository:
-    
-    ```
-    maven {
-        url 'https://maven.google.com'
-    }
-    ```
-    
     Open the app's `build.gradle` file where you added a reference to the ArcGIS Runtime Android library. Add a reference to the Android Support Library `v4` library:
     
     ```
@@ -151,18 +143,18 @@ ArcGIS Runtime provides a variety of ways to add **operational layers** to the m
 
 Web scene layers are cached web layers that are optimized for displaying a large amount of 2D and 3D features. Scene layers can be viewed in a variety of ArcGIS clients, including ArcGIS Runtime. Here you will add a scene layer to your 3D scene.
 
-1. Declare a constant value to specify the URL of a scene service. You can use a `SceneServer` URL or an ArcGIS Online or Portal for ArcGIS item URL that represents a scene service. The following URL shows plain gray buildings in Washington, D.C.:
+1. Declare a constant value to specify the URL of a scene service. You can use a `SceneServer` URL or an ArcGIS Online or Portal for ArcGIS item URL that represents a scene service. The following URL shows buildings in San Francisco:
 
     ```
     private static final String SCENE_SERVICE_URL =
-        "https://www.arcgis.com/home/item.html?id=606596bae9e44394b42621e099ba392a";
+        "https://www.arcgis.com/home/item.html?id=943d302fd85b4b6dbd35f399cfb9a4a8";
     ```
 
     The following URL shows photo-realistic buildings in Philadelphia:
     
     ```
     private static final String SCENE_SERVICE_URL =
-        "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
+        "https://www.arcgis.com/home/item.html?id=2c9286dfc69349408764e09022b1f52e";
     ```
 
 1. In Exercise 1, you added code to set up the scene with a basemap and an elevation source. After that code, in the same block, create a new `final ArcGISSceneLayer` based on the scene service, give the layer an event handler for when it is done loading, and add the layer to the scene:

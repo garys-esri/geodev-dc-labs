@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
     private static final String MMPK_PATH =
             Environment.getExternalStorageDirectory().getPath() + "/data/DC_Crime_Data.mmpk";
     private static final String SCENE_SERVICE_URL =
-            "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0";
+            "https://www.arcgis.com/home/item.html?id=2c9286dfc69349408764e09022b1f52e";
 
     // Exercise 3: Permission request code for opening a mobile map package
     private static final int PERM_REQ_OPEN_MMPK = 1;
