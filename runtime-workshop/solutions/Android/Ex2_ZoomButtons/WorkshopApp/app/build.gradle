@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.esri.wdc.geodev.workshopapp"
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 3
-        versionName "2018.04"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 4
+        versionName "2019.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,5 +22,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
-    implementation 'com.esri.arcgisruntime:arcgis-android:100.2.1'
+    implementation 'com.esri.arcgisruntime:arcgis-android:100.4.0'
 }

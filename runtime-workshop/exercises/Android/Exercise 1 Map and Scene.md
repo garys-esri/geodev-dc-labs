@@ -40,13 +40,14 @@ If you need some help, you can refer to [the solution to this exercise](../../so
     
 ## Add ArcGIS Runtime to the app
 
-1. In your Android Studio project, under **Gradle Scripts**, there are two files called `build.gradle`: one for the **project** and one for the **app module**. Open `build.gradle` for your project. Under `allprojects` > `repositories`, add a reference to the Esri Maven repository on Bintray. Make sure you do this under `allprojects` and not under `buildscript`:
+1. In your Android Studio project, under **Gradle Scripts**, there are two files called `build.gradle`: one for the **project** and one for the **app module**. Open `build.gradle` for your project. Under `allprojects` > `repositories`, add a reference to the Esri Maven repository on Bintray, as well as the Google repository. Make sure you do this under `allprojects` and not under `buildscript`:
 
     ```
     allprojects {
         repositories {
             jcenter()
-            // Add the next three lines
+            // Add the next lines
+            google()
             maven {
                 url 'https://esri.bintray.com/arcgis'
             }
@@ -61,7 +62,7 @@ If you need some help, you can refer to [the solution to this exercise](../../so
         implementation fileTree(dir: 'libs', include: ['*.jar'])
         testImplementation 'junit:junit:4.12'
         // Add the next line
-        implementation 'com.esri.arcgisruntime:arcgis-android:100.2.1'
+        implementation 'com.esri.arcgisruntime:arcgis-android:100.4.0'
     }
     ```
     
