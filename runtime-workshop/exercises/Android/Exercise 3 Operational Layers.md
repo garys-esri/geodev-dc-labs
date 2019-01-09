@@ -3,6 +3,7 @@
 This exercise walks you through the following:
 - Add a layer from a mobile map package to the 2D map
 - Add a scene layer to the 3D scene
+- Add a KML layer to the 2D map and 3D scene
 
 Prerequisites:
 - Complete [Exercise 2](Exercise%202%20Zoom%20Buttons.md), or get the Exercise 2 code solution compiling and running properly, preferably in an IDE.
@@ -189,6 +190,33 @@ Web scene layers are cached web layers that are optimized for displaying a large
     ```
 
 1. Compile and run your app. Verify that when you switch to 3D, the 3D features display and the view is rotated and pitched.
+
+## Add a KML layer to the 2D map and 3D scene
+
+Most organizations use a mix of ArcGIS and non-ArcGIS data formats. Many organizations distribute mapping data in the Keyhole Markup Language (KML) format. Here you will use a KML URL to add a layer to your 2D map and 3D scene.
+
+1. Declare a constant value to specify the URL of a KML file or network link. The following URL shows earthquakes of magnitude 1.0 or greater in the past seven days, colored by age:
+
+    ```
+    private static final String KML_URL =
+        "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week_age_link.kml";
+    ```
+
+1. You added a listener to the mobile map package to set up the map after the mobile map package loads. In that listener, after setting the map and the basemap, create a KML layer and add it to the map:
+
+    ```
+	KmlLayer kmlLayer = new KmlLayer(new KmlDataset(KML_URL));
+	map.getOperationalLayers().add(kmlLayer);
+	```
+
+1. You added a scene layer to the scene. After that, create a KML layer and add it to the scene:
+
+    ```
+	KmlLayer kmlLayer = new KmlLayer(new KmlDataset(KML_URL));
+	scene.getOperationalLayers().add(kmlLayer);
+	```
+
+1. Compile and run your app. Zoom out and verify that the earthquake dots appear on the 2D map. Switch to 3D and verify that the earthquake dots appear on the 3D scene.
 
 ## How did it go?
 

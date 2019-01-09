@@ -27,6 +27,7 @@ import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.layers.ArcGISSceneLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.KmlLayer;
 import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.ArcGISScene;
@@ -46,6 +47,7 @@ import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.mapping.view.OrbitLocationCameraController;
 import com.esri.arcgisruntime.mapping.view.SceneView;
+import com.esri.arcgisruntime.ogc.kml.KmlDataset;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
@@ -67,6 +69,8 @@ public class MainActivity extends Activity {
             Environment.getExternalStorageDirectory().getPath() + "/data/DC_Crime_Data.mmpk";
     private static final String SCENE_SERVICE_URL =
             "https://www.arcgis.com/home/item.html?id=2c9286dfc69349408764e09022b1f52e";
+    private static final String KML_URL =
+            "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week_age_link.kml";
 
     // Exercise 3: Permission request code for opening a mobile map package
     private static final int PERM_REQ_OPEN_MMPK = 1;
@@ -123,6 +127,10 @@ public class MainActivity extends Activity {
             }
         });
         scene.getOperationalLayers().add(sceneLayer);
+
+        // Exercise 3: Add a KML layer to the scene
+        KmlLayer kmlLayer = new KmlLayer(new KmlDataset(KML_URL));
+        scene.getOperationalLayers().add(kmlLayer);
 
         // Exercise 2: Set fields.
         imageButton_lockFocus = findViewById(R.id.imageButton_lockFocus);
@@ -352,6 +360,10 @@ public class MainActivity extends Activity {
                     });
                 }
                 map.setBasemap(Basemap.createTopographicVector());
+
+                // Exercise 3: Add a KML layer to the map
+                KmlLayer kmlLayer = new KmlLayer(new KmlDataset(KML_URL));
+                map.getOperationalLayers().add(kmlLayer);
             }
         });
         mmpk.loadAsync();
