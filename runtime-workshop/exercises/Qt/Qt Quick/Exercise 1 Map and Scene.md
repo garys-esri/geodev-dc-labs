@@ -5,9 +5,9 @@ This exercise walks you through the following:
 - Add a 3D scene to the app, and use a toggle button to switch between 2D and 3D
 
 Prerequisites:
-- Meet [the system requirements for the ArcGIS Runtime SDK for Qt](https://developers.arcgis.com/qt/latest/qml/guide/arcgis-runtime-sdk-for-qt-system-requirements.htm), including the need for OpenSSL. **_Important: use OpenSSL 1.0.2 with Qt 5.6 through 5.9! OpenSSL 1.1.0 does not work with those releases of Qt!_**
+- Meet [the system requirements for the ArcGIS Runtime SDK for Qt](https://developers.arcgis.com/qt/latest/qml/guide/arcgis-runtime-sdk-for-qt-system-requirements.htm), including the need for OpenSSL. **Note that OpenSSL 1.0.2 seems to work better with Qt than OpenSSL 1.1.0 does.** One way to get OpenSSL on Windows is to install the Light edition of [Win64 OpenSSL](https://slproweb.com/products/Win32OpenSSL.html). *If you do not use OpenSSL, ArcGIS Online services will not work, since they run over HTTPS.*
 - Install Qt Creator. Refer to the ArcGIS Runtime system requirements for supported versions of Qt and Qt Creator. If you use Windows, you need to use a Qt kit for Visual Studio, rather than a Qt kit for MinGW, and you need to open Qt Creator from a Visual Studio command prompt.
-- Install the ArcGIS Runtime SDK 100.2.1 for Qt. Go to [the ArcGIS Runtime SDK for Qt home page](https://developers.arcgis.com/qt/latest/) and click **Download SDK** if you haven't downloaded the SDK. Go to [the ArcGIS Runtime SDK for Qt guide](https://developers.arcgis.com/qt/latest/qml/guide/arcgis-runtime-sdk-for-qt.htm) and expand **Get started** to see links to the install instructions. Follow all of the applicable install instructions in order to configure Runtime with Qt Creator. (Note: there is no need to follow the Android portion of the instructions if you're not deploying to Android for this workshop.)
+- Install the ArcGIS Runtime SDK 100.4.0 for Qt. Go to [the ArcGIS Runtime SDK for Qt home page](https://developers.arcgis.com/qt/latest/) and click **Download SDK** if you haven't downloaded the SDK. Go to [the ArcGIS Runtime SDK for Qt guide](https://developers.arcgis.com/qt/latest/qml/guide/arcgis-runtime-sdk-for-qt.htm) and expand **Get started** to see links to the install instructions. Follow all of the applicable install instructions in order to configure Runtime with Qt Creator. (Note: there is no need to follow the Android portion of the instructions if you're not deploying to Android for this workshop.)
 - This exercise was developed for Windows. If you would like to deploy to a different platform, such as Linux, Mac, Android, or iOS, additional setup may be required.
 
 If you need some help, you can refer to [the solution to this exercise](../../../solutions/Qt/Qt%20Quick/Ex1_MapAndScene), available in this repository.
@@ -15,18 +15,6 @@ If you need some help, you can refer to [the solution to this exercise](../../..
 ## Create a new Qt Quick app with ArcGIS Runtime
 
 1. In Qt Creator, create a new **ArcGIS Runtime Qt Quick app** project. Go through the wizard to create the project. Do not check the **3D project** checkbox (we will add 3D to the app in a different way).
-
-1. Add OpenSSL support to your app by adding the following lines to your project's `.pro` file:
-
-    ```
-    OPENSSL_LIBS = /path/to/openssl/lib
-    OPENSSL_INCLUDE = /path/to/openssl/include
-
-    LIBS += -L$$OPENSSL_LIBS
-    INCLUDEPATH += $$OPENSSL_INCLUDE
-    ```
-    
-    Adding OpenSSL is necessary in order to use ArcGIS Online basemaps, which ArcGIS Runtime loads over HTTPS.
 
 1. Run the project to verify that you see an app with a map:
 
