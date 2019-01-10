@@ -1,5 +1,5 @@
 
-// Copyright 2016-2017 ESRI
+// Copyright 2016-2019 ESRI
 //
 // All rights reserved under the copyright laws of the United States
 // and applicable international laws, treaties, and conventions.
@@ -13,7 +13,7 @@
 
 import QtQuick 2.6
 import QtQuick.Controls 1.4
-import Esri.ArcGISRuntime 100.2
+import Esri.ArcGISRuntime 100.4
 
 ApplicationWindow {
     id: appWindow
@@ -28,7 +28,6 @@ ApplicationWindow {
     MapView {
         id: mapView
         anchors.fill: parent
-        wrapAroundMode: Enums.WrapAroundModeDisabled
         // set focus to enable keyboard navigation
         focus: true
 

@@ -1,5 +1,5 @@
 
-// Copyright 2016-2017 ESRI
+// Copyright 2016-2019 ESRI
 //
 // All rights reserved under the copyright laws of the United States
 // and applicable international laws, treaties, and conventions.
@@ -13,7 +13,7 @@
 
 import QtQuick 2.6
 import QtQuick.Controls 1.4
-import Esri.ArcGISRuntime 100.2
+import Esri.ArcGISRuntime 100.4
 
 ApplicationWindow {
     id: appWindow
@@ -26,7 +26,15 @@ ApplicationWindow {
 
     // Exercise 3: Specify operational layer paths
     readonly property url mmpkPath: workingDirectory + "/../../../../../../data/DC_Crime_Data.mmpk"
-    readonly property url sceneServiceUrl: "https://www.arcgis.com/home/item.html?id=a7419641a50e412c980cf242c29aa3c0"
+    readonly property url sceneServiceUrl: "https://www.arcgis.com/home/item.html?id=2c9286dfc69349408764e09022b1f52e"
+    readonly property url kmlUrl: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week_age_link.kml"
+
+    // Exercise 3: Create a KML layer for the 2D map
+    property KmlLayer kmlLayer2d: KmlLayer {
+        dataset: KmlDataset {
+            url: kmlUrl
+        }
+    }
 
     // Exercise 5: Declare origin point and route parameters variables
     property var originPoint: undefined
@@ -141,7 +149,6 @@ ApplicationWindow {
     MapView {
         id: mapView
         anchors.fill: parent
-        wrapAroundMode: Enums.WrapAroundModeDisabled
         // set focus to enable keyboard navigation
         focus: true
 
@@ -187,6 +194,9 @@ ApplicationWindow {
             if (loadStatus === Enums.LoadStatusLoaded) {
                 mapView.map = mmpk.maps[0];
                 mapView.map.basemap = basemap;
+
+                // Exercise 3: Add a KML layer to the map
+                mapView.map.operationalLayers.append(kmlLayer2d);
             }
         }
     }
@@ -225,6 +235,13 @@ ApplicationWindow {
                         sceneView.setViewpointCompleted.connect(rotate);
                         sceneView.setViewpoint(viewpointExtent);
                     }
+                }
+            }
+
+            // Exercise 3: Add a KML layer to the scene
+            KmlLayer {
+                dataset: KmlDataset {
+                    url: kmlUrl
                 }
             }
         }
