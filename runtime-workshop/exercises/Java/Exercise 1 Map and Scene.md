@@ -151,16 +151,6 @@ You have three options for adding ArcGIS Runtime to your Java application projec
             <artifactId>arcgis-java</artifactId>
             <version>100.4.0</version>
         </dependency>
-		<!-- Add an execution element to have ArcGIS Runtime
-		     automatically downloaded during the compile phase. -->
-		<executions>
-			<execution>
-				<phase>compile</phase>
-				<goals>
-					<goal>arcgis</goal>
-				</goals>
-			</execution>
-		</executions>
     </dependencies>
 
     <build>
@@ -172,6 +162,16 @@ You have three options for adding ArcGIS Runtime to your Java application projec
                 <configuration>
                     <version>100.4.0</version>
                 </configuration>
+		<!-- Add an execution element to have ArcGIS Runtime
+		     automatically downloaded during the compile phase. -->
+		<executions>
+			<execution>
+				<phase>compile</phase>
+				<goals>
+					<goal>arcgis</goal>
+				</goals>
+			</execution>
+		</executions>
             </plugin>
         </plugins>
     </build>
